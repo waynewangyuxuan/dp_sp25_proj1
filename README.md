@@ -16,6 +16,10 @@ dp_sp25_proj1/
 │   │   ├── cifar10_dataset.py
 │   │   └── data_module.py
 │   ├── models/            # Model architectures
+│   │   ├── __init__.py
+│   │   ├── base_model.py
+│   │   ├── model_factory.py
+│   │   └── resnet.py
 │   ├── training/          # Training scripts
 │   └── utils/             # Utility functions
 ├── configs/               # Configuration files
@@ -77,7 +81,32 @@ To test the data loading pipeline:
 python src/test_dataloader.py
 ```
 
-## Model Training and Prediction
+## Model Architecture
+
+We implement a small ResNet variant (~700K parameters) specifically designed for CIFAR-10 classification. The architecture follows the ResNet design principles while maintaining a small parameter count:
+
+### Network Structure
+- Initial Conv Layer: 3 → 16 channels (3×3 conv, stride 1)
+- Stage 1: 16 → 16 channels (2 BasicBlocks)
+- Stage 2: 16 → 32 channels (2 BasicBlocks)
+- Stage 3: 32 → 64 channels (2 BasicBlocks)
+- Stage 4: 64 → 128 channels (2 BasicBlocks)
+- Global Average Pooling
+- Fully Connected: 128 → 10 classes
+
+### Key Features
+- BasicBlock with two 3×3 convolutions and residual connection
+- Batch Normalization after each convolution
+- ReLU activation
+- Spatial reduction (stride=2) at stages 2, 3, and 4
+- Kaiming initialization for better training dynamics
+
+To test the model:
+```bash
+python src/test_model.py
+```
+
+## Training
 
 [Training documentation will be added as the project progresses]
 
@@ -87,10 +116,6 @@ The model predictions on the test set will be saved in a CSV file with the follo
 - Each row corresponds to an image in the test set
 - Two columns: 'id' (image index) and 'label' (predicted class, 0-9)
 - The order of predictions should match the order of images in cifar_test_nolabel.pkl
-
-## Model Architecture
-
-[Model architecture details will be added as the project progresses]
 
 ## Results
 
