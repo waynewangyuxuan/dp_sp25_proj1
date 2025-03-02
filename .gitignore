@@ -4,3 +4,8 @@ __pycache__/
 *$py.class
 data/
 *.zip
+
+# Ignore everything in outputs
+outputs/*
+# But don't ignore best_models directory
+!outputs/best_models/
