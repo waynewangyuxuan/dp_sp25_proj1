@@ -1,51 +1,95 @@
-# Deep Learning Project 1 - CIFAR-10 Classification
+# Deep Learning Spring 2025 Project 1: CIFAR-10 Classification
 
-This project implements a deep learning model for image classification on the CIFAR-10 dataset.
+This project implements a ResNet model for CIFAR-10 image classification. The implementation includes a custom training pipeline with learning rate scheduling, model checkpointing, and comprehensive evaluation metrics.
 
 ## Project Structure
 
 ```
 dp_sp25_proj1/
-├── data/                    # Data directory
-│   └── cifar10/            # CIFAR-10 dataset files
-│       ├── cifar-10-python/  # Training and validation data
-│       └── cifar_test_nolabel.pkl  # Unlabeled test data
-├── src/                    # Source code
-│   ├── data/              # Data loading and processing
-│   │   ├── __init__.py
-│   │   ├── cifar10_dataset.py
-│   │   └── data_module.py
-│   ├── models/            # Model architectures
-│   │   ├── __init__.py
-│   │   ├── base_model.py
-│   │   ├── model_factory.py
-│   │   └── resnet.py
-│   ├── training/          # Training scripts and trainer class
-│   │   ├── __init__.py
-│   │   └── trainer.py
-│   ├── configs/           # Configuration classes
-│   │   ├── __init__.py
-│   │   └── train_config.py
-│   ├── evaluate.py        # Evaluation and prediction script
-│   ├── train.py          # Main training script
-│   └── utils/            # Utility functions
-├── outputs/              # Model outputs
-│   ├── best_models/     # Best performing models (tracked in git)
-│   └── training_runs/   # Training runs organized by timestamp (not tracked)
-│       └── YYYY_MM_DD_HH_MM/  # Individual run directory
-│           ├── checkpoints/   # Epoch checkpoints
-│           ├── best.pth      # Best model for this run
-│           └── predictions.csv  # Model predictions
-├── requirements.txt      # Python dependencies
-├── activate.sh          # Environment activation script
-└── README.md            # This file
+├── src/
+│   ├── configs/
+│   │   └── train_config.py      # Training configuration
+│   ├── data/
+│   │   ├── cifar10_dataset.py   # Custom CIFAR-10 dataset implementation
+│   │   └── data_module.py       # PyTorch Lightning data module
+│   ├── models/
+│   │   └── resnet.py           # ResNet model implementation
+│   ├── training/
+│   │   └── trainer.py          # Training loop implementation
+│   ├── train.py                # Main training script
+│   └── evaluate.py             # Model evaluation script
+├── data/
+│   └── cifar10/                # CIFAR-10 dataset files
+├── outputs/
+│   ├── best_models/            # Best performing model checkpoints
+│   ├── evaluations/            # Evaluation results
+│   │   └── {experiment_name}_val_acc_{val_acc}_{timestamp}/
+│   │       ├── predictions.csv # Test set predictions
+│   │       └── model.pth       # Symbolic link to model checkpoint
+│   └── training_runs/          # Training run outputs
+│       └── {timestamp}/
+│           ├── checkpoints/    # Regular training checkpoints
+│           └── logs/           # Training logs
+├── requirements.txt            # Project dependencies
+└── activate.sh                 # Environment activation script
 ```
 
-## Setup
+## Model Architecture
+
+The project implements a small ResNet model with the following architecture:
+
+- Input: 32x32 RGB images
+- Initial convolution: 3x3, 48 channels
+- 4 ResNet blocks with BasicBlock:
+  - Layer 1: 3 blocks (48 → 48 channels)
+  - Layer 2: 4 blocks (48 → 96 channels)
+  - Layer 3: 23 blocks (96 → 192 channels)
+  - Layer 4: 3 blocks (192 → 384 channels)
+- Each BasicBlock contains:
+  - 2 convolutional layers (3x3)
+  - Batch normalization
+  - ReLU activation
+  - Skip connections
+- Global average pooling
+- Dropout (rate=0.2)
+- Fully connected layer (384 → 10)
+- Output: 10 class probabilities
+
+### Performance
+- Test Accuracy: 82.422%
+- Model Size: ~4.2M parameters
+- Training Time: ~2 hours on a single GPU
+
+## Training Process
+
+The training process includes:
+
+1. Data augmentation:
+   - Random horizontal flips (p=0.5)
+   - Random rotations (±15 degrees)
+   - Color jittering (brightness, contrast, saturation)
+   - Normalization (mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])
+
+2. Training features:
+   - Cross-entropy loss
+   - Adam optimizer (lr=0.001, weight_decay=0.0001)
+   - Cosine learning rate schedule with warmup
+   - Model checkpointing (every 5 epochs)
+   - Early stopping (patience=10)
+   - Progress bars for monitoring
+
+3. Evaluation metrics:
+   - Training accuracy
+   - Validation accuracy
+   - Per-class accuracy
+   - Confusion matrix
+
+## Usage
+
+### Environment Setup
 
 1. Create and activate the virtual environment:
 ```bash
-python -m venv venv
 source activate.sh
 ```
 
@@ -54,104 +98,69 @@ source activate.sh
 pip install -r requirements.txt
 ```
 
-3. Download the CIFAR-10 dataset:
-```bash
-# Configure Kaggle credentials first
-mkdir -p ~/.config/kaggle
-# Place your kaggle.json in ~/.config/kaggle/
-chmod 600 ~/.config/kaggle/kaggle.json
+### Training
 
-# Download the dataset
-kaggle competitions download -c deep-learning-spring-2025-project-1
-```
-
-4. Extract the dataset:
-```bash
-unzip deep-learning-spring-2025-project-1.zip -d data/cifar10/
-```
-
-## Data Loading
-
-The project uses a custom data loading pipeline with the following components:
-
-- `CIFAR10Dataset`: A PyTorch Dataset class that handles loading and preprocessing of CIFAR-10 data
-- `CIFAR10DataModule`: A data module that manages data loading, including:
-  - Training/validation split (4 batches for training, 1 for validation)
-  - Data augmentation (random crop, horizontal flip)
-  - Normalization
-  - DataLoader configuration
-  - Test dataset handling (cifar_test_nolabel.pkl)
-
-The data is organized as follows:
-- Training data: 40,000 images (batches 1-4)
-- Validation data: 10,000 images (batch 5)
-- Test data: Unlabeled images from cifar_test_nolabel.pkl
-
-To test the data loading pipeline:
-```bash
-python src/test_dataloader.py
-```
-
-## Model Architecture
-
-We implement a small ResNet variant (~700K parameters) specifically designed for CIFAR-10 classification. The architecture follows the ResNet design principles while maintaining a small parameter count:
-
-### Network Structure
-- Initial Conv Layer: 3 → 16 channels (3×3 conv, stride 1)
-- Stage 1: 16 → 16 channels (2 BasicBlocks)
-- Stage 2: 16 → 32 channels (2 BasicBlocks)
-- Stage 3: 32 → 64 channels (2 BasicBlocks)
-- Stage 4: 64 → 128 channels (2 BasicBlocks)
-- Global Average Pooling
-- Fully Connected: 128 → 10 classes
-
-### Key Features
-- BasicBlock with two 3×3 convolutions and residual connection
-- Batch Normalization after each convolution
-- ReLU activation
-
-## Training
-
-The training pipeline is managed by the `Trainer` class in `src/training/trainer.py`. Key features include:
-
-- Cosine learning rate schedule with warmup
-- Label smoothing for better generalization
-- Progress bars for both epoch and batch-level progress
-- Regular checkpointing and best model saving
-- Validation after each epoch
-
-To start training:
+To train the model:
 ```bash
 python src/train.py
 ```
 
-## Evaluation and Predictions
+The training script will:
+- Create necessary output directories
+- Train the model with the specified configuration
+- Save checkpoints and logs
+- Display training progress and metrics
 
-The evaluation pipeline (`src/evaluate.py`) generates predictions for the test set:
+### Evaluation
 
-1. Loads the best performing model from `outputs/best_models/`
-2. Runs inference on the test set
-3. Generates predictions in the required format:
-   - CSV file with columns "ID" and "Labels"
-   - Sorted by ID for consistency
-
-To generate predictions:
+To evaluate a trained model and generate predictions:
 ```bash
 python src/evaluate.py
 ```
 
+The evaluation script will:
+- Load the best model checkpoint
+- Generate predictions for the test set
+- Create an evaluation folder with:
+  - `predictions.csv`: Test set predictions
+  - `model.pth`: Symbolic link to the model used
+- Display sample predictions and statistics
+
 ## Output Organization
 
-The project organizes outputs in a structured way:
+### Training Outputs
 
-- `outputs/best_models/`: Stores the best performing models (tracked in git)
-  - `cifar10_resnet_best.pth`: Best model checkpoint with highest validation accuracy
+Training outputs are organized in the `outputs/training_runs/{timestamp}/` directory:
+- `checkpoints/`: Regular training checkpoints
+- `logs/`: Training logs and metrics
 
-- `outputs/training_runs/`: Training runs organized by timestamp (not tracked in git)
-  - Each run has its own directory (YYYY_MM_DD_HH_MM format)
-  - Contains checkpoints, best model for the run, and predictions
+### Best Models
 
-This structure ensures:
-- Best models are version controlled
-- Training runs are organized and easily identifiable
-- Clear separation between tracked and untracked files
+The best performing models are stored in `outputs/best_models/`:
+- `{experiment_name}_best.pth`: Best model checkpoint
+
+### Evaluation Results
+
+Evaluation results are stored in `outputs/evaluations/`:
+- Each evaluation run gets its own folder named with validation accuracy
+- Folder format: `{experiment_name}_val_acc_{val_acc}_{timestamp}/`
+- Contains predictions CSV and model symbolic link
+
+## Configuration
+
+Training parameters can be modified in `src/configs/train_config.py`:
+- Model architecture
+- Training hyperparameters
+- Data augmentation settings
+- Output paths
+- Logging settings
+
+## Dependencies
+
+- Python 3.9+
+- PyTorch
+- torchvision
+- pandas
+- tqdm
+- scikit-learn
+- matplotlib

@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import DataLoader
-from torch.optim.lr_scheduler import _LRScheduler
+from torch.optim.lr_scheduler import _LRScheduler, OneCycleLR
 from tqdm import tqdm
 
 from models import BaseModel
@@ -67,17 +67,21 @@ class Trainer:
         )
         
         # Setup learning rate scheduler
-        if config.lr_schedule == 'cosine':
-            self.scheduler = WarmupCosineScheduler(
+        if config.lr_schedule == 'onecycle':
+            self.scheduler = OneCycleLR(
                 self.optimizer,
-                warmup_epochs=config.warmup_epochs,
-                total_epochs=config.num_epochs
+                max_lr=config.max_lr,
+                epochs=config.num_epochs,
+                steps_per_epoch=len(train_loader),
+                pct_start=0.1,  # 10% warmup
+                div_factor=25,  # Initial lr = max_lr/25
+                final_div_factor=1e4  # Final lr = max_lr/10000
             )
-        else:  # step schedule
-            self.scheduler = optim.lr_scheduler.StepLR(
+        else:
+            self.scheduler = optim.lr_scheduler.CosineAnnealingLR(
                 self.optimizer,
-                step_size=config.lr_step_size,
-                gamma=config.lr_gamma
+                T_max=config.num_epochs,
+                eta_min=1e-6
             )
         
         # Setup tracking variables
@@ -133,7 +137,8 @@ class Trainer:
             val_metrics = self._validate()
             
             # Update learning rate
-            self.scheduler.step()
+            if self.config.lr_schedule != 'onecycle':
+                self.scheduler.step()
             
             # Save checkpoint
             if (epoch + 1) % self.config.save_interval == 0:
@@ -170,22 +175,49 @@ class Trainer:
         )
         
         for batch_idx, (inputs, targets) in enumerate(batch_pbar):
-            inputs, targets = inputs.to(self.device), targets.to(self.device)
+            # Handle Mixup targets
+            if isinstance(targets, tuple):
+                targets, targets2, lam = targets
+                targets = targets.to(self.device)
+                targets2 = targets2.to(self.device)
+            else:
+                targets = targets.to(self.device)
+                targets2 = None
+                lam = 1.0
+            
+            inputs = inputs.to(self.device)
             
             # Forward pass
             outputs = self.model(inputs)
-            loss = self.criterion(outputs, targets)
+            
+            # Compute loss with Mixup
+            if targets2 is not None:
+                loss = lam * self.criterion(outputs, targets) + (1 - lam) * self.criterion(outputs, targets2)
+            else:
+                loss = self.criterion(outputs, targets)
             
             # Backward pass and optimize
             self.optimizer.zero_grad()
             loss.backward()
+            
+            # Gradient clipping
+            torch.nn.utils.clip_grad_norm_(self.model.parameters(), max_norm=1.0)
+            
             self.optimizer.step()
+            
+            # Update learning rate for OneCycleLR
+            if self.config.lr_schedule == 'onecycle':
+                self.scheduler.step()
             
             # Update metrics
             total_loss += loss.item()
             _, predicted = outputs.max(1)
+            if targets2 is not None:
+                correct += (lam * predicted.eq(targets).sum().float() + 
+                          (1 - lam) * predicted.eq(targets2).sum().float())
+            else:
+                correct += predicted.eq(targets).sum().item()
             total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
             
             # Update progress bar description
             current_loss = total_loss / (batch_idx + 1)
@@ -201,42 +233,23 @@ class Trainer:
             'accuracy': 100. * correct / total
         }
     
-    @torch.no_grad()
     def _validate(self) -> Dict[str, float]:
-        """Run validation"""
+        """Validate the model"""
         self.model.eval()
         total_loss = 0
         correct = 0
         total = 0
         
-        # Create progress bar for validation
-        val_pbar = tqdm(
-            self.val_loader,
-            desc="Validating",
-            unit="batch",
-            leave=False,
-            position=1
-        )
-        
-        for inputs, targets in val_pbar:
-            inputs, targets = inputs.to(self.device), targets.to(self.device)
-            
-            # Forward pass
-            outputs = self.model(inputs)
-            loss = self.criterion(outputs, targets)
-            
-            # Update metrics
-            total_loss += loss.item()
-            _, predicted = outputs.max(1)
-            total += targets.size(0)
-            correct += predicted.eq(targets).sum().item()
-            
-            # Update progress bar description
-            current_loss = total_loss / total
-            current_acc = 100. * correct / total
-            val_pbar.set_description(
-                f"Validation Loss: {current_loss:.4f} Acc: {current_acc:.2f}%"
-            )
+        with torch.no_grad():
+            for inputs, targets in self.val_loader:
+                inputs, targets = inputs.to(self.device), targets.to(self.device)
+                outputs = self.model(inputs)
+                loss = self.criterion(outputs, targets)
+                
+                total_loss += loss.item()
+                _, predicted = outputs.max(1)
+                total += targets.size(0)
+                correct += predicted.eq(targets).sum().item()
         
         return {
             'loss': total_loss / len(self.val_loader),

@@ -16,28 +16,33 @@ from configs.train_config import TrainingConfig
 # Add TrainingConfig to safe globals
 add_safe_globals([TrainingConfig])
 
-def get_run_dir(config: TrainingConfig) -> str:
-    """Get the directory for the current run based on timestamp"""
-    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
-    return os.path.join(config.output_dir, "training_runs", timestamp)
+def get_evaluation_dir(config: TrainingConfig) -> str:
+    """Get the directory for storing evaluation results"""
+    return os.path.join(config.output_dir, "evaluations")
 
 def get_best_models_dir(config: TrainingConfig) -> str:
     """Get the directory for storing best performing models"""
     return os.path.join(config.output_dir, "best_models")
 
-def setup_output_dirs(config: TrainingConfig) -> tuple:
-    """Setup output directories for the current run"""
-    # Create main directories
-    run_dir = get_run_dir(config)
-    best_models_dir = get_best_models_dir(config)
-    checkpoints_dir = os.path.join(run_dir, "checkpoints")
+def create_evaluation_folder(config: TrainingConfig, model_path: str) -> str:
+    """Create a folder for this evaluation run containing the CSV and model link"""
+    # Get validation accuracy from model checkpoint
+    checkpoint = torch.load(model_path, map_location='cpu')
+    val_acc = checkpoint['best_acc']
     
-    # Create all directories
-    os.makedirs(run_dir, exist_ok=True)
-    os.makedirs(best_models_dir, exist_ok=True)
-    os.makedirs(checkpoints_dir, exist_ok=True)
+    # Create timestamp-based folder name with validation accuracy
+    timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
+    folder_name = f"{config.experiment_name}_val_acc_{val_acc:.2f}_{timestamp}"
     
-    return run_dir, best_models_dir, checkpoints_dir
+    # Create evaluation directory if it doesn't exist
+    eval_dir = get_evaluation_dir(config)
+    os.makedirs(eval_dir, exist_ok=True)
+    
+    # Create specific evaluation folder
+    eval_folder = os.path.join(eval_dir, folder_name)
+    os.makedirs(eval_folder, exist_ok=True)
+    
+    return eval_folder
 
 def load_model(checkpoint_path: str, device: str = 'cuda'):
     """Load trained model from checkpoint"""
@@ -53,7 +58,7 @@ def load_model(checkpoint_path: str, device: str = 'cuda'):
     
     print(f"\nLoaded model from {checkpoint_path}")
     print(f"Best validation accuracy: {checkpoint['best_acc']:.2f}%")
-    return model
+    return model, checkpoint['best_acc']
 
 @torch.no_grad()
 def generate_predictions(model: torch.nn.Module,
@@ -80,12 +85,12 @@ def generate_predictions(model: torch.nn.Module,
     
     # Create DataFrame with exact column names
     df = pd.DataFrame({
-        '"ID"': image_ids,
-        '"Labels"': predictions
+        'ID': image_ids,
+        'Labels': predictions
     })
     
     # Sort by ID to ensure correct order
-    df = df.sort_values('"ID"')
+    df = df.sort_values('ID').reset_index(drop=True)
     
     return df
 
@@ -96,12 +101,17 @@ def main():
     # Load config and update paths
     config = TrainingConfig()
     
-    # Setup output directories
-    run_dir, best_models_dir, _ = setup_output_dirs(config)
-    
     # Load best model from best_models directory
-    best_model_path = os.path.join(best_models_dir, f"{config.experiment_name}_best.pth")
-    model = load_model(best_model_path, device)
+    best_model_path = os.path.join(get_best_models_dir(config), f"{config.experiment_name}_best.pth")
+    model, val_acc = load_model(best_model_path, device)
+    
+    # Create evaluation folder
+    eval_folder = create_evaluation_folder(config, best_model_path)
+    
+    # Create symbolic link to the model
+    model_link_path = os.path.join(eval_folder, "model.pth")
+    if not os.path.exists(model_link_path):
+        os.symlink(best_model_path, model_link_path)
     
     # Create data module and setup
     data_module = CIFAR10DataModule(
@@ -120,15 +130,16 @@ def main():
         device=device
     )
     
-    # Save predictions in the run directory with quoted column names
-    output_file = os.path.join(run_dir, "predictions.csv")
-    predictions_df.to_csv(output_file, index=False, quoting=1)  # QUOTE_ALL mode
+    # Save predictions with exact format
+    output_file = os.path.join(eval_folder, "predictions.csv")
+    predictions_df.to_csv(output_file, index=False)
     print(f"\nSaved predictions to {output_file}")
     
     # Print sample predictions
     print("\nSample predictions:")
-    print(predictions_df.head(10))
+    print(predictions_df.head(10).to_string())
     print(f"\nTotal predictions: {len(predictions_df)}")
+    print(f"\nEvaluation results stored in: {eval_folder}")
 
 if __name__ == '__main__':
     main() 
