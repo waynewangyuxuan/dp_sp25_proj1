@@ -33,7 +33,9 @@ class BasicBlock(nn.Module):
                  in_channels: int, 
                  out_channels: int, 
                  stride: int = 1,
-                 downsample: nn.Module = None):
+                 downsample: nn.Module = None,
+                 use_se: bool = False,
+                 se_reduction: int = 16):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
                               stride=stride, padding=1, bias=False)
@@ -44,6 +46,11 @@ class BasicBlock(nn.Module):
         self.bn2 = nn.BatchNorm2d(out_channels)
         self.downsample = downsample
         self.stride = stride
+        
+        # Add Squeeze-and-Excitation block
+        self.use_se = use_se
+        if use_se:
+            self.se = SELayer(out_channels, reduction=se_reduction)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         identity = x
@@ -54,6 +61,10 @@ class BasicBlock(nn.Module):
 
         out = self.conv2(out)
         out = self.bn2(out)
+        
+        # Apply SE if enabled
+        if self.use_se:
+            out = self.se(out)
 
         if self.downsample is not None:
             identity = self.downsample(x)
@@ -114,38 +125,42 @@ class Bottleneck(nn.Module):
 
 class ResNet(BaseModel):
     """ResNet model implementation"""
-
+    
     def __init__(self, 
                  block: Type[Union[BasicBlock]],
                  layers: List[int],
                  num_classes: int = 10,
                  base_channels: int = 32,
-                 dropout_rate: float = 0.1):
+                 dropout_rate: float = 0.1,
+                 use_se: bool = False,
+                 se_reduction: int = 16):
         super().__init__()
-        self.in_channels = base_channels
         self.num_classes = num_classes
         self.base_channels = base_channels
-
-        # Initial convolution layer
-        self.conv1 = nn.Conv2d(3, self.in_channels, kernel_size=3, 
-                              stride=1, padding=1, bias=False)
-        self.bn1 = nn.BatchNorm2d(self.in_channels)
+        self.dropout_rate = dropout_rate
+        self.use_se = use_se
+        self.se_reduction = se_reduction
+        self.in_channels = base_channels  # Track input channels separately
+        
+        # Initial convolution
+        self.conv1 = nn.Conv2d(3, self.base_channels, kernel_size=3, stride=1, padding=1, bias=False)
+        self.bn1 = nn.BatchNorm2d(self.base_channels)
         self.relu = nn.ReLU(inplace=True)
-
+        
         # Residual layers
-        self.layer1 = self._make_layer(block, base_channels, layers[0])
-        self.layer2 = self._make_layer(block, base_channels * 2, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, base_channels * 4, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, base_channels * 8, layers[3], stride=2)
-
-        # Final classifier
+        self.layer1 = self._make_layer(block, self.base_channels, layers[0])
+        self.layer2 = self._make_layer(block, self.base_channels * 2, layers[1], stride=2)
+        self.layer3 = self._make_layer(block, self.base_channels * 4, layers[2], stride=2)
+        self.layer4 = self._make_layer(block, self.base_channels * 8, layers[3], stride=2)
+        
+        # Classifier
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
-        self.dropout = nn.Dropout(dropout_rate) if dropout_rate > 0 else None
-        self.fc = nn.Linear(base_channels * 8 * block.expansion, num_classes)
-
+        self.dropout = nn.Dropout(self.dropout_rate)
+        self.fc = nn.Linear(self.base_channels * 8 * block.expansion, num_classes)
+        
         # Initialize weights
         self._init_weights()
-
+    
     def _make_layer(self, 
                    block: Type[Union[BasicBlock]],
                    out_channels: int,
@@ -158,62 +173,68 @@ class ResNet(BaseModel):
                          kernel_size=1, stride=stride, bias=False),
                 nn.BatchNorm2d(out_channels * block.expansion),
             )
-
+        
         layers = []
-        layers.append(block(self.in_channels, out_channels, stride, downsample))
+        # First block may need downsampling
+        layers.append(block(self.in_channels, out_channels, stride, downsample, 
+                           use_se=self.use_se, se_reduction=self.se_reduction))
+        
+        # Update in_channels for subsequent blocks
         self.in_channels = out_channels * block.expansion
+        
+        # Add remaining blocks
         for _ in range(1, blocks):
-            layers.append(block(self.in_channels, out_channels))
-
+            layers.append(block(self.in_channels, out_channels, 
+                               use_se=self.use_se, se_reduction=self.se_reduction))
+        
         return nn.Sequential(*layers)
-
+    
     def _init_weights(self):
-        """Initialize model weights"""
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='relu')
             elif isinstance(m, nn.BatchNorm2d):
                 nn.init.constant_(m.weight, 1)
                 nn.init.constant_(m.bias, 0)
-
+    
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
-
+        
         x = self.layer1(x)
         x = self.layer2(x)
         x = self.layer3(x)
         x = self.layer4(x)
-
+        
         x = self.avgpool(x)
         x = torch.flatten(x, 1)
-        
-        if self.dropout is not None:
-            x = self.dropout(x)
-            
+        x = self.dropout(x)
         x = self.fc(x)
-
+        
         return x
-
+    
     def get_config(self) -> Dict[str, Any]:
         """Get model configuration"""
         config = super().get_config()
         config.update({
             'num_classes': self.num_classes,
             'architecture': 'ResNet',
-            'base_channels': self.base_channels
+            'base_channels': self.base_channels,
+            'use_se': self.use_se
         })
         return config
 
 def resnet_small(num_classes: int = 10, **kwargs) -> ResNet:
-    """Enhanced ResNet for CIFAR-10 (~4.2M parameters)"""
+    """Enhanced ResNet for CIFAR-10 with SE blocks (~4.8M parameters)"""
     model = ResNet(
         block=BasicBlock,
-        layers=[2, 2, 2, 2],  # Reduced depth
-        base_channels=32,     # Reduced width
+        layers=[2, 2, 2, 2],  # Balanced depth
+        base_channels=32,     # Moderate width
         num_classes=num_classes,
-        dropout_rate=0.2,     # Keep dropout
+        dropout_rate=0.3,     # Higher dropout for regularization
+        use_se=True,          # Enable SE blocks
+        se_reduction=16,      # Standard reduction ratio
         **kwargs
     )
     

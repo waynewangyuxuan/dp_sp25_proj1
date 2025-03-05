@@ -43,16 +43,22 @@ class CIFAR10DataModule:
             transforms.RandomCrop(32, padding=4),
             transforms.RandomHorizontalFlip(),
             transforms.RandomRotation(15),
+            # Enhanced color jittering
             transforms.ColorJitter(
-                brightness=0.2,
-                contrast=0.2,
-                saturation=0.2
+                brightness=0.3,
+                contrast=0.3,
+                saturation=0.3,
+                hue=0.1
             ),
+            # Add random perspective for more variety
+            transforms.RandomPerspective(distortion_scale=0.2, p=0.5),
+            # Add random erasing (similar to Cutout but built into torchvision)
             transforms.ToTensor(),
             transforms.Normalize(
                 mean=[0.4914, 0.4822, 0.4465],
                 std=[0.2023, 0.1994, 0.2010]
-            )
+            ),
+            transforms.RandomErasing(p=0.3, scale=(0.02, 0.2), ratio=(0.3, 3.3), value=0)
         ])
         
         self.val_transform = transforms.Compose([
