@@ -13,7 +13,7 @@ class TrainingConfig:
     pin_memory: bool = True
     
     # Training
-    num_epochs: int = 300
+    num_epochs: int = 100  # Reduced from 300 to 100 epochs
     learning_rate: float = 0.1
     weight_decay: float = 5e-4  # Increased weight decay
     momentum: float = 0.9
@@ -35,6 +35,11 @@ class TrainingConfig:
         'saturation': 0.2
     })
     
+    # CutMix
+    use_cutmix: bool = True
+    cutmix_alpha: float = 1.0
+    cutmix_prob: float = 0.5
+    
     # Regularization
     label_smoothing: float = 0.1
     dropout_rate: float = 0.2
@@ -47,5 +52,5 @@ class TrainingConfig:
     log_interval: int = 100
     save_interval: int = 10
     output_dir: str = 'outputs'
-    experiment_name: str = 'cifar10_resnet'
+    experiment_name: str = 'cifar10_resnet_cutmix'  # Updated experiment name to reflect CutMix usage
     resume_from: Optional[str] = None 

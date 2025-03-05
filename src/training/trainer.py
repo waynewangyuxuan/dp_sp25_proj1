@@ -1,5 +1,7 @@
 import os
+import sys
 import time
+import numpy as np
 from typing import Dict, Optional, Tuple
 from datetime import datetime
 
@@ -10,8 +12,12 @@ from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import _LRScheduler, OneCycleLR
 from tqdm import tqdm
 
+# Add src directory to Python path
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from models import BaseModel
 from configs.train_config import TrainingConfig
+from data.augmentations import cutmix_data
 
 class WarmupCosineScheduler(_LRScheduler):
     """Cosine LR scheduler with warmup."""
@@ -174,27 +180,42 @@ class Trainer:
             position=1
         )
         
-        for batch_idx, (inputs, targets) in enumerate(batch_pbar):
-            # Handle Mixup targets
-            if isinstance(targets, tuple):
-                targets, targets2, lam = targets
-                targets = targets.to(self.device)
-                targets2 = targets2.to(self.device)
-            else:
-                targets = targets.to(self.device)
-                targets2 = None
-                lam = 1.0
-            
+        for batch_idx, data in enumerate(batch_pbar):
+            # Unpack data
+            inputs, targets = data
             inputs = inputs.to(self.device)
+            targets = targets.to(self.device)
             
-            # Forward pass
-            outputs = self.model(inputs)
-            
-            # Compute loss with Mixup
-            if targets2 is not None:
-                loss = lam * self.criterion(outputs, targets) + (1 - lam) * self.criterion(outputs, targets2)
+            # Apply CutMix with probability
+            if self.config.use_cutmix and np.random.rand() < self.config.cutmix_prob:
+                inputs, targets_a, targets_b, lam = cutmix_data(
+                    inputs, targets, alpha=self.config.cutmix_alpha
+                )
+                
+                # Forward pass
+                outputs = self.model(inputs)
+                
+                # Compute loss with CutMix
+                loss = lam * self.criterion(outputs, targets_a) + (1 - lam) * self.criterion(outputs, targets_b)
+                
+                # Compute accuracy for progress bar (weighted by lambda)
+                _, predicted = outputs.max(1)
+                correct_a = predicted.eq(targets_a).sum().item()
+                correct_b = predicted.eq(targets_b).sum().item()
+                correct += lam * correct_a + (1 - lam) * correct_b
             else:
+                # Forward pass
+                outputs = self.model(inputs)
+                
+                # Compute loss
                 loss = self.criterion(outputs, targets)
+                
+                # Compute accuracy for progress bar
+                _, predicted = outputs.max(1)
+                correct += predicted.eq(targets).sum().item()
+            
+            # Update total count
+            total += targets.size(0)
             
             # Backward pass and optimize
             self.optimizer.zero_grad()
@@ -211,13 +232,6 @@ class Trainer:
             
             # Update metrics
             total_loss += loss.item()
-            _, predicted = outputs.max(1)
-            if targets2 is not None:
-                correct += (lam * predicted.eq(targets).sum().float() + 
-                          (1 - lam) * predicted.eq(targets2).sum().float())
-            else:
-                correct += predicted.eq(targets).sum().item()
-            total += targets.size(0)
             
             # Update progress bar description
             current_loss = total_loss / (batch_idx + 1)
@@ -241,8 +255,11 @@ class Trainer:
         total = 0
         
         with torch.no_grad():
-            for inputs, targets in self.val_loader:
-                inputs, targets = inputs.to(self.device), targets.to(self.device)
+            for data in self.val_loader:
+                inputs, targets = data
+                inputs = inputs.to(self.device)
+                targets = targets.to(self.device)
+                
                 outputs = self.model(inputs)
                 loss = self.criterion(outputs, targets)
                 

@@ -27,7 +27,10 @@ def main():
         data_dir=config.data_dir,
         batch_size=config.batch_size,
         num_workers=config.num_workers,
-        pin_memory=config.pin_memory
+        pin_memory=config.pin_memory,
+        use_cutmix=config.use_cutmix,
+        cutmix_alpha=config.cutmix_alpha,
+        cutmix_prob=config.cutmix_prob
     )
     data_module.setup()
     

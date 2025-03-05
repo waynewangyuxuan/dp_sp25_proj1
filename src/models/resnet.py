@@ -210,10 +210,10 @@ def resnet_small(num_classes: int = 10, **kwargs) -> ResNet:
     """Enhanced ResNet for CIFAR-10 (~4.2M parameters)"""
     model = ResNet(
         block=BasicBlock,
-        layers=[3, 4, 23, 3],  # Deeper middle layer
-        base_channels=48,      # Wider channels throughout
+        layers=[2, 2, 2, 2],  # Reduced depth
+        base_channels=32,     # Reduced width
         num_classes=num_classes,
-        dropout_rate=0.2,      # Increased dropout
+        dropout_rate=0.2,     # Keep dropout
         **kwargs
     )
     
