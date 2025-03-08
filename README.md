@@ -12,7 +12,8 @@ dp_sp25_proj1/
 │   │   └── stochastic_config.py # Stochastic model configuration
 │   ├── data/
 │   │   ├── cifar10_dataset.py   # Custom CIFAR-10 dataset implementation
-│   │   └── data_module.py       # PyTorch Lightning data module
+│   │   ├── data_module.py       # PyTorch Lightning data module
+│   │   └── augmentations.py     # Data augmentation implementations
 │   ├── models/
 │   │   ├── resnet.py            # ResNet model implementation
 │   │   ├── stochastic_resnet.py # Stochastic depth ResNet implementation
@@ -22,15 +23,17 @@ dp_sp25_proj1/
 │   │   └── trainer.py           # Training loop implementation
 │   ├── train.py                 # Main training script
 │   ├── train_stochastic.py      # Stochastic model training script
-│   └── evaluate.py              # Model evaluation script
+│   ├── evaluate.py              # Basic model evaluation script
+│   ├── evaluate_advanced.py     # Advanced evaluation with TTA
+│   └── get_model_accuracy.py    # Script to extract model accuracy
 ├── data/
 │   └── cifar10/                 # CIFAR-10 dataset files
 ├── outputs/
 │   ├── best_models/             # Best performing model checkpoints
 │   ├── evaluations/             # Evaluation results
-│   │   └── {experiment_name}_val_acc_{val_acc}_{timestamp}/
+│   │   └── {experiment_name}_val_acc_{val_acc}_{timestamp}_model_{model_file}/
 │   │       ├── predictions.csv  # Test set predictions
-│   │       └── model.pth        # Symbolic link to model checkpoint
+│   │       └── model.pth        # Copy of model checkpoint
 │   └── training_runs/           # Training run outputs
 │       └── {timestamp}/
 │           ├── checkpoints/     # Regular training checkpoints
@@ -83,6 +86,19 @@ An alternative implementation using stochastic depth for regularization:
 - Model Size: ~2.8M parameters
 - Training Time: ~2 hours on a single GPU
 
+### 3. Enhanced ResNet with RandAugment
+
+An improved version of the enhanced ResNet with advanced data augmentation:
+
+- Same architecture as the enhanced ResNet with SE blocks
+- Trained with RandAugment data augmentation
+- RandAugment applies a sequence of random transformations with configurable magnitude
+
+#### Performance
+- Test Accuracy: 83.64% (with Test-Time Augmentation)
+- Model Size: ~2.8M parameters
+- Training Time: ~2.5 hours on a single GPU
+
 ## Training Process
 
 The training process includes:
@@ -94,6 +110,7 @@ The training process includes:
    - Random perspective (p=0.5)
    - Random erasing (p=0.3)
    - CutMix augmentation (p=0.7)
+   - RandAugment (optional, 2 operations with magnitude 9)
    - Normalization (mean=[0.4914, 0.4822, 0.4465], std=[0.2023, 0.1994, 0.2010])
 
 2. Training features:
@@ -107,6 +124,7 @@ The training process includes:
    - Training accuracy
    - Validation accuracy
    - Test accuracy
+   - Test accuracy with Test-Time Augmentation (TTA)
 
 ## Usage
 
@@ -142,6 +160,8 @@ The training scripts will:
 
 ### Evaluation
 
+#### Basic Evaluation
+
 To evaluate a trained model and generate predictions:
 ```bash
 python src/evaluate.py
@@ -152,8 +172,58 @@ The evaluation script will:
 - Generate predictions for the test set
 - Create an evaluation folder with:
   - `predictions.csv`: Test set predictions
-  - `model.pth`: Symbolic link to the model used
+  - `model.pth`: Copy of the model used
 - Display sample predictions and statistics
+
+#### Advanced Evaluation with Test-Time Augmentation
+
+To evaluate a model with Test-Time Augmentation (TTA):
+```bash
+python src/evaluate_advanced.py --tta
+```
+
+Additional options:
+```bash
+# Specify a custom model path
+python src/evaluate_advanced.py --model-path /path/to/model.pth --tta
+
+# Adjust the number of TTA transforms
+python src/evaluate_advanced.py --tta --tta-transforms 16
+
+# Use data augmentation during evaluation (not recommended)
+python src/evaluate_advanced.py --use-augment
+```
+
+#### Quick Model Information
+
+To quickly check a model's validation accuracy and other information:
+```bash
+python src/get_model_accuracy.py /path/to/model.pth
+```
+
+For detailed model information:
+```bash
+python src/get_model_accuracy.py /path/to/model.pth --verbose
+```
+
+## Experimental Results
+
+We conducted several experiments to improve the model's performance:
+
+| Model Configuration | Test Accuracy | Notes |
+|---------------------|---------------|-------|
+| ResNet with SE Blocks | 83.14% | Baseline model |
+| ResNet with SE Blocks + TTA (8 transforms)  | 83.64% | With Test-Time Augmentation |
+| ResNet with Stochastic Depth | 78.57% | Less effective than SE blocks |
+| ResNet with Stochastic Depth + TTA (8 transforms) | 83.64% | More effective configuration for TTA |
+| ResNet with Stochastic Depth + TTA (16 transforms) | 83.38% | More transforms reduced accuracy |
+
+### Key Findings:
+
+1. **Squeeze-and-Excitation Blocks** significantly improve performance over the base ResNet.
+2. **RandAugment** provides a small but consistent improvement in accuracy.
+3. **Test-Time Augmentation** can improve results, but only with the right number of transforms.
+4. **More transforms in TTA** doesn't always lead to better results, with 8 transforms being optimal.
 
 ## Output Organization
 
@@ -167,19 +237,28 @@ Training outputs are organized in the `outputs/training_runs/{timestamp}/` direc
 
 The best performing models are stored in `outputs/best_models/`:
 - `{experiment_name}_best.pth`: Best model checkpoint
+- `best_test_83140.pth`: Model with best test accuracy (83.14%)
+- `cifar10_resnet_bestTest_83140.pth`: Symbolic link to the best test model
 
 ### Evaluation Results
 
 Evaluation results are stored in `outputs/evaluations/`:
-- Each evaluation run gets its own folder named with validation accuracy
-- Folder format: `{experiment_name}_val_acc_{val_acc}_{timestamp}/`
-- Contains predictions CSV and model symbolic link
+- Each evaluation run gets its own folder named with validation accuracy and model filename
+- Folder format: `{experiment_name}_val_acc_{val_acc}_{timestamp}_model_{model_file}/`
+- Contains predictions CSV and model file
 
 ## Configuration
 
 Training parameters can be modified in:
 - `src/configs/train_config.py`: Enhanced ResNet configuration
 - `src/configs/stochastic_config.py`: Stochastic depth ResNet configuration
+
+Key configurable parameters:
+- `use_randaugment`: Enable/disable RandAugment
+- `randaugment_num_ops`: Number of operations to apply in RandAugment (default: 2)
+- `randaugment_magnitude`: Magnitude of operations in RandAugment (default: 9)
+- `use_cutmix`: Enable/disable CutMix augmentation
+- `cutmix_prob`: Probability of applying CutMix (default: 0.7)
 
 ## Dependencies
 

@@ -30,7 +30,10 @@ def main():
         pin_memory=config.pin_memory,
         use_cutmix=config.use_cutmix,
         cutmix_alpha=config.cutmix_alpha,
-        cutmix_prob=config.cutmix_prob
+        cutmix_prob=config.cutmix_prob,
+        use_randaugment=config.use_randaugment,
+        randaugment_num_ops=config.randaugment_num_ops,
+        randaugment_magnitude=config.randaugment_magnitude
     )
     data_module.setup()
     

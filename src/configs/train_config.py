@@ -36,6 +36,11 @@ class TrainingConfig:
         'hue': 0.1          # Added hue jitter
     })
     
+    # RandAugment parameters
+    use_randaugment: bool = True
+    randaugment_num_ops: int = 2  # Number of operations to apply
+    randaugment_magnitude: int = 9  # Magnitude of augmentation (0-10)
+    
     # CutMix - Increased probability
     use_cutmix: bool = True
     cutmix_alpha: float = 1.0
@@ -53,5 +58,5 @@ class TrainingConfig:
     log_interval: int = 100
     save_interval: int = 10
     output_dir: str = 'outputs'
-    experiment_name: str = 'cifar10_resnet_se'  # Updated name to reflect SE blocks
+    experiment_name: str = 'cifar10_resnet_randaug'  # Updated name to reflect RandAugment
     resume_from: Optional[str] = None 

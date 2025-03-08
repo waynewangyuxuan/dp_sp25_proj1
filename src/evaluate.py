@@ -32,7 +32,9 @@ def create_evaluation_folder(config: TrainingConfig, model_path: str) -> str:
     
     # Create timestamp-based folder name with validation accuracy
     timestamp = datetime.now().strftime("%Y_%m_%d_%H_%M")
-    folder_name = f"{config.experiment_name}_val_acc_{val_acc:.2f}_{timestamp}"
+    # Extract model name from the path to include in folder name
+    model_filename = os.path.basename(model_path)
+    folder_name = f"{config.experiment_name}_val_acc_{val_acc:.2f}_{timestamp}_model_{model_filename}"
     
     # Create evaluation directory if it doesn't exist
     eval_dir = get_evaluation_dir(config)
@@ -103,15 +105,40 @@ def main():
     
     # Load best model from best_models directory
     best_model_path = os.path.join(get_best_models_dir(config), f"{config.experiment_name}_best.pth")
+    
+    # Check if the model path exists
+    if not os.path.exists(best_model_path):
+        print(f"Error: Model file not found at {best_model_path}")
+        print("Available model files:")
+        best_models_dir = get_best_models_dir(config)
+        if os.path.exists(best_models_dir):
+            for model_file in os.listdir(best_models_dir):
+                print(f"  - {model_file}")
+        else:
+            print(f"  No models found in {best_models_dir}")
+        return
+    
     model, val_acc = load_model(best_model_path, device)
     
     # Create evaluation folder
     eval_folder = create_evaluation_folder(config, best_model_path)
     
-    # Create symbolic link to the model
-    model_link_path = os.path.join(eval_folder, "model.pth")
-    if not os.path.exists(model_link_path):
-        os.symlink(best_model_path, model_link_path)
+    # Create hard copy of the model instead of a symbolic link
+    model_copy_path = os.path.join(eval_folder, "model.pth")
+    try:
+        # Use copy instead of symbolic link to ensure we have the actual model file
+        import shutil
+        shutil.copy2(best_model_path, model_copy_path)
+        print(f"Copied model file to: {model_copy_path}")
+    except Exception as e:
+        print(f"Warning: Could not copy model file. Error: {e}")
+        # Fall back to symlink if copy fails
+        if not os.path.exists(model_copy_path):
+            try:
+                os.symlink(best_model_path, model_copy_path)
+                print(f"Created symbolic link instead: {model_copy_path} -> {best_model_path}")
+            except Exception as e2:
+                print(f"Warning: Could not create symbolic link either. Error: {e2}")
     
     # Create data module and setup
     data_module = CIFAR10DataModule(
