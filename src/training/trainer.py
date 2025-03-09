@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import numpy as np
-from typing import Dict, Optional, Tuple
+from typing import Dict, Optional, Tuple, Any
 from datetime import datetime
 
 import torch
@@ -11,6 +11,8 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import _LRScheduler, OneCycleLR
 from tqdm import tqdm
+import json
+import csv
 
 # Add src directory to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -98,6 +100,15 @@ class Trainer:
         # Setup output directories
         self._setup_output_dirs()
         
+        # Initialize metrics tracking
+        self.metrics_history = {
+            'train_loss': [],
+            'train_acc': [],
+            'val_loss': [],
+            'val_acc': [],
+            'learning_rate': []
+        }
+        
         # Resume from checkpoint if specified
         if config.resume_from is not None:
             self._load_checkpoint(config.resume_from)
@@ -110,17 +121,81 @@ class Trainer:
         # Setup directory structure
         self.run_dir = os.path.join(self.config.output_dir, "training_runs", timestamp)
         self.checkpoints_dir = os.path.join(self.run_dir, "checkpoints")
+        self.logs_dir = os.path.join(self.run_dir, "logs")
         self.best_models_dir = os.path.join(self.config.output_dir, "best_models")
         
         # Create directories
         os.makedirs(self.run_dir, exist_ok=True)
         os.makedirs(self.checkpoints_dir, exist_ok=True)
+        os.makedirs(self.logs_dir, exist_ok=True)
         os.makedirs(self.best_models_dir, exist_ok=True)
+        
+        # Setup log files
+        self.log_file = os.path.join(self.logs_dir, "training.log")
+        self.metrics_file = os.path.join(self.logs_dir, "metrics.csv")
+        self.config_file = os.path.join(self.logs_dir, "config.json")
+        
+        # Save configuration
+        self._save_config()
+        
+        # Initialize metrics CSV file with header
+        with open(self.metrics_file, 'w', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow(['epoch', 'train_loss', 'train_acc', 'val_loss', 'val_acc', 'learning_rate'])
+    
+    def _save_config(self):
+        """Save configuration to a JSON file"""
+        # Convert config to dict
+        config_dict = {}
+        for key, value in vars(self.config).items():
+            if not key.startswith('_'):  # Skip private attributes
+                # Handle non-serializable types
+                if isinstance(value, (int, float, str, bool, list, dict, tuple)) or value is None:
+                    config_dict[key] = value
+                else:
+                    config_dict[key] = str(value)
+        
+        # Save to file
+        with open(self.config_file, 'w') as f:
+            json.dump(config_dict, f, indent=4)
+    
+    def _log_to_file(self, message: str):
+        """Log a message to the log file"""
+        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        with open(self.log_file, 'a') as f:
+            f.write(f"[{timestamp}] {message}\n")
+    
+    def _log_metrics(self, epoch: int, train_metrics: Dict[str, float], val_metrics: Dict[str, float], lr: float):
+        """Log metrics to CSV file"""
+        with open(self.metrics_file, 'a', newline='') as f:
+            writer = csv.writer(f)
+            writer.writerow([
+                epoch,
+                train_metrics['loss'],
+                train_metrics['accuracy'],
+                val_metrics['loss'],
+                val_metrics['accuracy'],
+                lr
+            ])
+        
+        # Update metrics history
+        self.metrics_history['train_loss'].append(train_metrics['loss'])
+        self.metrics_history['train_acc'].append(train_metrics['accuracy'])
+        self.metrics_history['val_loss'].append(val_metrics['loss'])
+        self.metrics_history['val_acc'].append(val_metrics['accuracy'])
+        self.metrics_history['learning_rate'].append(lr)
     
     def train(self):
         """Run the training loop"""
         start_epoch = self.epoch
         total_epochs = self.config.num_epochs
+        
+        # Log training start
+        start_message = f"Starting training from epoch {start_epoch+1}/{total_epochs}"
+        print(f"\n{start_message}")
+        self._log_to_file(start_message)
+        self._log_to_file(f"Model: {self.config.model_name}")
+        self._log_to_file(f"Device: {self.device}")
         
         # Create progress bar for epochs
         epoch_pbar = tqdm(
@@ -128,41 +203,42 @@ class Trainer:
             desc="Training Progress",
             unit="epoch",
             initial=start_epoch,
-            total=total_epochs,
-            position=0,
-            leave=True
+            total=total_epochs
         )
         
-        for epoch in epoch_pbar:
-            self.epoch = epoch
-            
-            # Training phase
+        for self.epoch in epoch_pbar:
+            # Train for one epoch
             train_metrics = self._train_epoch()
             
-            # Validation phase
+            # Validate
             val_metrics = self._validate()
             
-            # Update learning rate
-            if self.config.lr_schedule != 'onecycle':
+            # Update learning rate if using cosine annealing
+            if self.config.lr_schedule == 'cosine':
                 self.scheduler.step()
             
-            # Save checkpoint
-            if (epoch + 1) % self.config.save_interval == 0:
-                self._save_checkpoint()
+            # Get current learning rate
+            current_lr = self.scheduler.get_last_lr()[0]
             
-            # Save best model
-            if val_metrics['accuracy'] > self.best_acc:
+            # Log metrics
+            self._log_metrics(self.epoch + 1, train_metrics, val_metrics, current_lr)
+            self._log_epoch(train_metrics, val_metrics)
+            
+            # Check if this is the best model
+            is_best = val_metrics['accuracy'] > self.best_acc
+            if is_best:
                 self.best_acc = val_metrics['accuracy']
-                self._save_checkpoint(is_best=True)
             
-            # Update progress bar description with metrics
-            desc = (f"Epoch {epoch}/{total_epochs-1} "
-                   f"Train Loss: {train_metrics['loss']:.4f} "
-                   f"Train Acc: {train_metrics['accuracy']:.2f}% "
-                   f"Val Loss: {val_metrics['loss']:.4f} "
-                   f"Val Acc: {val_metrics['accuracy']:.2f}% "
-                   f"LR: {self.scheduler.get_last_lr()[0]:.6f}")
-            epoch_pbar.set_description(desc)
+            # Save checkpoint
+            if (self.epoch + 1) % self.config.save_interval == 0 or is_best:
+                self._save_checkpoint(is_best)
+        
+        # Log training completion
+        completion_message = f"Training completed. Best validation accuracy: {self.best_acc:.2f}%"
+        print(f"\n{completion_message}")
+        self._log_to_file(completion_message)
+        
+        return self.best_acc
     
     def _train_epoch(self) -> Dict[str, float]:
         """Train for one epoch"""
@@ -282,13 +358,17 @@ class Trainer:
             'scheduler_state_dict': self.scheduler.state_dict(),
             'best_acc': self.best_acc,
             'train_steps': self.train_steps,
-            'config': self.config
+            'config': self.config,
+            'metrics_history': self.metrics_history
         }
         
         # Save regular checkpoint in run directory
-        filename = f"epoch_{self.epoch}.pth"
+        filename = f"epoch_{self.epoch+1}.pth"
         path = os.path.join(self.checkpoints_dir, filename)
         torch.save(checkpoint, path)
+        
+        checkpoint_message = f"Saved checkpoint at epoch {self.epoch+1} to {path}"
+        self._log_to_file(checkpoint_message)
         
         # Save best model for this run
         if is_best:
@@ -300,11 +380,20 @@ class Trainer:
             global_best_path = os.path.join(self.best_models_dir, f"{self.config.experiment_name}_best.pth")
             torch.save(checkpoint, global_best_path)
             
-            print(f"\nNew best model! Accuracy: {self.best_acc:.2f}%")
-            print(f"Saved to:\n  {run_best_path}\n  {global_best_path}")
+            best_model_message = f"New best model! Accuracy: {self.best_acc:.2f}%"
+            print(f"\n{best_model_message}")
+            self._log_to_file(best_model_message)
+            
+            paths_message = f"Saved to:\n  {run_best_path}\n  {global_best_path}"
+            print(paths_message)
+            self._log_to_file(paths_message)
     
     def _load_checkpoint(self, checkpoint_path: str):
         """Load model checkpoint"""
+        load_message = f"Loading checkpoint from {checkpoint_path}"
+        print(load_message)
+        self._log_to_file(load_message)
+        
         checkpoint = torch.load(checkpoint_path, map_location=self.device)
         
         self.model.load_state_dict(checkpoint['model_state_dict'])
@@ -313,19 +402,31 @@ class Trainer:
         self.epoch = checkpoint['epoch'] + 1  # Start from next epoch
         self.best_acc = checkpoint['best_acc']
         self.train_steps = checkpoint['train_steps']
+        
+        # Load metrics history if available
+        if 'metrics_history' in checkpoint:
+            self.metrics_history = checkpoint['metrics_history']
+        
+        resume_message = f"Resuming from epoch {self.epoch} with best accuracy {self.best_acc:.2f}%"
+        print(resume_message)
+        self._log_to_file(resume_message)
     
     def _log_batch(self, batch_idx: int, num_batches: int, loss: float, accuracy: float):
         """Log batch metrics"""
-        print(f"Epoch: {self.epoch} [{batch_idx+1}/{num_batches}] "
-              f"Loss: {loss:.4f} Acc: {accuracy:.2f}% "
-              f"LR: {self.scheduler.get_last_lr()[0]:.6f}")
+        message = f"Epoch: {self.epoch+1} [{batch_idx+1}/{num_batches}] " \
+                 f"Loss: {loss:.4f} Acc: {accuracy:.2f}% " \
+                 f"LR: {self.scheduler.get_last_lr()[0]:.6f}"
+        print(message, end="\r")
     
     def _log_epoch(self, train_metrics: Dict[str, float], val_metrics: Dict[str, float]):
         """Log epoch metrics"""
-        print(f"\nEpoch: {self.epoch}")
-        print(f"Train Loss: {train_metrics['loss']:.4f} "
-              f"Train Acc: {train_metrics['accuracy']:.2f}%")
-        print(f"Val Loss: {val_metrics['loss']:.4f} "
-              f"Val Acc: {val_metrics['accuracy']:.2f}%")
-        print(f"Best Val Acc: {self.best_acc:.2f}%")
-        print(f"Learning Rate: {self.scheduler.get_last_lr()[0]:.6f}\n") 
+        message = f"\nEpoch: {self.epoch+1}" \
+                 f"\nTrain Loss: {train_metrics['loss']:.4f} " \
+                 f"Train Acc: {train_metrics['accuracy']:.2f}%" \
+                 f"\nVal Loss: {val_metrics['loss']:.4f} " \
+                 f"Val Acc: {val_metrics['accuracy']:.2f}%" \
+                 f"\nBest Val Acc: {self.best_acc:.2f}%" \
+                 f"\nLearning Rate: {self.scheduler.get_last_lr()[0]:.6f}\n"
+        
+        print(message)
+        self._log_to_file(message) 

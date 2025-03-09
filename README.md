@@ -232,6 +232,9 @@ We conducted several experiments to improve the model's performance:
 Training outputs are organized in the `outputs/training_runs/{timestamp}/` directory:
 - `checkpoints/`: Regular training checkpoints
 - `logs/`: Training logs and metrics
+  - `training.log`: Detailed training progress and events
+  - `metrics.csv`: CSV file with per-epoch metrics for analysis
+  - `config.json`: Configuration used for this training run
 
 ### Best Models
 
@@ -246,6 +249,52 @@ Evaluation results are stored in `outputs/evaluations/`:
 - Each evaluation run gets its own folder named with validation accuracy and model filename
 - Folder format: `{experiment_name}_val_acc_{val_acc}_{timestamp}_model_{model_file}/`
 - Contains predictions CSV and model file
+
+## Logging and Analysis
+
+The training process now includes comprehensive logging:
+
+1. **Console Output**: Real-time training progress and metrics
+2. **Log Files**: Detailed logs stored in the `logs/` directory:
+   - `training.log`: Timestamped events and metrics
+   - `metrics.csv`: CSV file for easy import into analysis tools
+   - `config.json`: Configuration parameters used for the run
+
+### Organizing Existing Logs
+
+For existing training runs, you can retroactively create log directories:
+
+```bash
+python src/organize_logs.py
+```
+
+This script will:
+- Create a `logs/` directory in each training run
+- Generate a `training.log` file with available information
+- Create a `config.json` file if configuration is available in checkpoints
+
+### Analyzing Training Runs
+
+The metrics CSV file can be used for analysis and visualization:
+
+```python
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Load metrics
+metrics = pd.read_csv('outputs/training_runs/TIMESTAMP/logs/metrics.csv')
+
+# Plot training and validation accuracy
+plt.figure(figsize=(10, 5))
+plt.plot(metrics['epoch'], metrics['train_acc'], label='Train Accuracy')
+plt.plot(metrics['epoch'], metrics['val_acc'], label='Validation Accuracy')
+plt.xlabel('Epoch')
+plt.ylabel('Accuracy (%)')
+plt.legend()
+plt.title('Training Progress')
+plt.grid(True)
+plt.show()
+```
 
 ## Configuration
 
