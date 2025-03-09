@@ -213,17 +213,17 @@ We conducted several experiments to improve the model's performance:
 | Model Configuration | Test Accuracy | Notes |
 |---------------------|---------------|-------|
 | ResNet with SE Blocks | 83.14% | Baseline model |
-| ResNet with SE Blocks + TTA (8 transforms)  | 83.64% | With Test-Time Augmentation |
+| ResNet with SE Blocks + TTA (8 transforms) | 83.579% | Significant improvement with TTA |
 | ResNet with Stochastic Depth | 78.57% | Less effective than SE blocks |
-| ResNet with Stochastic Depth + TTA (8 transforms) | 83.64% | More effective configuration for TTA |
-| ResNet with Stochastic Depth + TTA (16 transforms) | 83.38% | More transforms reduced accuracy |
+| ResNet with RandAugment + TTA | 83.64% | Best overall performance |
+| ResNet with TTA (16 transforms) | 83.38% | More transforms reduced accuracy |
 
 ### Key Findings:
 
 1. **Squeeze-and-Excitation Blocks** significantly improve performance over the base ResNet.
-2. **RandAugment** provides a small but consistent improvement in accuracy.
-3. **Test-Time Augmentation** can improve results, but only with the right number of transforms.
-4. **More transforms in TTA** doesn't always lead to better results, with 8 transforms being optimal.
+2. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of 0.439% for the baseline model.
+3. **RandAugment** provides a small but consistent improvement in accuracy.
+4. **The optimal number of TTA transforms** is around 8, as using 16 transforms actually reduced accuracy.
 
 ## Output Organization
 
