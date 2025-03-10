@@ -287,23 +287,94 @@ python src/scripts/utils/organize_logs.py --logs-dir logs --output-dir organized
 
 ## Experimental Results
 
-We conducted several experiments to improve the model's performance:
+We conducted several experiments to improve the model's performance using Test-Time Augmentation (TTA):
 
 | Model Configuration | Test Accuracy | Notes |
 |---------------------|---------------|-------|
-| ResNet with SE Blocks | 83.14% | Baseline model |
-| ResNet with SE Blocks + TTA (8 transforms) | 83.58% | Significant improvement with TTA |
-| ResNet with RandAugment + TTA | 83.64% | Strong performance with data augmentation |
-| Hybrid ResNet with SE and Stochastic Depth | 84.21% | Best overall performance |
-| ResNet with TTA (16 transforms) | 83.38% | More transforms reduced accuracy |
+| ResNet with RandAugment (no TTA) | 82.62% | Baseline performance |
+| ResNet with RandAugment + TTA (8 transforms) | 82.96% | Improved performance with TTA |
+| ResNet with RandAugment + TTA (16 transforms) | 83.28% | **Best performance** with more TTA transforms |
 
 ### Key Findings:
 
-1. **Squeeze-and-Excitation Blocks** significantly improve performance over the base ResNet.
-2. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of 0.44% for the baseline model.
-3. **RandAugment** provides a small but consistent improvement in accuracy.
-4. **Combining SE blocks with stochastic depth** in the hybrid model yields the best overall performance.
-5. **The optimal number of TTA transforms** is around 8, as using 16 transforms actually reduced accuracy.
+1. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of up to 0.66% over the baseline.
+2. **Increasing the number of TTA transforms** from 8 to 16 further improves accuracy by 0.32%.
+3. Our best model achieves **83.28% accuracy** on the CIFAR-10 test set using 16 TTA transforms.
+
+## Reproducing Our Results
+
+### Model Checkpoint
+
+We have included our best model checkpoint in the repository at:
+```
+/scratch/yw5954/dp_sp25_proj1/outputs/training_runs/2025_03_10_14_29/best.pth
+```
+
+This checkpoint achieved 94.56% validation accuracy and 83.28% test accuracy with TTA=16.
+
+### Training the Model
+
+If you want to train the model from scratch, run:
+
+```bash
+cd /scratch/yw5954/dp_sp25_proj1
+source activate.sh
+python src/scripts/training/train_resnet_randaugment.py
+```
+
+For distributed training on a cluster using SLURM:
+
+```bash
+cd /scratch/yw5954/dp_sp25_proj1
+sbatch src/run_training.sbatch
+```
+
+The training script will:
+- Train a ResNet model with RandAugment data augmentation
+- Save checkpoints during training
+- Save the best model based on validation accuracy
+- Generate training graphs automatically
+
+### Evaluation
+
+To reproduce our best result (83.28% accuracy), follow these steps:
+
+1. **Setup the environment**:
+```bash
+cd /scratch/yw5954/dp_sp25_proj1
+source activate.sh
+```
+
+2. **Run evaluation with TTA=16**:
+```bash
+python src/scripts/evaluation/evaluate_advanced.py --model-path /scratch/yw5954/dp_sp25_proj1/outputs/training_runs/2025_03_10_14_29/best.pth --tta --tta-transforms 16
+```
+
+This will:
+- Load our best model checkpoint
+- Apply Test-Time Augmentation with 16 transforms
+- Generate predictions for the test set
+- Save the predictions in a CSV file with 'ID' and 'Labels' columns
+- Display the accuracy and other evaluation metrics
+
+### Alternative Configurations
+
+To reproduce our other results:
+
+- **No TTA (82.62%)**:
+```bash
+python src/scripts/evaluation/evaluate_advanced.py --model-path /scratch/yw5954/dp_sp25_proj1/outputs/training_runs/2025_03_10_14_29/best.pth
+```
+
+- **TTA with 8 transforms (82.96%)**:
+```bash
+python src/scripts/evaluation/evaluate_advanced.py --model-path /scratch/yw5954/dp_sp25_proj1/outputs/training_runs/2025_03_10_14_29/best.pth --tta --tta-transforms 8
+```
+
+The evaluation script will create a folder in the `outputs/evaluations` directory containing:
+- The submission file in the required format (ID, Labels)
+- A copy of the model checkpoint
+- A summary of the evaluation results
 
 ## Output Organization
 
