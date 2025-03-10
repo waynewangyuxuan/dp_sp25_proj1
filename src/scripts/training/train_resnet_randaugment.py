@@ -106,10 +106,8 @@ def main():
     best_acc = trainer.train()
     print(f"Training completed! Best validation accuracy: {best_acc:.4f}%")
     
-    # Evaluate on test set
-    print("\nEvaluating on test set...")
-    test_metrics = trainer.evaluate(data_module.test_dataloader())
-    print(f"Test accuracy: {test_metrics['accuracy']:.4f}%")
+    # Skip evaluation on test set
+    print("\nSkipping test set evaluation. Use separate evaluation scripts for testing.")
     
     print(f"\n{'='*80}")
     print(f"Training completed: {config.experiment_name}")
