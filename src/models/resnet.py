@@ -2,6 +2,7 @@ import torch
 import torch.nn as nn
 from typing import Dict, Any, List, Type, Union
 from .base_model import BaseModel
+from .stochastic_depth import StochasticDepth
 
 def count_parameters(model: nn.Module) -> int:
     """Count the total number of trainable parameters"""
@@ -35,7 +36,8 @@ class BasicBlock(nn.Module):
                  stride: int = 1,
                  downsample: nn.Module = None,
                  use_se: bool = False,
-                 se_reduction: int = 16):
+                 se_reduction: int = 16,
+                 drop_prob: float = 0.0):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, 
                               stride=stride, padding=1, bias=False)
@@ -69,10 +71,13 @@ class BasicBlock(nn.Module):
         if self.downsample is not None:
             identity = self.downsample(x)
 
-        out += identity
-        out = self.relu(out)
-
-        return out
+        # Apply stochastic depth if enabled
+        if hasattr(self, 'stochastic_depth') and self.drop_prob > 0:
+            return self.stochastic_depth(identity, out)
+        else:
+            out += identity
+            out = self.relu(out)
+            return out
 
 class Bottleneck(nn.Module):
     """Bottleneck block for ResNet-50 and deeper"""
@@ -83,7 +88,8 @@ class Bottleneck(nn.Module):
                  out_channels: int, 
                  stride: int = 1,
                  downsample: nn.Module = None,
-                 use_se: bool = True):
+                 use_se: bool = True,
+                 drop_prob: float = 0.0):
         super().__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1, bias=False)
         self.bn1 = nn.BatchNorm2d(out_channels)
@@ -112,16 +118,20 @@ class Bottleneck(nn.Module):
         out = self.conv3(out)
         out = self.bn3(out)
         
-        if self.se is not None:
+        # Apply SE if enabled
+        if self.use_se:
             out = self.se(out)
 
         if self.downsample is not None:
             identity = self.downsample(x)
 
-        out += identity
-        out = self.relu(out)
-
-        return out
+        # Apply stochastic depth if enabled
+        if hasattr(self, 'stochastic_depth') and self.drop_prob > 0:
+            return self.stochastic_depth(identity, out)
+        else:
+            out += identity
+            out = self.relu(out)
+            return out
 
 class ResNet(BaseModel):
     """ResNet model implementation"""
@@ -133,13 +143,17 @@ class ResNet(BaseModel):
                  base_channels: int = 32,
                  dropout_rate: float = 0.1,
                  use_se: bool = False,
-                 se_reduction: int = 16):
+                 se_reduction: int = 16,
+                 use_stochastic_depth: bool = False,
+                 stochastic_depth_prob: float = 0.2):
         super().__init__()
         self.num_classes = num_classes
         self.base_channels = base_channels
         self.dropout_rate = dropout_rate
         self.use_se = use_se
         self.se_reduction = se_reduction
+        self.use_stochastic_depth = use_stochastic_depth
+        self.stochastic_depth_prob = stochastic_depth_prob
         self.in_channels = base_channels  # Track input channels separately
         
         # Initial convolution
@@ -148,10 +162,19 @@ class ResNet(BaseModel):
         self.relu = nn.ReLU(inplace=True)
         
         # Residual layers
-        self.layer1 = self._make_layer(block, self.base_channels, layers[0])
-        self.layer2 = self._make_layer(block, self.base_channels * 2, layers[1], stride=2)
-        self.layer3 = self._make_layer(block, self.base_channels * 4, layers[2], stride=2)
-        self.layer4 = self._make_layer(block, self.base_channels * 8, layers[3], stride=2)
+        total_blocks = sum(layers)
+        self.layer1 = self._make_layer(block, self.base_channels, layers[0], 
+                                      drop_path_rate=stochastic_depth_prob if use_stochastic_depth else 0.0,
+                                      block_idx=0, total_blocks=total_blocks)
+        self.layer2 = self._make_layer(block, self.base_channels * 2, layers[1], stride=2,
+                                      drop_path_rate=stochastic_depth_prob if use_stochastic_depth else 0.0,
+                                      block_idx=layers[0], total_blocks=total_blocks)
+        self.layer3 = self._make_layer(block, self.base_channels * 4, layers[2], stride=2,
+                                      drop_path_rate=stochastic_depth_prob if use_stochastic_depth else 0.0,
+                                      block_idx=layers[0]+layers[1], total_blocks=total_blocks)
+        self.layer4 = self._make_layer(block, self.base_channels * 8, layers[3], stride=2,
+                                      drop_path_rate=stochastic_depth_prob if use_stochastic_depth else 0.0,
+                                      block_idx=layers[0]+layers[1]+layers[2], total_blocks=total_blocks)
         
         # Classifier
         self.avgpool = nn.AdaptiveAvgPool2d((1, 1))
@@ -165,7 +188,11 @@ class ResNet(BaseModel):
                    block: Type[Union[BasicBlock]],
                    out_channels: int,
                    blocks: int,
-                   stride: int = 1) -> nn.Sequential:
+                   stride: int = 1,
+                   drop_path_rate: float = 0.0,
+                   block_idx: int = 0,
+                   total_blocks: int = 0) -> nn.Sequential:
+        """Create a layer of blocks"""
         downsample = None
         if stride != 1 or self.in_channels != out_channels * block.expansion:
             downsample = nn.Sequential(
@@ -175,17 +202,33 @@ class ResNet(BaseModel):
             )
         
         layers = []
+        
+        # Calculate stochastic depth probability for each block
+        # The probability increases linearly with depth
+        stochastic_depth_probs = []
+        if drop_path_rate > 0 and total_blocks > 0:
+            for i in range(blocks):
+                # Calculate drop probability for this block
+                # Formula: drop_prob = drop_path_rate * (block_idx + i) / (total_blocks - 1)
+                curr_block_idx = block_idx + i
+                drop_prob = drop_path_rate * curr_block_idx / (total_blocks - 1)
+                stochastic_depth_probs.append(drop_prob)
+        else:
+            stochastic_depth_probs = [0.0] * blocks
+        
         # First block may need downsampling
         layers.append(block(self.in_channels, out_channels, stride, downsample, 
-                           use_se=self.use_se, se_reduction=self.se_reduction))
+                           use_se=self.use_se, se_reduction=self.se_reduction,
+                           drop_prob=stochastic_depth_probs[0]))
         
         # Update in_channels for subsequent blocks
         self.in_channels = out_channels * block.expansion
         
         # Add remaining blocks
-        for _ in range(1, blocks):
+        for i in range(1, blocks):
             layers.append(block(self.in_channels, out_channels, 
-                               use_se=self.use_se, se_reduction=self.se_reduction))
+                               use_se=self.use_se, se_reduction=self.se_reduction,
+                               drop_prob=stochastic_depth_probs[i]))
         
         return nn.Sequential(*layers)
     
@@ -221,7 +264,11 @@ class ResNet(BaseModel):
             'num_classes': self.num_classes,
             'architecture': 'ResNet',
             'base_channels': self.base_channels,
-            'use_se': self.use_se
+            'use_se': self.use_se,
+            'se_reduction': self.se_reduction,
+            'use_stochastic_depth': self.use_stochastic_depth,
+            'stochastic_depth_prob': self.stochastic_depth_prob,
+            'total_params': count_parameters(self)
         })
         return config
 
@@ -235,6 +282,8 @@ def resnet_small(num_classes: int = 10, **kwargs) -> ResNet:
         dropout_rate=0.3,     # Higher dropout for regularization
         use_se=True,          # Enable SE blocks
         se_reduction=16,      # Standard reduction ratio
+        use_stochastic_depth=False,  # Disable stochastic depth by default
+        stochastic_depth_prob=0.2,   # Default stochastic depth probability
         **kwargs
     )
     

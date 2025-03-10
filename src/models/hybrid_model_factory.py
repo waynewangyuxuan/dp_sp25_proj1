@@ -1,12 +1,12 @@
 from typing import Dict, Any, Type, Callable
 from .base_model import BaseModel
-from .stochastic_resnet import stochastic_resnet
+from .hybrid_resnet import hybrid_resnet
 
-class StochasticModelFactory:
-    """Factory class for creating stochastic models"""
+class HybridModelFactory:
+    """Factory class for creating hybrid models"""
     
     _models: Dict[str, Callable[..., BaseModel]] = {
-        'stochastic_resnet': stochastic_resnet,
+        'hybrid_resnet': hybrid_resnet,
     }
     
     @classmethod

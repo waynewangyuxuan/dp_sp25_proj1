@@ -1,10 +1,23 @@
 from dataclasses import dataclass, field
 from typing import Optional
 
+"""
+Configuration for Hybrid ResNet model with SE blocks and stochastic depth.
+
+This configuration is used by the train_hybrid_resnet_se_stochastic.py script to train
+a Hybrid ResNet model that combines Squeeze-and-Excitation (SE) blocks for channel attention
+and stochastic depth for regularization on the CIFAR-10 dataset.
+"""
+
 @dataclass
-class StochasticTrainingConfig:
+class HybridResNetConfig:
     # Model
-    model_name: str = 'stochastic_resnet'
+    model_name: str = 'hybrid_resnet'
+    
+    # Hybrid model specific parameters
+    use_se: bool = True  # Use Squeeze-and-Excitation blocks
+    use_stochastic_depth: bool = True  # Use stochastic depth
+    stochastic_depth_prob: float = 0.2  # Probability of dropping a layer
     
     # Data
     data_dir: str = 'data/cifar10'
@@ -53,5 +66,5 @@ class StochasticTrainingConfig:
     log_interval: int = 100
     save_interval: int = 10
     output_dir: str = 'outputs'
-    experiment_name: str = 'cifar10_stochastic_resnet'
+    experiment_name: str = 'cifar10_hybrid_resnet'
     resume_from: Optional[str] = None 

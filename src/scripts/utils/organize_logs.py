@@ -12,9 +12,11 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 import numpy as np
+import re
+import shutil
 
 # Add src directory to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
 # Import the TrainingConfig class and model factory
 from src.configs.train_config import TrainingConfig
@@ -37,6 +39,10 @@ def parse_args():
                         help='Generate more detailed logs with model parameters')
     parser.add_argument('--force', action='store_true',
                         help='Force overwrite of existing log directories')
+    parser.add_argument('--logs-dir', type=str, default='logs',
+                        help='Directory containing log files')
+    parser.add_argument('--no-dry-run', action='store_true',
+                        help='Actually move files (default is dry run)')
     return parser.parse_args()
 
 def create_log_directory(run_dir):
@@ -184,7 +190,7 @@ def extract_run_info(run_dir, force_weights_only_false=False, detailed=False):
             if checkpoint_info['epoch'] is not None:
                 print(f"  Epoch: {checkpoint_info['epoch']}")
             if detailed and 'model_info' in checkpoint_info and checkpoint_info['model_info']['total_params']:
-                print(f"  Model parameters: {checkpoint_info['model_info']['total_params']:,}")
+                print(f"  Model parameters: {checkpoint_info['model_info']['total_params']:,}\n")
                 
         except Exception as e:
             print(f"Error loading checkpoint from {best_path}: {e}")
@@ -349,10 +355,115 @@ def organize_training_runs(output_dir, force_weights_only_false=False, detailed=
         # Generate log files
         generate_log_files(run_dir, run_info, detailed)
 
+def organize_logs(logs_dir, output_dir, dry_run=True):
+    """Organize log files into a structured directory hierarchy.
+    
+    Args:
+        logs_dir: Directory containing log files
+        output_dir: Directory to store organized logs
+        dry_run: If True, only print what would be done without actually moving files
+    """
+    logs_path = Path(logs_dir)
+    output_path = Path(output_dir)
+    
+    # Create output directory if it doesn't exist
+    if not dry_run:
+        output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Find all log files
+    log_files = list(logs_path.glob("*.log"))
+    
+    if not log_files:
+        print(f"No log files found in {logs_dir}")
+        return
+    
+    print(f"Found {len(log_files)} log files")
+    
+    # Process each log file
+    organized_count = 0
+    for log_file in log_files:
+        # Extract information from filename
+        model_name = "unknown"
+        timestamp = None
+        
+        # Try to extract model name and timestamp from filename
+        filename = log_file.name
+        
+        # Extract model name
+        model_match = re.search(r'^([a-zA-Z0-9_]+)_', filename)
+        if model_match:
+            model_name = model_match.group(1)
+        
+        # Extract timestamp
+        timestamp_match = re.search(r'(\d{4}[-_]\d{2}[-_]\d{2}[-_]\d{2}[-_]\d{2}[-_]\d{2})', filename)
+        if timestamp_match:
+            timestamp_str = timestamp_match.group(1)
+            try:
+                # Try different timestamp formats
+                formats = [
+                    "%Y-%m-%d_%H-%M-%S",
+                    "%Y%m%d_%H%M%S",
+                    "%Y-%m-%d-%H-%M-%S"
+                ]
+                
+                for fmt in formats:
+                    try:
+                        timestamp = datetime.strptime(timestamp_str, fmt)
+                        break
+                    except ValueError:
+                        continue
+            except Exception as e:
+                print(f"Error parsing timestamp in {filename}: {e}")
+        
+        # If no timestamp found, use file modification time
+        if timestamp is None:
+            timestamp = datetime.fromtimestamp(log_file.stat().st_mtime)
+        
+        # Create directory structure
+        year_month = timestamp.strftime("%Y-%m")
+        model_dir = output_path / model_name / year_month
+        
+        # Create target path
+        target_path = model_dir / log_file.name
+        
+        # Print the move operation
+        print(f"{'Would move' if dry_run else 'Moving'} {log_file} -> {target_path}")
+        
+        # Move the file if not in dry run mode
+        if not dry_run:
+            try:
+                # Create directory if it doesn't exist
+                model_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Copy the file
+                shutil.copy2(log_file, target_path)
+                
+                # Remove the original file
+                log_file.unlink()
+                
+                organized_count += 1
+            except Exception as e:
+                print(f"Error moving {log_file}: {e}")
+        else:
+            organized_count += 1
+    
+    # Print summary
+    print(f"\n{'Would organize' if dry_run else 'Organized'} {organized_count} log files")
+    
+    if dry_run:
+        print("\nThis was a dry run. No files were actually moved.")
+        print("Run with --no-dry-run to actually move the files.")
+
 def main():
     args = parse_args()
     organize_training_runs(args.output_dir, args.force_weights_only_false, args.detailed, args.force)
     print("\nLog organization complete!")
+
+    organize_logs(
+        logs_dir=args.logs_dir,
+        output_dir=args.output_dir,
+        dry_run=not args.no_dry_run
+    )
 
 if __name__ == '__main__':
     main() 

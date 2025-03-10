@@ -8,38 +8,61 @@ This project implements a ResNet model for CIFAR-10 image classification. The im
 dp_sp25_proj1/
 ├── src/
 │   ├── configs/
-│   │   ├── train_config.py      # Training configuration
-│   │   └── stochastic_config.py # Stochastic model configuration
+│   │   ├── resnet_randaugment_config.py  # Configuration for ResNet with RandAugment
+│   │   └── hybrid_config.py              # Configuration for Hybrid ResNet with SE and stochastic depth
 │   ├── data/
-│   │   ├── cifar10_dataset.py   # Custom CIFAR-10 dataset implementation
-│   │   ├── data_module.py       # PyTorch Lightning data module
-│   │   └── augmentations.py     # Data augmentation implementations
+│   │   ├── cifar10_dataset.py            # Custom CIFAR-10 dataset implementation
+│   │   ├── data_module.py                # PyTorch Lightning data module
+│   │   ├── cutmix.py                     # CutMix augmentation implementation
+│   │   └── augmentations.py              # Data augmentation implementations
 │   ├── models/
-│   │   ├── resnet.py            # ResNet model implementation
-│   │   ├── stochastic_resnet.py # Stochastic depth ResNet implementation
-│   │   ├── model_factory.py     # Factory for creating models
-│   │   └── stochastic_model_factory.py # Factory for stochastic models
+│   │   ├── resnet.py                     # ResNet model implementation
+│   │   ├── hybrid_model_factory.py       # Factory for hybrid models with SE blocks
+│   │   ├── model_factory.py              # Factory for creating models
+│   │   └── stochastic_depth.py           # Stochastic depth implementation
 │   ├── training/
-│   │   └── trainer.py           # Training loop implementation
-│   ├── train.py                 # Main training script
-│   ├── train_stochastic.py      # Stochastic model training script
-│   ├── evaluate.py              # Basic model evaluation script
-│   ├── evaluate_advanced.py     # Advanced evaluation with TTA
-│   └── get_model_accuracy.py    # Script to extract model accuracy
+│   │   └── trainer.py                    # Training loop implementation
+│   ├── scripts/
+│   │   ├── training/
+│   │   │   ├── train_resnet_randaugment.py           # Train ResNet with RandAugment
+│   │   │   └── train_hybrid_resnet_se_stochastic.py  # Train Hybrid ResNet with SE and stochastic depth
+│   │   ├── evaluation/
+│   │   │   ├── evaluate.py                           # Basic model evaluation script
+│   │   │   └── evaluate_advanced.py                  # Advanced evaluation with TTA
+│   │   ├── testing/
+│   │   │   ├── test_model.py                         # Test model creation and forward pass
+│   │   │   ├── test_dataloader.py                    # Test data loading functionality
+│   │   │   ├── test_cutmix.py                        # Test CutMix augmentation
+│   │   │   └── check_test_data.py                    # Check test data format
+│   │   └── utils/
+│   │       ├── get_model_accuracy.py                 # Script to extract model accuracy
+│   │       ├── cleanup_training_runs.py              # Clean up old training runs
+│   │       ├── rename_training_runs.py               # Rename training run directories
+│   │       ├── organize_logs.py                      # Organize log files
+│   │       └── generate_training_graphs.py           # Generate training graphs from metrics
 ├── data/
-│   └── cifar10/                 # CIFAR-10 dataset files
+│   └── cifar10/                          # CIFAR-10 dataset files
 ├── outputs/
-│   ├── best_models/             # Best performing model checkpoints
-│   ├── evaluations/             # Evaluation results
+│   ├── best_models/                      # Best performing model checkpoints
+│   ├── final_models/                     # Final model checkpoints
+│   ├── evaluations/                      # Evaluation results
 │   │   └── {experiment_name}_val_acc_{val_acc}_{timestamp}_model_{model_file}/
-│   │       ├── predictions.csv  # Test set predictions
-│   │       └── model.pth        # Copy of model checkpoint
-│   └── training_runs/           # Training run outputs
+│   │       ├── predictions.csv           # Test set predictions
+│   │       └── model.pth                 # Copy of model checkpoint
+│   └── training_runs/                    # Training run outputs
 │       └── {timestamp}/
-│           ├── checkpoints/     # Regular training checkpoints
-│           └── logs/            # Training logs
-├── requirements.txt             # Project dependencies
-└── activate.sh                  # Environment activation script
+│           ├── checkpoints/              # Regular training checkpoints
+│           └── logs/                     # Training logs
+│               ├── training.log          # Detailed training log
+│               ├── metrics.csv           # CSV file with per-epoch metrics
+│               ├── config.json           # Configuration used for this run
+│               └── figures/              # Training graphs
+│                   ├── loss_plot.png     # Training and validation loss
+│                   ├── validation_plot.png # Validation loss and accuracy
+│                   ├── learning_rate_plot.png # Learning rate schedule
+│                   └── combined_plot.png # Combined metrics plot
+├── requirements.txt                      # Project dependencies
+└── activate.sh                           # Environment activation script
 ```
 
 ## Model Architectures
@@ -71,22 +94,7 @@ The project implements a small ResNet model with Squeeze-and-Excitation blocks:
 - Model Size: ~2.8M parameters
 - Training Time: ~2 hours on a single GPU
 
-### 2. Stochastic Depth ResNet
-
-An alternative implementation using stochastic depth for regularization:
-
-- Similar architecture to the enhanced ResNet
-- Stochastic depth: randomly drops entire residual blocks during training
-- Probability of dropping increases linearly with depth
-- Maximum drop probability: 0.2
-- No SE blocks
-
-#### Performance
-- Test Accuracy: 78.57%
-- Model Size: ~2.8M parameters
-- Training Time: ~2 hours on a single GPU
-
-### 3. Enhanced ResNet with RandAugment
+### 2. Enhanced ResNet with RandAugment
 
 An improved version of the enhanced ResNet with advanced data augmentation:
 
@@ -97,6 +105,20 @@ An improved version of the enhanced ResNet with advanced data augmentation:
 #### Performance
 - Test Accuracy: 83.64% (with Test-Time Augmentation)
 - Model Size: ~2.8M parameters
+- Training Time: ~2.5 hours on a single GPU
+
+### 3. Hybrid ResNet with SE and Stochastic Depth
+
+A combined model that leverages both Squeeze-and-Excitation blocks and stochastic depth:
+
+- Similar architecture to the enhanced ResNet
+- Includes SE blocks for channel attention
+- Uses stochastic depth for regularization
+- Combines the benefits of both approaches
+
+#### Performance
+- Test Accuracy: 84.21%
+- Model Size: ~2.9M parameters
 - Training Time: ~2.5 hours on a single GPU
 
 ## Training Process
@@ -142,21 +164,32 @@ pip install -r requirements.txt
 
 ### Training
 
-To train the enhanced ResNet model with SE blocks:
+#### ResNet with RandAugment
+
+To train the ResNet model with RandAugment data augmentation:
 ```bash
-python src/train.py
+python src/scripts/training/train_resnet_randaugment.py
 ```
 
-To train the stochastic depth ResNet model:
+This script trains a standard ResNet model with RandAugment data augmentation, which applies a sequence of random transformations with configurable magnitude.
+
+#### Hybrid ResNet with SE and Stochastic Depth
+
+To train the hybrid ResNet model with Squeeze-and-Excitation blocks and stochastic depth:
 ```bash
-python src/train_stochastic.py
+python src/scripts/training/train_hybrid_resnet_se_stochastic.py
 ```
+
+This script trains a hybrid ResNet model that combines Squeeze-and-Excitation blocks for channel attention and stochastic depth for regularization.
 
 The training scripts will:
 - Create necessary output directories
 - Train the model with the specified configuration
 - Save checkpoints and logs
 - Display training progress and metrics
+- Evaluate the model on the test set after training
+- Save the final model with test accuracy
+- Generate training graphs automatically
 
 ### Evaluation
 
@@ -164,7 +197,7 @@ The training scripts will:
 
 To evaluate a trained model and generate predictions:
 ```bash
-python src/evaluate.py
+python src/scripts/evaluation/evaluate.py
 ```
 
 The evaluation script will:
@@ -179,31 +212,77 @@ The evaluation script will:
 
 To evaluate a model with Test-Time Augmentation (TTA):
 ```bash
-python src/evaluate_advanced.py --tta
+python src/scripts/evaluation/evaluate_advanced.py --tta
 ```
 
 Additional options:
 ```bash
 # Specify a custom model path
-python src/evaluate_advanced.py --model-path /path/to/model.pth --tta
+python src/scripts/evaluation/evaluate_advanced.py --model-path /path/to/model.pth --tta
 
 # Adjust the number of TTA transforms
-python src/evaluate_advanced.py --tta --tta-transforms 16
+python src/scripts/evaluation/evaluate_advanced.py --tta --tta-transforms 16
 
 # Use data augmentation during evaluation (not recommended)
-python src/evaluate_advanced.py --use-augment
+python src/scripts/evaluation/evaluate_advanced.py --use-augment
 ```
 
 #### Quick Model Information
 
 To quickly check a model's validation accuracy and other information:
 ```bash
-python src/get_model_accuracy.py /path/to/model.pth
+python src/scripts/utils/get_model_accuracy.py --model-path /path/to/model.pth
 ```
 
-For detailed model information:
+### Utility Scripts
+
+#### Generate Training Graphs
+
+To generate training graphs from metrics CSV files:
 ```bash
-python src/get_model_accuracy.py /path/to/model.pth --verbose
+python src/scripts/utils/generate_training_graphs.py
+```
+
+By default, this will generate graphs for the most recent training run. Options:
+```bash
+# Generate graphs for a specific metrics file
+python src/scripts/utils/generate_training_graphs.py --metrics-file /path/to/metrics.csv
+
+# Generate graphs for all training runs
+python src/scripts/utils/generate_training_graphs.py --all-runs
+
+# Specify output directory for graphs
+python src/scripts/utils/generate_training_graphs.py --output-dir /path/to/output
+
+# Customize graph appearance
+python src/scripts/utils/generate_training_graphs.py --dpi 600 --figsize 12,8 --style seaborn
+```
+
+The script generates four types of graphs:
+1. **Loss Plot**: Training and validation loss over epochs
+2. **Validation Plot**: Validation loss and accuracy over epochs
+3. **Learning Rate Plot**: Learning rate schedule over epochs
+4. **Combined Plot**: All metrics in a single figure
+
+#### Clean Up Training Runs
+
+To clean up old training runs and save disk space:
+```bash
+python src/scripts/utils/cleanup_training_runs.py --output-dir outputs
+```
+
+#### Rename Training Runs
+
+To rename training run directories based on their contents:
+```bash
+python src/scripts/utils/rename_training_runs.py --output-dir outputs
+```
+
+#### Organize Log Files
+
+To organize log files into a structured directory hierarchy:
+```bash
+python src/scripts/utils/organize_logs.py --logs-dir logs --output-dir organized_logs
 ```
 
 ## Experimental Results
@@ -213,17 +292,18 @@ We conducted several experiments to improve the model's performance:
 | Model Configuration | Test Accuracy | Notes |
 |---------------------|---------------|-------|
 | ResNet with SE Blocks | 83.14% | Baseline model |
-| ResNet with SE Blocks + TTA (8 transforms) | 83.579% | Significant improvement with TTA |
-| ResNet with Stochastic Depth | 78.57% | Less effective than SE blocks |
-| ResNet with RandAugment + TTA | 83.64% | Best overall performance |
+| ResNet with SE Blocks + TTA (8 transforms) | 83.58% | Significant improvement with TTA |
+| ResNet with RandAugment + TTA | 83.64% | Strong performance with data augmentation |
+| Hybrid ResNet with SE and Stochastic Depth | 84.21% | Best overall performance |
 | ResNet with TTA (16 transforms) | 83.38% | More transforms reduced accuracy |
 
 ### Key Findings:
 
 1. **Squeeze-and-Excitation Blocks** significantly improve performance over the base ResNet.
-2. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of 0.439% for the baseline model.
+2. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of 0.44% for the baseline model.
 3. **RandAugment** provides a small but consistent improvement in accuracy.
-4. **The optimal number of TTA transforms** is around 8, as using 16 transforms actually reduced accuracy.
+4. **Combining SE blocks with stochastic depth** in the hybrid model yields the best overall performance.
+5. **The optimal number of TTA transforms** is around 8, as using 16 transforms actually reduced accuracy.
 
 ## Output Organization
 
@@ -235,66 +315,56 @@ Training outputs are organized in the `outputs/training_runs/{timestamp}/` direc
   - `training.log`: Detailed training progress and events
   - `metrics.csv`: CSV file with per-epoch metrics for analysis
   - `config.json`: Configuration used for this training run
+  - `figures/`: Training graphs
+    - `loss_plot.png`: Training and validation loss
+    - `validation_plot.png`: Validation loss and accuracy
+    - `learning_rate_plot.png`: Learning rate schedule
+    - `combined_plot.png`: Combined metrics plot
 
 ### Best Models
 
 The best performing models are stored in `outputs/best_models/`:
 - `{experiment_name}_best.pth`: Best model checkpoint
-- `best_test_83140.pth`: Model with best test accuracy (83.14%)
-- `cifar10_resnet_bestTest_83140.pth`: Symbolic link to the best test model
+
+### Final Models
+
+Final models (after training completion) are stored in `outputs/final_models/`:
+- `{experiment_name}_final.pth`: Final model checkpoint with test accuracy
 
 ### Evaluation Results
 
 Evaluation results are stored in `outputs/evaluations/`:
 - Each evaluation run gets its own folder named with validation accuracy and model filename
 - Folder format: `{experiment_name}_val_acc_{val_acc}_{timestamp}_model_{model_file}/`
-- Contains predictions CSV and model file
 
 ## Logging and Analysis
 
-The training process now includes comprehensive logging:
+The training process includes comprehensive logging and visualization:
 
 1. **Console Output**: Real-time training progress and metrics
-2. **Log Files**: Detailed logs stored in the `logs/` directory:
-   - `training.log`: Timestamped events and metrics
-   - `metrics.csv`: CSV file for easy import into analysis tools
-   - `config.json`: Configuration parameters used for the run
+2. **Log Files**: Detailed logs stored in the `logs/` directory
+3. **Training Graphs**: Automatically generated at the end of training
 
-### Organizing Existing Logs
+### Training Graphs
 
-For existing training runs, you can retroactively create log directories:
+The training process automatically generates four types of graphs:
+
+1. **Loss Plot**: Shows training and validation loss over epochs, helping to identify overfitting or underfitting.
+2. **Validation Plot**: Displays validation loss and accuracy on separate axes, showing the relationship between these metrics.
+3. **Learning Rate Plot**: Visualizes the learning rate schedule, which is particularly useful for understanding OneCycle LR behavior.
+4. **Combined Plot**: A comprehensive view with all metrics in a single figure for easy comparison.
+
+These graphs are saved in the `logs/figures/` directory and provide a visual representation of the training progress, making it easier to understand model behavior and compare different runs.
+
+### Analyzing Existing Training Runs
+
+For existing training runs, you can generate graphs using the utility script:
 
 ```bash
-python src/organize_logs.py
+python src/scripts/utils/generate_training_graphs.py --all-runs
 ```
 
-This script will:
-- Create a `logs/` directory in each training run
-- Generate a `training.log` file with available information
-- Create a `config.json` file if configuration is available in checkpoints
-
-### Analyzing Training Runs
-
-The metrics CSV file can be used for analysis and visualization:
-
-```python
-import pandas as pd
-import matplotlib.pyplot as plt
-
-# Load metrics
-metrics = pd.read_csv('outputs/training_runs/TIMESTAMP/logs/metrics.csv')
-
-# Plot training and validation accuracy
-plt.figure(figsize=(10, 5))
-plt.plot(metrics['epoch'], metrics['train_acc'], label='Train Accuracy')
-plt.plot(metrics['epoch'], metrics['val_acc'], label='Validation Accuracy')
-plt.xlabel('Epoch')
-plt.ylabel('Accuracy (%)')
-plt.legend()
-plt.title('Training Progress')
-plt.grid(True)
-plt.show()
-```
+This will process all training runs and generate graphs for each one, making it easy to compare different models and configurations.
 
 ## Configuration
 
