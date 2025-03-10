@@ -1,10 +1,8 @@
 import os
 import sys
-import argparse
 import torch
-import numpy as np
 import pandas as pd
-from pathlib import Path
+import argparse
 from tqdm import tqdm
 from datetime import datetime
 from torch.serialization import add_safe_globals
@@ -15,21 +13,14 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 from models import ModelFactory
 from data.data_module import CIFAR10DataModule
 from configs.train_config import TrainingConfig
+from configs.resnet_randaugment_config import ResNetRandAugmentConfig
 
-# Add TrainingConfig to safe globals for PyTorch 2.6+ compatibility
-add_safe_globals([TrainingConfig])
+# Add TrainingConfig and ResNetRandAugmentConfig to safe globals
+add_safe_globals([TrainingConfig, ResNetRandAugmentConfig])
 
-def get_evaluation_dir(model_path, output_dir="outputs"):
-    """Create and return the evaluation directory path."""
-    model_filename = os.path.basename(model_path)
-    model_name = os.path.splitext(model_filename)[0]
-    
-    # Create a directory for this evaluation
-    timestamp = Path(model_path).parent.name
-    eval_dir = os.path.join(output_dir, "evaluations", f"{model_name}_{timestamp}")
-    os.makedirs(eval_dir, exist_ok=True)
-    
-    return eval_dir
+def get_evaluation_dir(config: TrainingConfig) -> str:
+    """Get the directory for storing evaluation results"""
+    return os.path.join(config.output_dir, "evaluations")
 
 def get_best_models_dir(config: TrainingConfig) -> str:
     """Get the directory for storing best performing models"""
@@ -38,7 +29,13 @@ def get_best_models_dir(config: TrainingConfig) -> str:
 def create_evaluation_folder(config: TrainingConfig, model_path: str) -> str:
     """Create a folder for this evaluation run containing the CSV and model link"""
     # Get validation accuracy from model checkpoint
-    checkpoint = torch.load(model_path, map_location='cpu')
+    try:
+        checkpoint = torch.load(model_path, map_location='cpu', weights_only=False)
+    except Exception as e:
+        print(f"Error loading checkpoint: {e}")
+        print("Trying again with different parameters...")
+        checkpoint = torch.load(model_path, map_location='cpu', weights_only=False, pickle_module=torch.serialization.pickle)
+    
     val_acc = checkpoint['best_acc']
     
     # Create timestamp-based folder name with validation accuracy
@@ -48,7 +45,7 @@ def create_evaluation_folder(config: TrainingConfig, model_path: str) -> str:
     folder_name = f"{config.experiment_name}_val_acc_{val_acc:.2f}_{timestamp}_model_{model_filename}"
     
     # Create evaluation directory if it doesn't exist
-    eval_dir = get_evaluation_dir(model_path)
+    eval_dir = get_evaluation_dir(config)
     os.makedirs(eval_dir, exist_ok=True)
     
     # Create specific evaluation folder
@@ -57,125 +54,144 @@ def create_evaluation_folder(config: TrainingConfig, model_path: str) -> str:
     
     return eval_folder
 
-def load_model(model_path, device='cpu'):
-    """Load a trained model from a checkpoint file."""
-    # Load checkpoint
+def load_model(checkpoint_path: str, device: str = 'cuda'):
+    """Load trained model from checkpoint"""
+    # Load checkpoint with weights_only=False since we need the full state
     try:
-        checkpoint = torch.load(model_path, map_location=device, weights_only=False)
-    except RuntimeError as e:
-        if "Weights only load failed" in str(e):
-            print("Retrying with weights_only=True...")
-            checkpoint = torch.load(model_path, map_location=device, weights_only=True)
-        else:
-            raise e
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
+    except Exception as e:
+        print(f"Error loading checkpoint: {e}")
+        print("Trying again with different parameters...")
+        checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False, pickle_module=torch.serialization.pickle)
     
-    # Get model configuration
-    config = checkpoint.get('config', TrainingConfig())
-    model_name = getattr(config, 'model_name', 'resnet_small')
+    config = checkpoint['config']
     
-    # Create model with the correct architecture
-    model = ModelFactory.create(model_name)
+    # Extract model configuration
+    model_name = config.model_name
+    print(f"Loading model: {model_name}")
     
-    # Load model weights
-    if 'model_state_dict' in checkpoint:
-        model.load_state_dict(checkpoint['model_state_dict'])
+    # Check if the model has SE layers by inspecting the state dict keys
+    has_se_layers = any('se.fc' in key for key in checkpoint['model_state_dict'].keys())
+    
+    # If the model doesn't have SE layers but the default would create them,
+    # we need to create a model without SE layers
+    if not has_se_layers and model_name == 'resnet_small':
+        print("Creating model without SE layers to match checkpoint")
+        from models.resnet import ResNet, BasicBlock
+        # Create ResNet model directly with use_se=False
+        model = ResNet(
+            block=BasicBlock,
+            layers=[2, 2, 2, 2],
+            base_channels=32,
+            num_classes=10,
+            dropout_rate=0.3,
+            use_se=False,
+            se_reduction=16
+        )
     else:
-        model.load_state_dict(checkpoint)
+        # Create model using factory
+        model = ModelFactory.create(model_name)
     
-    return model, config
-
-def test_time_augmentation(model, image, num_transforms=8, device='cuda'):
-    """Apply test-time augmentation to an image and average predictions."""
+    # Load state dict
+    try:
+        model.load_state_dict(checkpoint['model_state_dict'])
+    except RuntimeError as e:
+        print(f"Error loading state dict: {e}")
+        print("\nAttempting to load with strict=False...")
+        model.load_state_dict(checkpoint['model_state_dict'], strict=False)
+        print("Model loaded with missing or unexpected keys.")
+    
+    model = model.to(device)
     model.eval()
     
-    # Original image prediction
-    with torch.no_grad():
-        original_output = model(image.unsqueeze(0).to(device))
-    
-    # Initialize augmented predictions tensor
-    all_outputs = original_output.clone()
-    
-    # Apply horizontal flip
-    with torch.no_grad():
-        flipped_image = torch.flip(image, dims=[-1])
-        flipped_output = model(flipped_image.unsqueeze(0).to(device))
-        all_outputs += flipped_output
-    
-    # Apply random crops and flips for additional transforms
-    if num_transforms > 2:
-        from torchvision import transforms
-        
-        # Create augmentation transforms
-        crop_size = image.shape[-1]
-        padding = crop_size // 8  # Add some padding for random crops
-        
-        transform = transforms.Compose([
-            transforms.Pad(padding=padding),
-            transforms.RandomCrop(size=crop_size),
-            transforms.RandomHorizontalFlip(),
-        ])
-        
-        # Apply additional transforms
-        for _ in range(num_transforms - 2):
-            # Apply transform
-            aug_image = transform(image.unsqueeze(0)).squeeze(0)
-            
-            # Get prediction
-            with torch.no_grad():
-                aug_output = model(aug_image.unsqueeze(0).to(device))
-                all_outputs += aug_output
-    
-    # Average predictions
-    avg_output = all_outputs / num_transforms
-    
-    return avg_output
+    print(f"\nLoaded model from {checkpoint_path}")
+    print(f"Best validation accuracy: {checkpoint['best_acc']:.2f}%")
+    return model, checkpoint['best_acc'], config
 
-def evaluate_with_tta(model, data_loader, device='cuda', tta=False, tta_transforms=8):
-    """Evaluate model with optional test-time augmentation."""
-    model.eval()
-    model.to(device)
+@torch.no_grad()
+def generate_predictions(model: torch.nn.Module,
+                       data_loader: torch.utils.data.DataLoader,
+                       device: str = 'cuda',
+                       use_tta: bool = False,
+                       tta_transforms: int = 8) -> pd.DataFrame:
+    """Generate predictions for test set
     
-    all_preds = []
-    all_labels = []
+    Args:
+        model: The trained model
+        data_loader: Test data loader
+        device: Device to run inference on
+        use_tta: Whether to use Test-Time Augmentation
+        tta_transforms: Number of TTA transforms to apply
+    """
+    predictions = []
+    image_ids = []
     
     # Create progress bar
-    pbar = tqdm(data_loader, desc="Evaluating", unit="batch")
+    pbar = tqdm(data_loader, desc="Generating predictions", unit="batch")
     
-    with torch.no_grad():
-        for batch in pbar:
-            inputs, targets = batch
+    for images, ids in pbar:
+        # Move to device
+        images = images.to(device)
+        
+        if not use_tta:
+            # Standard forward pass
+            outputs = model(images)
+            _, predicted = outputs.max(1)
+        else:
+            # Test-Time Augmentation - apply multiple augmentations and average results
+            batch_size = images.size(0)
+            tta_outputs = torch.zeros(batch_size, 10, device=device)  # Assuming 10 classes
             
-            if tta:
-                # Apply test-time augmentation to each image
-                outputs = torch.zeros((inputs.size(0), model(inputs[0:1].to(device)).size(1)), device=device)
+            # Original prediction
+            outputs = model(images)
+            tta_outputs += outputs
+            
+            # Apply horizontal flip
+            flipped_images = torch.flip(images, dims=[3])
+            outputs = model(flipped_images)
+            tta_outputs += outputs
+            
+            # Apply different crops
+            for i in range(tta_transforms - 2):  # -2 because we already did original and flip
+                # Create shifted versions of the image (random crops basically)
+                padded_images = torch.nn.functional.pad(images, (4, 4, 4, 4), 'reflect')
+                h_offset = torch.randint(0, 8, (1,)).item()
+                w_offset = torch.randint(0, 8, (1,)).item()
+                cropped_images = padded_images[:, :, h_offset:h_offset+32, w_offset:w_offset+32]
                 
-                for i in range(inputs.size(0)):
-                    outputs[i] = test_time_augmentation(
-                        model, inputs[i], num_transforms=tta_transforms, device=device
-                    )
-            else:
-                # Standard forward pass
-                inputs = inputs.to(device)
-                outputs = model(inputs)
-            
-            # Get predictions
-            _, preds = torch.max(outputs, 1)
-            
-            all_preds.extend(preds.cpu().numpy())
-            all_labels.extend(targets.numpy())
+                # Get predictions
+                outputs = model(cropped_images)
+                tta_outputs += outputs
+                
+            # Average all augmentation results
+            tta_outputs /= tta_transforms
+            _, predicted = tta_outputs.max(1)
+        
+        # Store predictions
+        predictions.extend(predicted.cpu().numpy())
+        image_ids.extend(ids.numpy())
     
-    return np.array(all_preds), np.array(all_labels)
+    # Create DataFrame with exact column names
+    df = pd.DataFrame({
+        'ID': image_ids,
+        'Labels': predictions
+    })
+    
+    # Sort by ID to ensure correct order
+    df = df.sort_values('ID').reset_index(drop=True)
+    
+    return df
 
 def parse_args():
-    parser = argparse.ArgumentParser(description='Evaluate a trained model with advanced options')
-    parser.add_argument('--model-path', type=str, default=None, 
-                        help='Path to the model checkpoint file')
-    parser.add_argument('--tta', action='store_true',
-                        help='Use test-time augmentation')
-    parser.add_argument('--tta-transforms', type=int, default=8,
-                        help='Number of transforms to use for test-time augmentation')
+    parser = argparse.ArgumentParser(description='Evaluate model on test set with advanced options')
     parser.add_argument('--use-augment', action='store_true',
                         help='Use augmentations during evaluation (not recommended)')
+    parser.add_argument('--model-path', type=str, default=None,
+                        help='Path to model checkpoint (if not using the default best model)')
+    parser.add_argument('--tta', action='store_true',
+                        help='Use Test-Time Augmentation')
+    parser.add_argument('--tta-transforms', type=int, default=8,
+                        help='Number of transforms to use with TTA (default: 8)')
     parser.add_argument('--ensemble', action='store_true',
                         help='Use model ensemble if multiple models are available')
     parser.add_argument('--output-dir', type=str, default=None,
@@ -186,39 +202,54 @@ def main():
     # Parse command line arguments
     args = parse_args()
     
-    # Find the best model if not specified
-    if args.model_path is None:
-        best_models_dir = get_best_models_dir(TrainingConfig())
-        model_files = [f for f in os.listdir(best_models_dir) if f.endswith('.pth')]
-        if not model_files:
-            raise ValueError("No model files found in the best_models directory")
-        
-        # Use the first model file (you might want to implement a better selection strategy)
-        args.model_path = os.path.join(best_models_dir, model_files[0])
-    
-    print(f"Loading model from: {args.model_path}")
-    
-    # Create evaluation directory
-    eval_dir = get_evaluation_dir(args.model_path)
-    if args.tta:
-        eval_dir = f"{eval_dir}_tta{args.tta_transforms}"
-    os.makedirs(eval_dir, exist_ok=True)
-    print(f"Evaluation results will be saved to: {eval_dir}")
-    
-    # Copy model file to evaluation directory
-    model_filename = os.path.basename(args.model_path)
-    model_copy_path = os.path.join(eval_dir, "model.pth")
-    if not os.path.exists(model_copy_path):
-        import shutil
-        shutil.copy2(args.model_path, model_copy_path)
-    
     # Set device
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     
-    # Load model
-    model, config = load_model(args.model_path, device)
+    # Load config and update paths
+    config = TrainingConfig()
     
-    # Create data module
+    # Determine the model path to use
+    if args.model_path:
+        best_model_path = args.model_path
+    else:
+        best_model_path = os.path.join(get_best_models_dir(config), f"{config.experiment_name}_best.pth")
+    
+    # Check if the model path exists
+    if not os.path.exists(best_model_path):
+        print(f"Error: Model file not found at {best_model_path}")
+        print("Available model files:")
+        best_models_dir = get_best_models_dir(config)
+        if os.path.exists(best_models_dir):
+            for model_file in os.listdir(best_models_dir):
+                print(f"  - {model_file}")
+        else:
+            print(f"  No models found in {best_models_dir}")
+        return
+    
+    # Load the model
+    model, val_acc, saved_config = load_model(best_model_path, device)
+    
+    # Create evaluation folder
+    eval_folder = create_evaluation_folder(config, best_model_path)
+    
+    # Create hard copy of the model instead of a symbolic link
+    model_copy_path = os.path.join(eval_folder, "model.pth")
+    try:
+        # Use copy instead of symbolic link to ensure we have the actual model file
+        import shutil
+        shutil.copy2(best_model_path, model_copy_path)
+        print(f"Copied model file to: {model_copy_path}")
+    except Exception as e:
+        print(f"Warning: Could not copy model file. Error: {e}")
+        # Fall back to symlink if copy fails
+        if not os.path.exists(model_copy_path):
+            try:
+                os.symlink(best_model_path, model_copy_path)
+                print(f"Created symbolic link instead: {model_copy_path} -> {best_model_path}")
+            except Exception as e2:
+                print(f"Warning: Could not create symbolic link either. Error: {e2}")
+    
+    # Create data module and setup - disable augmentations for evaluation unless explicitly requested
     data_module = CIFAR10DataModule(
         data_dir=config.data_dir,
         batch_size=config.batch_size,
@@ -233,37 +264,36 @@ def main():
     )
     data_module.setup()
     
-    # Generate predictions on test set
-    test_loader = data_module.test_dataloader()
+    # Generate predictions
+    print("\nGenerating predictions for test set...")
+    if args.tta:
+        print(f"Using Test-Time Augmentation (TTA) with {args.tta_transforms} transforms")
     
-    print(f"Evaluating model{' with test-time augmentation' if args.tta else ''}...")
-    preds, labels = evaluate_with_tta(
-        model, test_loader, device, tta=args.tta, tta_transforms=args.tta_transforms
+    predictions_df = generate_predictions(
+        model=model,
+        data_loader=data_module.test_dataloader(),
+        device=device,
+        use_tta=args.tta,
+        tta_transforms=args.tta_transforms
     )
     
-    # Calculate accuracy
-    accuracy = (preds == labels).mean()
-    print(f"Test accuracy: {accuracy:.5f}")
+    # Generate a descriptive filename based on evaluation settings
+    filename_prefix = "predictions"
+    if args.tta:
+        filename_prefix += f"_tta{args.tta_transforms}"
+    if args.use_augment:
+        filename_prefix += "_augmented"
     
-    # Save predictions to CSV
-    results_df = pd.DataFrame({
-        'true_label': labels,
-        'predicted_label': preds,
-        'correct': preds == labels
-    })
-    results_df.to_csv(os.path.join(eval_dir, "predictions.csv"), index=False)
+    # Save predictions with exact format
+    output_file = os.path.join(eval_folder, f"{filename_prefix}.csv")
+    predictions_df.to_csv(output_file, index=False)
+    print(f"\nSaved predictions to {output_file}")
     
-    # Save summary
-    with open(os.path.join(eval_dir, "summary.txt"), 'w') as f:
-        f.write(f"Model: {config.model_name}\n")
-        f.write(f"Test accuracy: {accuracy:.5f}\n")
-        f.write(f"Total samples: {len(labels)}\n")
-        f.write(f"Correct predictions: {(preds == labels).sum()}\n")
-        f.write(f"Test-time augmentation: {args.tta}\n")
-        if args.tta:
-            f.write(f"TTA transforms: {args.tta_transforms}\n")
-    
-    print(f"Evaluation completed. Results saved to {eval_dir}")
+    # Print sample predictions
+    print("\nSample predictions:")
+    print(predictions_df.head(10).to_string())
+    print(f"\nTotal predictions: {len(predictions_df)}")
+    print(f"\nEvaluation results stored in: {eval_folder}")
 
 if __name__ == '__main__':
     main() 
