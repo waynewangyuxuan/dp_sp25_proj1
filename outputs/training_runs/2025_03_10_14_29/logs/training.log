@@ -1,0 +1,3585 @@
+[2025-03-10 14:29:45] ================================================================================
+[2025-03-10 14:29:45] MODEL INFORMATION
+[2025-03-10 14:29:45] ================================================================================
+[2025-03-10 14:29:45] Model Name: resnet_small
+[2025-03-10 14:29:45] Total Parameters: 2,819,370
+[2025-03-10 14:29:45] Trainable Parameters: 2,819,370
+[2025-03-10 14:29:45] 
+Model Configuration:
+[2025-03-10 14:29:45]   model_name: ResNet
+[2025-03-10 14:29:45]   num_parameters: 2819370
+[2025-03-10 14:29:45]   num_classes: 10
+[2025-03-10 14:29:45]   architecture: ResNet
+[2025-03-10 14:29:45]   base_channels: 32
+[2025-03-10 14:29:45]   use_se: True
+[2025-03-10 14:29:45]   se_reduction: 16
+[2025-03-10 14:29:45]   use_stochastic_depth: False
+[2025-03-10 14:29:45]   stochastic_depth_prob: 0.2
+[2025-03-10 14:29:45]   total_params: 2819370
+[2025-03-10 14:29:45] 
+Model Architecture:
+[2025-03-10 14:29:45] ResNet(
+  (conv1): Conv2d(3, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+  (bn1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+  (relu): ReLU(inplace=True)
+  (layer1): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=32, out_features=2, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=2, out_features=32, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(32, 32, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(32, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=32, out_features=2, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=2, out_features=32, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (layer2): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(32, 64, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): Conv2d(32, 64, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=64, out_features=4, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=4, out_features=64, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(64, 64, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(64, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=64, out_features=4, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=4, out_features=64, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (layer3): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(64, 128, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): Conv2d(64, 128, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=128, out_features=8, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=8, out_features=128, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(128, 128, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(128, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=128, out_features=8, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=8, out_features=128, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (layer4): Sequential(
+    (0): BasicBlock(
+      (conv1): Conv2d(128, 256, kernel_size=(3, 3), stride=(2, 2), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (downsample): Sequential(
+        (0): Conv2d(128, 256, kernel_size=(1, 1), stride=(2, 2), bias=False)
+        (1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      )
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=16, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=16, out_features=256, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+    (1): BasicBlock(
+      (conv1): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn1): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (relu): ReLU(inplace=True)
+      (conv2): Conv2d(256, 256, kernel_size=(3, 3), stride=(1, 1), padding=(1, 1), bias=False)
+      (bn2): BatchNorm2d(256, eps=1e-05, momentum=0.1, affine=True, track_running_stats=True)
+      (se): SELayer(
+        (avg_pool): AdaptiveAvgPool2d(output_size=1)
+        (fc): Sequential(
+          (0): Linear(in_features=256, out_features=16, bias=False)
+          (1): ReLU(inplace=True)
+          (2): Linear(in_features=16, out_features=256, bias=False)
+          (3): Sigmoid()
+        )
+      )
+    )
+  )
+  (avgpool): AdaptiveAvgPool2d(output_size=(1, 1))
+  (dropout): Dropout(p=0.3, inplace=False)
+  (fc): Linear(in_features=256, out_features=10, bias=True)
+)
+[2025-03-10 14:29:45] 
+================================================================================
+[2025-03-10 14:29:45] TRAINING CONFIGURATION
+[2025-03-10 14:29:45] ================================================================================
+[2025-03-10 14:29:45] model_name: resnet_small
+[2025-03-10 14:29:45] data_dir: data/cifar10
+[2025-03-10 14:29:45] batch_size: 128
+[2025-03-10 14:29:45] num_workers: 4
+[2025-03-10 14:29:45] pin_memory: True
+[2025-03-10 14:29:45] num_epochs: 200
+[2025-03-10 14:29:45] learning_rate: 0.05
+[2025-03-10 14:29:45] weight_decay: 0.0001
+[2025-03-10 14:29:45] momentum: 0.9
+[2025-03-10 14:29:45] lr_schedule: onecycle
+[2025-03-10 14:29:45] max_lr: 0.1
+[2025-03-10 14:29:45] random_crop_padding: 4
+[2025-03-10 14:29:45] random_horizontal_flip: True
+[2025-03-10 14:29:45] mixup_alpha: 1.0
+[2025-03-10 14:29:45] cutout_holes: 1
+[2025-03-10 14:29:45] cutout_length: 16
+[2025-03-10 14:29:45] random_rotation: 15
+[2025-03-10 14:29:45] color_jitter: {'brightness': 0.3, 'contrast': 0.3, 'saturation': 0.3, 'hue': 0.1}
+[2025-03-10 14:29:45] use_randaugment: True
+[2025-03-10 14:29:45] randaugment_num_ops: 2
+[2025-03-10 14:29:45] randaugment_magnitude: 9
+[2025-03-10 14:29:45] use_cutmix: True
+[2025-03-10 14:29:45] cutmix_alpha: 1.0
+[2025-03-10 14:29:45] cutmix_prob: 0.7
+[2025-03-10 14:29:45] label_smoothing: 0.1
+[2025-03-10 14:29:45] dropout_rate: 0.3
+[2025-03-10 14:29:45] grad_clip: 1.0
+[2025-03-10 14:29:45] device: cuda
+[2025-03-10 14:29:45] log_interval: 100
+[2025-03-10 14:29:45] save_interval: 10
+[2025-03-10 14:29:45] output_dir: outputs
+[2025-03-10 14:29:45] experiment_name: cifar10_resnet_randaug_20250310_1429
+[2025-03-10 14:29:45] resume_from: None
+[2025-03-10 14:29:45] 
+================================================================================
+[2025-03-10 14:29:45] TRAINING LOG
+[2025-03-10 14:29:45] ================================================================================
+[2025-03-10 14:29:45] Starting training from epoch 1/200
+[2025-03-10 14:29:45] Model: resnet_small
+[2025-03-10 14:29:45] Device: cuda
+[2025-03-10 14:29:55] Epoch: 1 Batch: [100/313] Loss: 2.3067 Acc: 11.93% LR: 0.004060 Batch time: 23.6ms
+[2025-03-10 14:30:00] Epoch: 1 Batch: [200/313] Loss: 2.2598 Acc: 14.63% LR: 0.004242 Batch time: 23.6ms
+[2025-03-10 14:30:05] Epoch: 1 Batch: [300/313] Loss: 2.2325 Acc: 16.04% LR: 0.004543 Batch time: 23.0ms
+[2025-03-10 14:30:06] 
+======================================== Epoch 1/200 ========================================
+Time: 0m 20s
+Train Loss: 2.2286 Train Acc: 16.1951%
+Val Loss: 1.9557 Val Acc: 29.3300%
+Best Val Acc: 0.0000%
+Learning Rate: 0.004591
+GPU Memory: 919.83 MB
+Avg Batch Time: 40.2 ms
+ETA: 1.16 hours
+==========================================================================================
+
+[2025-03-10 14:30:06] New best validation accuracy: 29.3300%
+[2025-03-10 14:30:06] Saved checkpoint at epoch 1 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_1.pth
+[2025-03-10 14:30:07] New best model! Accuracy: 29.3300%
+[2025-03-10 14:30:07] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:30:12] Epoch: 2 Batch: [100/313] Loss: 2.1452 Acc: 20.73% LR: 0.005028 Batch time: 23.6ms
+[2025-03-10 14:30:16] Epoch: 2 Batch: [200/313] Loss: 2.1366 Acc: 21.39% LR: 0.005582 Batch time: 23.6ms
+[2025-03-10 14:30:21] Epoch: 2 Batch: [300/313] Loss: 2.1250 Acc: 22.03% LR: 0.006254 Batch time: 23.6ms
+[2025-03-10 14:30:22] 
+======================================== Epoch 2/200 ========================================
+Time: 0m 15s
+Train Loss: 2.1236 Train Acc: 22.0945%
+Val Loss: 1.8510 Val Acc: 34.6900%
+Best Val Acc: 29.3300%
+Learning Rate: 0.006350
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.87 hours
+==========================================================================================
+
+[2025-03-10 14:30:22] New best validation accuracy: 34.6900%
+[2025-03-10 14:30:22] Saved checkpoint at epoch 2 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_2.pth
+[2025-03-10 14:30:23] New best model! Accuracy: 34.6900%
+[2025-03-10 14:30:23] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:30:28] Epoch: 3 Batch: [100/313] Loss: 2.0869 Acc: 25.06% LR: 0.007152 Batch time: 23.1ms
+[2025-03-10 14:30:32] Epoch: 3 Batch: [200/313] Loss: 2.0875 Acc: 24.88% LR: 0.008067 Batch time: 23.5ms
+[2025-03-10 14:30:37] Epoch: 3 Batch: [300/313] Loss: 2.0806 Acc: 25.20% LR: 0.009092 Batch time: 23.6ms
+[2025-03-10 14:30:38] 
+======================================== Epoch 3/200 ========================================
+Time: 0m 15s
+Train Loss: 2.0814 Train Acc: 25.1418%
+Val Loss: 1.7500 Val Acc: 39.9100%
+Best Val Acc: 34.6900%
+Learning Rate: 0.009233
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.86 hours
+==========================================================================================
+
+[2025-03-10 14:30:38] New best validation accuracy: 39.9100%
+[2025-03-10 14:30:39] Saved checkpoint at epoch 3 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_3.pth
+[2025-03-10 14:30:39] New best model! Accuracy: 39.9100%
+[2025-03-10 14:30:39] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:30:44] Epoch: 4 Batch: [100/313] Loss: 2.0710 Acc: 25.66% LR: 0.010381 Batch time: 23.6ms
+[2025-03-10 14:30:48] Epoch: 4 Batch: [200/313] Loss: 2.0559 Acc: 26.53% LR: 0.011633 Batch time: 23.1ms
+[2025-03-10 14:30:53] Epoch: 4 Batch: [300/313] Loss: 2.0562 Acc: 26.91% LR: 0.012987 Batch time: 23.6ms
+[2025-03-10 14:30:54] 
+======================================== Epoch 4/200 ========================================
+Time: 0m 15s
+Train Loss: 2.0546 Train Acc: 26.9776%
+Val Loss: 1.7012 Val Acc: 42.6800%
+Best Val Acc: 39.9100%
+Learning Rate: 0.013170
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.86 hours
+==========================================================================================
+
+[2025-03-10 14:30:54] New best validation accuracy: 42.6800%
+[2025-03-10 14:30:55] Saved checkpoint at epoch 4 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_4.pth
+[2025-03-10 14:30:55] New best model! Accuracy: 42.6800%
+[2025-03-10 14:30:55] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:31:00] Epoch: 5 Batch: [100/313] Loss: 2.0247 Acc: 28.66% LR: 0.014635 Batch time: 23.5ms
+[2025-03-10 14:31:05] Epoch: 5 Batch: [200/313] Loss: 2.0275 Acc: 28.94% LR: 0.016193 Batch time: 23.6ms
+[2025-03-10 14:31:09] Epoch: 5 Batch: [300/313] Loss: 2.0231 Acc: 29.30% LR: 0.017842 Batch time: 23.5ms
+[2025-03-10 14:31:11] 
+======================================== Epoch 5/200 ========================================
+Time: 0m 15s
+Train Loss: 2.0213 Train Acc: 29.4249%
+Val Loss: 1.6575 Val Acc: 44.3700%
+Best Val Acc: 42.6800%
+Learning Rate: 0.018063
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.85 hours
+==========================================================================================
+
+[2025-03-10 14:31:11] New best validation accuracy: 44.3700%
+[2025-03-10 14:31:11] Saved checkpoint at epoch 5 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_5.pth
+[2025-03-10 14:31:11] New best model! Accuracy: 44.3700%
+[2025-03-10 14:31:11] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:31:16] Epoch: 6 Batch: [100/313] Loss: 2.0073 Acc: 30.07% LR: 0.019809 Batch time: 23.5ms
+[2025-03-10 14:31:20] Epoch: 6 Batch: [200/313] Loss: 1.9985 Acc: 30.67% LR: 0.021636 Batch time: 23.6ms
+[2025-03-10 14:31:25] Epoch: 6 Batch: [300/313] Loss: 1.9886 Acc: 31.29% LR: 0.023539 Batch time: 23.0ms
+[2025-03-10 14:31:26] 
+======================================== Epoch 6/200 ========================================
+Time: 0m 15s
+Train Loss: 1.9885 Train Acc: 31.2796%
+Val Loss: 1.6047 Val Acc: 48.0900%
+Best Val Acc: 44.3700%
+Learning Rate: 0.023792
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.85 hours
+==========================================================================================
+
+[2025-03-10 14:31:26] New best validation accuracy: 48.0900%
+[2025-03-10 14:31:27] Saved checkpoint at epoch 6 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_6.pth
+[2025-03-10 14:31:27] New best model! Accuracy: 48.0900%
+[2025-03-10 14:31:27] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:31:32] Epoch: 7 Batch: [100/313] Loss: 2.0098 Acc: 31.04% LR: 0.025776 Batch time: 23.6ms
+[2025-03-10 14:31:37] Epoch: 7 Batch: [200/313] Loss: 1.9820 Acc: 32.41% LR: 0.027826 Batch time: 23.6ms
+[2025-03-10 14:31:41] Epoch: 7 Batch: [300/313] Loss: 1.9756 Acc: 32.84% LR: 0.029937 Batch time: 23.1ms
+[2025-03-10 14:31:43] 
+======================================== Epoch 7/200 ========================================
+Time: 0m 15s
+Train Loss: 1.9747 Train Acc: 32.8605%
+Val Loss: 1.5880 Val Acc: 49.1300%
+Best Val Acc: 48.0900%
+Learning Rate: 0.030216
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.84 hours
+==========================================================================================
+
+[2025-03-10 14:31:43] New best validation accuracy: 49.1300%
+[2025-03-10 14:31:43] Saved checkpoint at epoch 7 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_7.pth
+[2025-03-10 14:31:43] New best model! Accuracy: 49.1300%
+[2025-03-10 14:31:43] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:31:48] Epoch: 8 Batch: [100/313] Loss: 1.8950 Acc: 36.47% LR: 0.032389 Batch time: 23.0ms
+[2025-03-10 14:31:53] Epoch: 8 Batch: [200/313] Loss: 1.9023 Acc: 36.23% LR: 0.034612 Batch time: 23.5ms
+[2025-03-10 14:31:57] Epoch: 8 Batch: [300/313] Loss: 1.8978 Acc: 36.67% LR: 0.036879 Batch time: 23.6ms
+[2025-03-10 14:31:59] 
+======================================== Epoch 8/200 ========================================
+Time: 0m 15s
+Train Loss: 1.8972 Train Acc: 36.7416%
+Val Loss: 1.5140 Val Acc: 53.6300%
+Best Val Acc: 49.1300%
+Learning Rate: 0.037176
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.84 hours
+==========================================================================================
+
+[2025-03-10 14:31:59] New best validation accuracy: 53.6300%
+[2025-03-10 14:31:59] Saved checkpoint at epoch 8 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_8.pth
+[2025-03-10 14:31:59] New best model! Accuracy: 53.6300%
+[2025-03-10 14:31:59] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:32:04] Epoch: 9 Batch: [100/313] Loss: 1.8996 Acc: 37.24% LR: 0.039486 Batch time: 23.5ms
+[2025-03-10 14:32:09] Epoch: 9 Batch: [200/313] Loss: 1.8801 Acc: 38.19% LR: 0.041826 Batch time: 23.1ms
+[2025-03-10 14:32:14] Epoch: 9 Batch: [300/313] Loss: 1.8680 Acc: 38.74% LR: 0.044193 Batch time: 23.2ms
+[2025-03-10 14:32:15] 
+======================================== Epoch 9/200 ========================================
+Time: 0m 15s
+Train Loss: 1.8704 Train Acc: 38.6064%
+Val Loss: 1.4042 Val Acc: 58.6200%
+Best Val Acc: 53.6300%
+Learning Rate: 0.044502
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.84 hours
+==========================================================================================
+
+[2025-03-10 14:32:15] New best validation accuracy: 58.6200%
+[2025-03-10 14:32:15] Saved checkpoint at epoch 9 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_9.pth
+[2025-03-10 14:32:15] New best model! Accuracy: 58.6200%
+[2025-03-10 14:32:15] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:32:20] Epoch: 10 Batch: [100/313] Loss: 1.8816 Acc: 38.22% LR: 0.046890 Batch time: 23.7ms
+[2025-03-10 14:32:25] Epoch: 10 Batch: [200/313] Loss: 1.8695 Acc: 38.81% LR: 0.049291 Batch time: 23.6ms
+[2025-03-10 14:32:30] Epoch: 10 Batch: [300/313] Loss: 1.8555 Acc: 39.75% LR: 0.051699 Batch time: 23.2ms
+[2025-03-10 14:32:31] 
+======================================== Epoch 10/200 ========================================
+Time: 0m 15s
+Train Loss: 1.8536 Train Acc: 39.8754%
+Val Loss: 1.5221 Val Acc: 54.4800%
+Best Val Acc: 58.6200%
+Learning Rate: 0.052012
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.83 hours
+==========================================================================================
+
+[2025-03-10 14:32:31] Saved checkpoint at epoch 10 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_10.pth
+[2025-03-10 14:32:36] Epoch: 11 Batch: [100/313] Loss: 1.8021 Acc: 42.14% LR: 0.054420 Batch time: 23.6ms
+[2025-03-10 14:32:41] Epoch: 11 Batch: [200/313] Loss: 1.8110 Acc: 41.63% LR: 0.056822 Batch time: 23.6ms
+[2025-03-10 14:32:45] Epoch: 11 Batch: [300/313] Loss: 1.8088 Acc: 41.80% LR: 0.059212 Batch time: 23.6ms
+[2025-03-10 14:32:47] 
+======================================== Epoch 11/200 ========================================
+Time: 0m 15s
+Train Loss: 1.8079 Train Acc: 41.8055%
+Val Loss: 1.3443 Val Acc: 61.9500%
+Best Val Acc: 58.6200%
+Learning Rate: 0.059522
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.83 hours
+==========================================================================================
+
+[2025-03-10 14:32:47] New best validation accuracy: 61.9500%
+[2025-03-10 14:32:47] Saved checkpoint at epoch 11 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_11.pth
+[2025-03-10 14:32:47] New best model! Accuracy: 61.9500%
+[2025-03-10 14:32:47] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:32:52] Epoch: 12 Batch: [100/313] Loss: 1.7997 Acc: 42.42% LR: 0.061891 Batch time: 23.6ms
+[2025-03-10 14:32:57] Epoch: 12 Batch: [200/313] Loss: 1.7647 Acc: 44.10% LR: 0.064235 Batch time: 23.5ms
+[2025-03-10 14:33:01] Epoch: 12 Batch: [300/313] Loss: 1.7743 Acc: 43.62% LR: 0.066548 Batch time: 23.5ms
+[2025-03-10 14:33:03] 
+======================================== Epoch 12/200 ========================================
+Time: 0m 15s
+Train Loss: 1.7712 Train Acc: 43.8198%
+Val Loss: 1.2460 Val Acc: 66.6800%
+Best Val Acc: 61.9500%
+Learning Rate: 0.066847
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.82 hours
+==========================================================================================
+
+[2025-03-10 14:33:03] New best validation accuracy: 66.6800%
+[2025-03-10 14:33:03] Saved checkpoint at epoch 12 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_12.pth
+[2025-03-10 14:33:03] New best model! Accuracy: 66.6800%
+[2025-03-10 14:33:03] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:33:08] Epoch: 13 Batch: [100/313] Loss: 1.7556 Acc: 44.87% LR: 0.069118 Batch time: 23.5ms
+[2025-03-10 14:33:13] Epoch: 13 Batch: [200/313] Loss: 1.7500 Acc: 45.32% LR: 0.071346 Batch time: 23.7ms
+[2025-03-10 14:33:17] Epoch: 13 Batch: [300/313] Loss: 1.7386 Acc: 45.82% LR: 0.073526 Batch time: 23.6ms
+[2025-03-10 14:33:19] 
+======================================== Epoch 13/200 ========================================
+Time: 0m 15s
+Train Loss: 1.7393 Train Acc: 45.7614%
+Val Loss: 1.2309 Val Acc: 67.7400%
+Best Val Acc: 66.6800%
+Learning Rate: 0.073805
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.82 hours
+==========================================================================================
+
+[2025-03-10 14:33:19] New best validation accuracy: 67.7400%
+[2025-03-10 14:33:19] Saved checkpoint at epoch 13 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_13.pth
+[2025-03-10 14:33:19] New best model! Accuracy: 67.7400%
+[2025-03-10 14:33:19] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:33:24] Epoch: 14 Batch: [100/313] Loss: 1.7701 Acc: 44.62% LR: 0.075923 Batch time: 23.7ms
+[2025-03-10 14:33:29] Epoch: 14 Batch: [200/313] Loss: 1.7382 Acc: 46.08% LR: 0.077981 Batch time: 23.0ms
+[2025-03-10 14:33:34] Epoch: 14 Batch: [300/313] Loss: 1.7223 Acc: 46.78% LR: 0.079973 Batch time: 23.5ms
+[2025-03-10 14:33:35] 
+======================================== Epoch 14/200 ========================================
+Time: 0m 15s
+Train Loss: 1.7202 Train Acc: 46.8570%
+Val Loss: 1.2170 Val Acc: 69.2000%
+Best Val Acc: 67.7400%
+Learning Rate: 0.080227
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.82 hours
+==========================================================================================
+
+[2025-03-10 14:33:35] New best validation accuracy: 69.2000%
+[2025-03-10 14:33:35] Saved checkpoint at epoch 14 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_14.pth
+[2025-03-10 14:33:35] New best model! Accuracy: 69.2000%
+[2025-03-10 14:33:35] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:33:40] Epoch: 15 Batch: [100/313] Loss: 1.7787 Acc: 44.21% LR: 0.082140 Batch time: 23.6ms
+[2025-03-10 14:33:45] Epoch: 15 Batch: [200/313] Loss: 1.7288 Acc: 46.57% LR: 0.083976 Batch time: 23.5ms
+[2025-03-10 14:33:50] Epoch: 15 Batch: [300/313] Loss: 1.7108 Acc: 47.39% LR: 0.085732 Batch time: 23.5ms
+[2025-03-10 14:33:51] 
+======================================== Epoch 15/200 ========================================
+Time: 0m 15s
+Train Loss: 1.7117 Train Acc: 47.3862%
+Val Loss: 1.1926 Val Acc: 69.7100%
+Best Val Acc: 69.2000%
+Learning Rate: 0.085954
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.81 hours
+==========================================================================================
+
+[2025-03-10 14:33:51] New best validation accuracy: 69.7100%
+[2025-03-10 14:33:51] Saved checkpoint at epoch 15 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_15.pth
+[2025-03-10 14:33:51] New best model! Accuracy: 69.7100%
+[2025-03-10 14:33:51] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:33:56] Epoch: 16 Batch: [100/313] Loss: 1.6536 Acc: 50.00% LR: 0.087613 Batch time: 23.5ms
+[2025-03-10 14:34:01] Epoch: 16 Batch: [200/313] Loss: 1.6550 Acc: 49.93% LR: 0.089183 Batch time: 23.0ms
+[2025-03-10 14:34:06] Epoch: 16 Batch: [300/313] Loss: 1.6549 Acc: 50.01% LR: 0.090659 Batch time: 23.7ms
+[2025-03-10 14:34:07] 
+======================================== Epoch 16/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6539 Train Acc: 50.1004%
+Val Loss: 1.1578 Val Acc: 72.3400%
+Best Val Acc: 69.7100%
+Learning Rate: 0.090844
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.80 hours
+==========================================================================================
+
+[2025-03-10 14:34:07] New best validation accuracy: 72.3400%
+[2025-03-10 14:34:07] Saved checkpoint at epoch 16 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_16.pth
+[2025-03-10 14:34:07] New best model! Accuracy: 72.3400%
+[2025-03-10 14:34:07] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:34:12] Epoch: 17 Batch: [100/313] Loss: 1.6391 Acc: 50.74% LR: 0.092210 Batch time: 23.6ms
+[2025-03-10 14:34:17] Epoch: 17 Batch: [200/313] Loss: 1.6388 Acc: 50.81% LR: 0.093475 Batch time: 23.6ms
+[2025-03-10 14:34:22] Epoch: 17 Batch: [300/313] Loss: 1.6399 Acc: 50.67% LR: 0.094635 Batch time: 23.1ms
+[2025-03-10 14:34:23] 
+======================================== Epoch 17/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6432 Train Acc: 50.5414%
+Val Loss: 1.2464 Val Acc: 66.0700%
+Best Val Acc: 72.3400%
+Learning Rate: 0.094778
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.80 hours
+==========================================================================================
+
+[2025-03-10 14:34:28] Epoch: 18 Batch: [100/313] Loss: 1.6650 Acc: 49.88% LR: 0.095816 Batch time: 23.5ms
+[2025-03-10 14:34:33] Epoch: 18 Batch: [200/313] Loss: 1.6507 Acc: 50.59% LR: 0.096744 Batch time: 23.1ms
+[2025-03-10 14:34:37] Epoch: 18 Batch: [300/313] Loss: 1.6524 Acc: 50.50% LR: 0.097560 Batch time: 23.6ms
+[2025-03-10 14:34:39] 
+======================================== Epoch 18/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6505 Train Acc: 50.6230%
+Val Loss: 1.1135 Val Acc: 73.5400%
+Best Val Acc: 72.3400%
+Learning Rate: 0.097657
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.80 hours
+==========================================================================================
+
+[2025-03-10 14:34:39] New best validation accuracy: 73.5400%
+[2025-03-10 14:34:39] Saved checkpoint at epoch 18 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_18.pth
+[2025-03-10 14:34:39] New best model! Accuracy: 73.5400%
+[2025-03-10 14:34:39] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:34:44] Epoch: 19 Batch: [100/313] Loss: 1.6731 Acc: 49.50% LR: 0.098343 Batch time: 23.0ms
+[2025-03-10 14:34:49] Epoch: 19 Batch: [200/313] Loss: 1.6594 Acc: 50.21% LR: 0.098912 Batch time: 23.6ms
+[2025-03-10 14:34:54] Epoch: 19 Batch: [300/313] Loss: 1.6399 Acc: 51.19% LR: 0.099363 Batch time: 23.6ms
+[2025-03-10 14:34:55] 
+======================================== Epoch 19/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6405 Train Acc: 51.1910%
+Val Loss: 1.0592 Val Acc: 75.7900%
+Best Val Acc: 73.5400%
+Learning Rate: 0.099413
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.79 hours
+==========================================================================================
+
+[2025-03-10 14:34:55] New best validation accuracy: 75.7900%
+[2025-03-10 14:34:55] Saved checkpoint at epoch 19 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_19.pth
+[2025-03-10 14:34:55] New best model! Accuracy: 75.7900%
+[2025-03-10 14:34:55] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:35:00] Epoch: 20 Batch: [100/313] Loss: 1.6080 Acc: 52.74% LR: 0.099729 Batch time: 23.6ms
+[2025-03-10 14:35:05] Epoch: 20 Batch: [200/313] Loss: 1.6125 Acc: 52.69% LR: 0.099924 Batch time: 23.1ms
+[2025-03-10 14:35:10] Epoch: 20 Batch: [300/313] Loss: 1.6036 Acc: 52.93% LR: 0.099999 Batch time: 23.7ms
+[2025-03-10 14:35:11] 
+======================================== Epoch 20/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6050 Train Acc: 52.8062%
+Val Loss: 1.1536 Val Acc: 71.6700%
+Best Val Acc: 75.7900%
+Learning Rate: 0.100000
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.79 hours
+==========================================================================================
+
+[2025-03-10 14:35:11] Saved checkpoint at epoch 20 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_20.pth
+[2025-03-10 14:35:16] Epoch: 21 Batch: [100/313] Loss: 1.6828 Acc: 48.88% LR: 0.099999 Batch time: 23.6ms
+[2025-03-10 14:35:21] Epoch: 21 Batch: [200/313] Loss: 1.6309 Acc: 51.51% LR: 0.099997 Batch time: 23.5ms
+[2025-03-10 14:35:25] Epoch: 21 Batch: [300/313] Loss: 1.6336 Acc: 51.54% LR: 0.099993 Batch time: 23.6ms
+[2025-03-10 14:35:27] 
+======================================== Epoch 21/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6301 Train Acc: 51.6675%
+Val Loss: 1.0671 Val Acc: 74.6100%
+Best Val Acc: 75.7900%
+Learning Rate: 0.099992
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.79 hours
+==========================================================================================
+
+[2025-03-10 14:35:32] Epoch: 22 Batch: [100/313] Loss: 1.5622 Acc: 54.27% LR: 0.099987 Batch time: 23.5ms
+[2025-03-10 14:35:36] Epoch: 22 Batch: [200/313] Loss: 1.5711 Acc: 54.07% LR: 0.099979 Batch time: 23.6ms
+[2025-03-10 14:35:41] Epoch: 22 Batch: [300/313] Loss: 1.5850 Acc: 53.57% LR: 0.099971 Batch time: 23.6ms
+[2025-03-10 14:35:42] 
+======================================== Epoch 22/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5866 Train Acc: 53.4747%
+Val Loss: 1.0162 Val Acc: 78.6200%
+Best Val Acc: 75.7900%
+Learning Rate: 0.099969
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.78 hours
+==========================================================================================
+
+[2025-03-10 14:35:42] New best validation accuracy: 78.6200%
+[2025-03-10 14:35:43] Saved checkpoint at epoch 22 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_22.pth
+[2025-03-10 14:35:43] New best model! Accuracy: 78.6200%
+[2025-03-10 14:35:43] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:35:48] Epoch: 23 Batch: [100/313] Loss: 1.6015 Acc: 52.81% LR: 0.099959 Batch time: 23.6ms
+[2025-03-10 14:35:52] Epoch: 23 Batch: [200/313] Loss: 1.6120 Acc: 52.57% LR: 0.099947 Batch time: 23.0ms
+[2025-03-10 14:35:57] Epoch: 23 Batch: [300/313] Loss: 1.6181 Acc: 52.19% LR: 0.099933 Batch time: 23.5ms
+[2025-03-10 14:35:58] 
+======================================== Epoch 23/200 ========================================
+Time: 0m 15s
+Train Loss: 1.6132 Train Acc: 52.3818%
+Val Loss: 1.0068 Val Acc: 79.0400%
+Best Val Acc: 78.6200%
+Learning Rate: 0.099931
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.77 hours
+==========================================================================================
+
+[2025-03-10 14:35:58] New best validation accuracy: 79.0400%
+[2025-03-10 14:35:59] Saved checkpoint at epoch 23 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_23.pth
+[2025-03-10 14:35:59] New best model! Accuracy: 79.0400%
+[2025-03-10 14:35:59] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:36:04] Epoch: 24 Batch: [100/313] Loss: 1.5648 Acc: 54.46% LR: 0.099916 Batch time: 23.5ms
+[2025-03-10 14:36:08] Epoch: 24 Batch: [200/313] Loss: 1.5819 Acc: 53.74% LR: 0.099899 Batch time: 23.2ms
+[2025-03-10 14:36:13] Epoch: 24 Batch: [300/313] Loss: 1.5803 Acc: 53.91% LR: 0.099881 Batch time: 23.0ms
+[2025-03-10 14:36:14] 
+======================================== Epoch 24/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5818 Train Acc: 53.8256%
+Val Loss: 1.0606 Val Acc: 75.5000%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099878
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.77 hours
+==========================================================================================
+
+[2025-03-10 14:36:19] Epoch: 25 Batch: [100/313] Loss: 1.5756 Acc: 54.13% LR: 0.099858 Batch time: 23.0ms
+[2025-03-10 14:36:24] Epoch: 25 Batch: [200/313] Loss: 1.5932 Acc: 53.31% LR: 0.099836 Batch time: 23.6ms
+[2025-03-10 14:36:29] Epoch: 25 Batch: [300/313] Loss: 1.5845 Acc: 53.76% LR: 0.099813 Batch time: 23.2ms
+[2025-03-10 14:36:30] 
+======================================== Epoch 25/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5886 Train Acc: 53.5701%
+Val Loss: 1.0115 Val Acc: 78.0300%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099809
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.76 hours
+==========================================================================================
+
+[2025-03-10 14:36:35] Epoch: 26 Batch: [100/313] Loss: 1.5145 Acc: 56.86% LR: 0.099784 Batch time: 23.0ms
+[2025-03-10 14:36:40] Epoch: 26 Batch: [200/313] Loss: 1.5269 Acc: 56.31% LR: 0.099758 Batch time: 23.5ms
+[2025-03-10 14:36:45] Epoch: 26 Batch: [300/313] Loss: 1.5384 Acc: 55.71% LR: 0.099730 Batch time: 23.2ms
+[2025-03-10 14:36:46] 
+======================================== Epoch 26/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5364 Train Acc: 55.7577%
+Val Loss: 1.0025 Val Acc: 77.8400%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099726
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.76 hours
+==========================================================================================
+
+[2025-03-10 14:36:51] Epoch: 27 Batch: [100/313] Loss: 1.4779 Acc: 58.48% LR: 0.099696 Batch time: 23.6ms
+[2025-03-10 14:36:56] Epoch: 27 Batch: [200/313] Loss: 1.5193 Acc: 56.78% LR: 0.099664 Batch time: 23.5ms
+[2025-03-10 14:37:00] Epoch: 27 Batch: [300/313] Loss: 1.5371 Acc: 56.11% LR: 0.099631 Batch time: 23.6ms
+[2025-03-10 14:37:02] 
+======================================== Epoch 27/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5376 Train Acc: 56.1096%
+Val Loss: 1.0414 Val Acc: 76.5500%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099627
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.75 hours
+==========================================================================================
+
+[2025-03-10 14:37:06] Epoch: 28 Batch: [100/313] Loss: 1.5432 Acc: 55.56% LR: 0.099592 Batch time: 23.0ms
+[2025-03-10 14:37:11] Epoch: 28 Batch: [200/313] Loss: 1.5399 Acc: 55.81% LR: 0.099556 Batch time: 23.7ms
+[2025-03-10 14:37:16] Epoch: 28 Batch: [300/313] Loss: 1.5314 Acc: 56.16% LR: 0.099518 Batch time: 23.6ms
+[2025-03-10 14:37:17] 
+======================================== Epoch 28/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5320 Train Acc: 56.1402%
+Val Loss: 1.0734 Val Acc: 74.8700%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099513
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.75 hours
+==========================================================================================
+
+[2025-03-10 14:37:22] Epoch: 29 Batch: [100/313] Loss: 1.5054 Acc: 57.42% LR: 0.099473 Batch time: 23.5ms
+[2025-03-10 14:37:27] Epoch: 29 Batch: [200/313] Loss: 1.5124 Acc: 56.91% LR: 0.099432 Batch time: 23.6ms
+[2025-03-10 14:37:32] Epoch: 29 Batch: [300/313] Loss: 1.5322 Acc: 56.01% LR: 0.099390 Batch time: 23.6ms
+[2025-03-10 14:37:33] 
+======================================== Epoch 29/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5323 Train Acc: 56.0237%
+Val Loss: 0.9650 Val Acc: 80.6900%
+Best Val Acc: 79.0400%
+Learning Rate: 0.099384
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.75 hours
+==========================================================================================
+
+[2025-03-10 14:37:33] New best validation accuracy: 80.6900%
+[2025-03-10 14:37:33] Saved checkpoint at epoch 29 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_29.pth
+[2025-03-10 14:37:33] New best model! Accuracy: 80.6900%
+[2025-03-10 14:37:33] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:37:38] Epoch: 30 Batch: [100/313] Loss: 1.5420 Acc: 55.77% LR: 0.099340 Batch time: 23.6ms
+[2025-03-10 14:37:43] Epoch: 30 Batch: [200/313] Loss: 1.5411 Acc: 55.78% LR: 0.099294 Batch time: 23.6ms
+[2025-03-10 14:37:48] Epoch: 30 Batch: [300/313] Loss: 1.5311 Acc: 56.17% LR: 0.099246 Batch time: 23.1ms
+[2025-03-10 14:37:49] 
+======================================== Epoch 30/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5293 Train Acc: 56.2014%
+Val Loss: 0.9656 Val Acc: 80.0300%
+Best Val Acc: 80.6900%
+Learning Rate: 0.099240
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.74 hours
+==========================================================================================
+
+[2025-03-10 14:37:49] Saved checkpoint at epoch 30 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_30.pth
+[2025-03-10 14:37:54] Epoch: 31 Batch: [100/313] Loss: 1.5648 Acc: 54.92% LR: 0.099191 Batch time: 23.7ms
+[2025-03-10 14:37:59] Epoch: 31 Batch: [200/313] Loss: 1.5365 Acc: 55.99% LR: 0.099140 Batch time: 23.6ms
+[2025-03-10 14:38:04] Epoch: 31 Batch: [300/313] Loss: 1.5265 Acc: 56.41% LR: 0.099088 Batch time: 23.5ms
+[2025-03-10 14:38:05] 
+======================================== Epoch 31/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5254 Train Acc: 56.3838%
+Val Loss: 0.9467 Val Acc: 80.4700%
+Best Val Acc: 80.6900%
+Learning Rate: 0.099081
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.74 hours
+==========================================================================================
+
+[2025-03-10 14:38:10] Epoch: 32 Batch: [100/313] Loss: 1.5551 Acc: 54.99% LR: 0.099027 Batch time: 23.6ms
+[2025-03-10 14:38:15] Epoch: 32 Batch: [200/313] Loss: 1.5558 Acc: 55.16% LR: 0.098971 Batch time: 23.0ms
+[2025-03-10 14:38:19] Epoch: 32 Batch: [300/313] Loss: 1.5350 Acc: 56.00% LR: 0.098914 Batch time: 23.5ms
+[2025-03-10 14:38:21] 
+======================================== Epoch 32/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5293 Train Acc: 56.1793%
+Val Loss: 0.9077 Val Acc: 82.8400%
+Best Val Acc: 80.6900%
+Learning Rate: 0.098907
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.73 hours
+==========================================================================================
+
+[2025-03-10 14:38:21] New best validation accuracy: 82.8400%
+[2025-03-10 14:38:21] Saved checkpoint at epoch 32 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_32.pth
+[2025-03-10 14:38:21] New best model! Accuracy: 82.8400%
+[2025-03-10 14:38:21] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:38:26] Epoch: 33 Batch: [100/313] Loss: 1.5419 Acc: 55.71% LR: 0.098848 Batch time: 23.5ms
+[2025-03-10 14:38:31] Epoch: 33 Batch: [200/313] Loss: 1.5141 Acc: 57.01% LR: 0.098788 Batch time: 23.1ms
+[2025-03-10 14:38:35] Epoch: 33 Batch: [300/313] Loss: 1.5113 Acc: 57.26% LR: 0.098726 Batch time: 23.5ms
+[2025-03-10 14:38:37] 
+======================================== Epoch 33/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5068 Train Acc: 57.4159%
+Val Loss: 0.9565 Val Acc: 80.6000%
+Best Val Acc: 82.8400%
+Learning Rate: 0.098718
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.73 hours
+==========================================================================================
+
+[2025-03-10 14:38:42] Epoch: 34 Batch: [100/313] Loss: 1.5365 Acc: 55.94% LR: 0.098654 Batch time: 23.6ms
+[2025-03-10 14:38:46] Epoch: 34 Batch: [200/313] Loss: 1.4913 Acc: 58.09% LR: 0.098589 Batch time: 23.6ms
+[2025-03-10 14:38:51] Epoch: 34 Batch: [300/313] Loss: 1.4828 Acc: 58.37% LR: 0.098523 Batch time: 23.6ms
+[2025-03-10 14:38:52] 
+======================================== Epoch 34/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4855 Train Acc: 58.3041%
+Val Loss: 0.9608 Val Acc: 80.6300%
+Best Val Acc: 82.8400%
+Learning Rate: 0.098514
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.73 hours
+==========================================================================================
+
+[2025-03-10 14:38:57] Epoch: 35 Batch: [100/313] Loss: 1.5851 Acc: 53.52% LR: 0.098446 Batch time: 23.7ms
+[2025-03-10 14:39:02] Epoch: 35 Batch: [200/313] Loss: 1.5402 Acc: 55.73% LR: 0.098376 Batch time: 23.6ms
+[2025-03-10 14:39:07] Epoch: 35 Batch: [300/313] Loss: 1.5062 Acc: 57.35% LR: 0.098305 Batch time: 23.0ms
+[2025-03-10 14:39:08] 
+======================================== Epoch 35/200 ========================================
+Time: 0m 15s
+Train Loss: 1.5042 Train Acc: 57.4368%
+Val Loss: 0.9425 Val Acc: 81.3000%
+Best Val Acc: 82.8400%
+Learning Rate: 0.098296
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.72 hours
+==========================================================================================
+
+[2025-03-10 14:39:13] Epoch: 36 Batch: [100/313] Loss: 1.4983 Acc: 57.50% LR: 0.098223 Batch time: 23.6ms
+[2025-03-10 14:39:18] Epoch: 36 Batch: [200/313] Loss: 1.5150 Acc: 56.70% LR: 0.098148 Batch time: 23.6ms
+[2025-03-10 14:39:22] Epoch: 36 Batch: [300/313] Loss: 1.4864 Acc: 57.91% LR: 0.098072 Batch time: 23.6ms
+[2025-03-10 14:39:24] 
+======================================== Epoch 36/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4875 Train Acc: 57.8314%
+Val Loss: 0.9260 Val Acc: 82.5000%
+Best Val Acc: 82.8400%
+Learning Rate: 0.098062
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.71 hours
+==========================================================================================
+
+[2025-03-10 14:39:29] Epoch: 37 Batch: [100/313] Loss: 1.4914 Acc: 58.15% LR: 0.097985 Batch time: 23.5ms
+[2025-03-10 14:39:33] Epoch: 37 Batch: [200/313] Loss: 1.4975 Acc: 57.88% LR: 0.097906 Batch time: 23.1ms
+[2025-03-10 14:39:38] Epoch: 37 Batch: [300/313] Loss: 1.4892 Acc: 58.20% LR: 0.097825 Batch time: 23.6ms
+[2025-03-10 14:39:39] 
+======================================== Epoch 37/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4889 Train Acc: 58.1386%
+Val Loss: 0.8938 Val Acc: 83.2900%
+Best Val Acc: 82.8400%
+Learning Rate: 0.097814
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.71 hours
+==========================================================================================
+
+[2025-03-10 14:39:39] New best validation accuracy: 83.2900%
+[2025-03-10 14:39:40] Saved checkpoint at epoch 37 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_37.pth
+[2025-03-10 14:39:40] New best model! Accuracy: 83.2900%
+[2025-03-10 14:39:40] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:39:45] Epoch: 38 Batch: [100/313] Loss: 1.5057 Acc: 57.49% LR: 0.097732 Batch time: 23.5ms
+[2025-03-10 14:39:50] Epoch: 38 Batch: [200/313] Loss: 1.4891 Acc: 58.27% LR: 0.097648 Batch time: 23.5ms
+[2025-03-10 14:39:54] Epoch: 38 Batch: [300/313] Loss: 1.4797 Acc: 58.61% LR: 0.097563 Batch time: 23.5ms
+[2025-03-10 14:39:56] 
+======================================== Epoch 38/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4845 Train Acc: 58.4297%
+Val Loss: 0.9376 Val Acc: 82.2900%
+Best Val Acc: 83.2900%
+Learning Rate: 0.097552
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.71 hours
+==========================================================================================
+
+[2025-03-10 14:40:01] Epoch: 39 Batch: [100/313] Loss: 1.4749 Acc: 58.57% LR: 0.097465 Batch time: 23.6ms
+[2025-03-10 14:40:05] Epoch: 39 Batch: [200/313] Loss: 1.4640 Acc: 58.79% LR: 0.097377 Batch time: 23.6ms
+[2025-03-10 14:40:10] Epoch: 39 Batch: [300/313] Loss: 1.4667 Acc: 58.77% LR: 0.097287 Batch time: 23.0ms
+[2025-03-10 14:40:11] 
+======================================== Epoch 39/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4707 Train Acc: 58.5579%
+Val Loss: 0.8939 Val Acc: 84.6500%
+Best Val Acc: 83.2900%
+Learning Rate: 0.097275
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.70 hours
+==========================================================================================
+
+[2025-03-10 14:40:11] New best validation accuracy: 84.6500%
+[2025-03-10 14:40:11] Saved checkpoint at epoch 39 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_39.pth
+[2025-03-10 14:40:12] New best model! Accuracy: 84.6500%
+[2025-03-10 14:40:12] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:40:17] Epoch: 40 Batch: [100/313] Loss: 1.5295 Acc: 55.99% LR: 0.097184 Batch time: 23.5ms
+[2025-03-10 14:40:21] Epoch: 40 Batch: [200/313] Loss: 1.4614 Acc: 59.26% LR: 0.097091 Batch time: 23.1ms
+[2025-03-10 14:40:26] Epoch: 40 Batch: [300/313] Loss: 1.4641 Acc: 59.21% LR: 0.096996 Batch time: 23.7ms
+[2025-03-10 14:40:27] 
+======================================== Epoch 40/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4610 Train Acc: 59.3102%
+Val Loss: 0.8827 Val Acc: 84.1200%
+Best Val Acc: 84.6500%
+Learning Rate: 0.096984
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.70 hours
+==========================================================================================
+
+[2025-03-10 14:40:27] Saved checkpoint at epoch 40 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_40.pth
+[2025-03-10 14:40:33] Epoch: 41 Batch: [100/313] Loss: 1.4448 Acc: 59.93% LR: 0.096888 Batch time: 23.5ms
+[2025-03-10 14:40:37] Epoch: 41 Batch: [200/313] Loss: 1.4394 Acc: 60.42% LR: 0.096790 Batch time: 23.0ms
+[2025-03-10 14:40:42] Epoch: 41 Batch: [300/313] Loss: 1.4454 Acc: 60.11% LR: 0.096691 Batch time: 23.0ms
+[2025-03-10 14:40:43] 
+======================================== Epoch 41/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4488 Train Acc: 59.9424%
+Val Loss: 0.8983 Val Acc: 84.1100%
+Best Val Acc: 84.6500%
+Learning Rate: 0.096678
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.70 hours
+==========================================================================================
+
+[2025-03-10 14:40:48] Epoch: 42 Batch: [100/313] Loss: 1.4678 Acc: 58.55% LR: 0.096577 Batch time: 23.5ms
+[2025-03-10 14:40:53] Epoch: 42 Batch: [200/313] Loss: 1.4601 Acc: 59.16% LR: 0.096475 Batch time: 23.6ms
+[2025-03-10 14:40:58] Epoch: 42 Batch: [300/313] Loss: 1.4615 Acc: 59.21% LR: 0.096372 Batch time: 23.5ms
+[2025-03-10 14:40:59] 
+======================================== Epoch 42/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4589 Train Acc: 59.3109%
+Val Loss: 0.8482 Val Acc: 85.7500%
+Best Val Acc: 84.6500%
+Learning Rate: 0.096358
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.69 hours
+==========================================================================================
+
+[2025-03-10 14:40:59] New best validation accuracy: 85.7500%
+[2025-03-10 14:40:59] Saved checkpoint at epoch 42 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_42.pth
+[2025-03-10 14:40:59] New best model! Accuracy: 85.7500%
+[2025-03-10 14:40:59] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:41:04] Epoch: 43 Batch: [100/313] Loss: 1.4490 Acc: 60.06% LR: 0.096253 Batch time: 23.1ms
+[2025-03-10 14:41:09] Epoch: 43 Batch: [200/313] Loss: 1.4663 Acc: 59.22% LR: 0.096146 Batch time: 23.0ms
+[2025-03-10 14:41:14] Epoch: 43 Batch: [300/313] Loss: 1.4589 Acc: 59.34% LR: 0.096038 Batch time: 23.1ms
+[2025-03-10 14:41:15] 
+======================================== Epoch 43/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4597 Train Acc: 59.2887%
+Val Loss: 0.8590 Val Acc: 85.4900%
+Best Val Acc: 85.7500%
+Learning Rate: 0.096024
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.69 hours
+==========================================================================================
+
+[2025-03-10 14:41:20] Epoch: 44 Batch: [100/313] Loss: 1.4399 Acc: 60.46% LR: 0.095915 Batch time: 23.5ms
+[2025-03-10 14:41:25] Epoch: 44 Batch: [200/313] Loss: 1.4420 Acc: 60.28% LR: 0.095803 Batch time: 23.0ms
+[2025-03-10 14:41:29] Epoch: 44 Batch: [300/313] Loss: 1.4430 Acc: 60.23% LR: 0.095691 Batch time: 23.1ms
+[2025-03-10 14:41:31] 
+======================================== Epoch 44/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4435 Train Acc: 60.2091%
+Val Loss: 0.8512 Val Acc: 85.7100%
+Best Val Acc: 85.7500%
+Learning Rate: 0.095676
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.68 hours
+==========================================================================================
+
+[2025-03-10 14:41:36] Epoch: 45 Batch: [100/313] Loss: 1.4556 Acc: 59.75% LR: 0.095562 Batch time: 23.7ms
+[2025-03-10 14:41:40] Epoch: 45 Batch: [200/313] Loss: 1.4600 Acc: 59.42% LR: 0.095446 Batch time: 23.6ms
+[2025-03-10 14:41:45] Epoch: 45 Batch: [300/313] Loss: 1.4516 Acc: 59.77% LR: 0.095330 Batch time: 23.0ms
+[2025-03-10 14:41:46] 
+======================================== Epoch 45/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4465 Train Acc: 59.9789%
+Val Loss: 0.8558 Val Acc: 85.2000%
+Best Val Acc: 85.7500%
+Learning Rate: 0.095314
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.68 hours
+==========================================================================================
+
+[2025-03-10 14:41:51] Epoch: 46 Batch: [100/313] Loss: 1.4038 Acc: 62.15% LR: 0.095196 Batch time: 23.1ms
+[2025-03-10 14:41:56] Epoch: 46 Batch: [200/313] Loss: 1.4169 Acc: 61.52% LR: 0.095076 Batch time: 23.1ms
+[2025-03-10 14:42:01] Epoch: 46 Batch: [300/313] Loss: 1.4133 Acc: 61.81% LR: 0.094954 Batch time: 23.5ms
+[2025-03-10 14:42:02] 
+======================================== Epoch 46/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4089 Train Acc: 61.9308%
+Val Loss: 0.9000 Val Acc: 82.9000%
+Best Val Acc: 85.7500%
+Learning Rate: 0.094939
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.68 hours
+==========================================================================================
+
+[2025-03-10 14:42:07] Epoch: 47 Batch: [100/313] Loss: 1.4251 Acc: 60.62% LR: 0.094816 Batch time: 23.5ms
+[2025-03-10 14:42:12] Epoch: 47 Batch: [200/313] Loss: 1.4376 Acc: 60.32% LR: 0.094691 Batch time: 23.6ms
+[2025-03-10 14:42:17] Epoch: 47 Batch: [300/313] Loss: 1.4326 Acc: 60.65% LR: 0.094566 Batch time: 23.0ms
+[2025-03-10 14:42:18] 
+======================================== Epoch 47/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4335 Train Acc: 60.5805%
+Val Loss: 0.8876 Val Acc: 83.5500%
+Best Val Acc: 85.7500%
+Learning Rate: 0.094549
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.67 hours
+==========================================================================================
+
+[2025-03-10 14:42:23] Epoch: 48 Batch: [100/313] Loss: 1.3873 Acc: 62.41% LR: 0.094422 Batch time: 23.6ms
+[2025-03-10 14:42:28] Epoch: 48 Batch: [200/313] Loss: 1.4333 Acc: 60.41% LR: 0.094293 Batch time: 23.5ms
+[2025-03-10 14:42:32] Epoch: 48 Batch: [300/313] Loss: 1.4293 Acc: 60.57% LR: 0.094163 Batch time: 23.0ms
+[2025-03-10 14:42:34] 
+======================================== Epoch 48/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4240 Train Acc: 60.8037%
+Val Loss: 0.8561 Val Acc: 85.6500%
+Best Val Acc: 85.7500%
+Learning Rate: 0.094146
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.66 hours
+==========================================================================================
+
+[2025-03-10 14:42:39] Epoch: 49 Batch: [100/313] Loss: 1.4108 Acc: 61.48% LR: 0.094015 Batch time: 23.0ms
+[2025-03-10 14:42:43] Epoch: 49 Batch: [200/313] Loss: 1.4341 Acc: 60.47% LR: 0.093882 Batch time: 23.6ms
+[2025-03-10 14:42:48] Epoch: 49 Batch: [300/313] Loss: 1.4102 Acc: 61.50% LR: 0.093747 Batch time: 23.0ms
+[2025-03-10 14:42:49] 
+======================================== Epoch 49/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4072 Train Acc: 61.6968%
+Val Loss: 0.8432 Val Acc: 85.4800%
+Best Val Acc: 85.7500%
+Learning Rate: 0.093730
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.66 hours
+==========================================================================================
+
+[2025-03-10 14:42:54] Epoch: 50 Batch: [100/313] Loss: 1.4100 Acc: 61.65% LR: 0.093594 Batch time: 23.5ms
+[2025-03-10 14:42:59] Epoch: 50 Batch: [200/313] Loss: 1.4219 Acc: 61.11% LR: 0.093457 Batch time: 23.5ms
+[2025-03-10 14:43:04] Epoch: 50 Batch: [300/313] Loss: 1.4371 Acc: 60.52% LR: 0.093318 Batch time: 23.5ms
+[2025-03-10 14:43:05] 
+======================================== Epoch 50/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4357 Train Acc: 60.5776%
+Val Loss: 0.8404 Val Acc: 86.0000%
+Best Val Acc: 85.7500%
+Learning Rate: 0.093300
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.65 hours
+==========================================================================================
+
+[2025-03-10 14:43:05] New best validation accuracy: 86.0000%
+[2025-03-10 14:43:05] Saved checkpoint at epoch 50 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_50.pth
+[2025-03-10 14:43:05] New best model! Accuracy: 86.0000%
+[2025-03-10 14:43:05] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:43:10] Epoch: 51 Batch: [100/313] Loss: 1.5147 Acc: 57.03% LR: 0.093160 Batch time: 23.0ms
+[2025-03-10 14:43:15] Epoch: 51 Batch: [200/313] Loss: 1.4552 Acc: 59.39% LR: 0.093018 Batch time: 23.5ms
+[2025-03-10 14:43:20] Epoch: 51 Batch: [300/313] Loss: 1.4519 Acc: 59.49% LR: 0.092876 Batch time: 23.0ms
+[2025-03-10 14:43:21] 
+======================================== Epoch 51/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4506 Train Acc: 59.4754%
+Val Loss: 0.8849 Val Acc: 83.5900%
+Best Val Acc: 86.0000%
+Learning Rate: 0.092857
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.65 hours
+==========================================================================================
+
+[2025-03-10 14:43:26] Epoch: 52 Batch: [100/313] Loss: 1.4757 Acc: 58.37% LR: 0.092713 Batch time: 23.5ms
+[2025-03-10 14:43:31] Epoch: 52 Batch: [200/313] Loss: 1.4333 Acc: 60.37% LR: 0.092567 Batch time: 23.1ms
+[2025-03-10 14:43:36] Epoch: 52 Batch: [300/313] Loss: 1.4228 Acc: 60.81% LR: 0.092420 Batch time: 23.0ms
+[2025-03-10 14:43:37] 
+======================================== Epoch 52/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4165 Train Acc: 61.1497%
+Val Loss: 0.8415 Val Acc: 85.2500%
+Best Val Acc: 86.0000%
+Learning Rate: 0.092401
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.65 hours
+==========================================================================================
+
+[2025-03-10 14:43:42] Epoch: 53 Batch: [100/313] Loss: 1.4312 Acc: 60.82% LR: 0.092253 Batch time: 23.5ms
+[2025-03-10 14:43:47] Epoch: 53 Batch: [200/313] Loss: 1.4375 Acc: 60.29% LR: 0.092103 Batch time: 23.6ms
+[2025-03-10 14:43:51] Epoch: 53 Batch: [300/313] Loss: 1.4412 Acc: 60.11% LR: 0.091952 Batch time: 23.0ms
+[2025-03-10 14:43:53] 
+======================================== Epoch 53/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4413 Train Acc: 60.1270%
+Val Loss: 0.8375 Val Acc: 86.8900%
+Best Val Acc: 86.0000%
+Learning Rate: 0.091932
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.64 hours
+==========================================================================================
+
+[2025-03-10 14:43:53] New best validation accuracy: 86.8900%
+[2025-03-10 14:43:53] Saved checkpoint at epoch 53 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_53.pth
+[2025-03-10 14:43:53] New best model! Accuracy: 86.8900%
+[2025-03-10 14:43:53] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:43:58] Epoch: 54 Batch: [100/313] Loss: 1.4421 Acc: 60.07% LR: 0.091780 Batch time: 23.6ms
+[2025-03-10 14:44:03] Epoch: 54 Batch: [200/313] Loss: 1.4385 Acc: 60.17% LR: 0.091626 Batch time: 23.1ms
+[2025-03-10 14:44:07] Epoch: 54 Batch: [300/313] Loss: 1.4227 Acc: 60.96% LR: 0.091471 Batch time: 23.1ms
+[2025-03-10 14:44:09] 
+======================================== Epoch 54/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4272 Train Acc: 60.6873%
+Val Loss: 0.8372 Val Acc: 86.7700%
+Best Val Acc: 86.8900%
+Learning Rate: 0.091450
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.64 hours
+==========================================================================================
+
+[2025-03-10 14:44:14] Epoch: 55 Batch: [100/313] Loss: 1.4643 Acc: 59.37% LR: 0.091294 Batch time: 23.5ms
+[2025-03-10 14:44:18] Epoch: 55 Batch: [200/313] Loss: 1.4492 Acc: 59.97% LR: 0.091136 Batch time: 23.5ms
+[2025-03-10 14:44:23] Epoch: 55 Batch: [300/313] Loss: 1.4491 Acc: 59.89% LR: 0.090977 Batch time: 23.1ms
+[2025-03-10 14:44:24] 
+======================================== Epoch 55/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4424 Train Acc: 60.1177%
+Val Loss: 0.8633 Val Acc: 84.5400%
+Best Val Acc: 86.8900%
+Learning Rate: 0.090956
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.63 hours
+==========================================================================================
+
+[2025-03-10 14:44:29] Epoch: 56 Batch: [100/313] Loss: 1.4108 Acc: 61.56% LR: 0.090795 Batch time: 23.1ms
+[2025-03-10 14:44:34] Epoch: 56 Batch: [200/313] Loss: 1.4259 Acc: 61.04% LR: 0.090634 Batch time: 23.6ms
+[2025-03-10 14:44:39] Epoch: 56 Batch: [300/313] Loss: 1.4282 Acc: 60.94% LR: 0.090471 Batch time: 23.6ms
+[2025-03-10 14:44:40] 
+======================================== Epoch 56/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4296 Train Acc: 60.8905%
+Val Loss: 0.8398 Val Acc: 86.9500%
+Best Val Acc: 86.8900%
+Learning Rate: 0.090449
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.63 hours
+==========================================================================================
+
+[2025-03-10 14:44:40] New best validation accuracy: 86.9500%
+[2025-03-10 14:44:40] Saved checkpoint at epoch 56 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_56.pth
+[2025-03-10 14:44:40] New best model! Accuracy: 86.9500%
+[2025-03-10 14:44:40] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:44:45] Epoch: 57 Batch: [100/313] Loss: 1.3559 Acc: 63.97% LR: 0.090285 Batch time: 23.1ms
+[2025-03-10 14:44:50] Epoch: 57 Batch: [200/313] Loss: 1.3887 Acc: 62.59% LR: 0.090119 Batch time: 23.6ms
+[2025-03-10 14:44:55] Epoch: 57 Batch: [300/313] Loss: 1.3812 Acc: 62.80% LR: 0.089952 Batch time: 23.2ms
+[2025-03-10 14:44:56] 
+======================================== Epoch 57/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3863 Train Acc: 62.6375%
+Val Loss: 0.8458 Val Acc: 86.1500%
+Best Val Acc: 86.9500%
+Learning Rate: 0.089930
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.62 hours
+==========================================================================================
+
+[2025-03-10 14:45:01] Epoch: 58 Batch: [100/313] Loss: 1.4183 Acc: 61.73% LR: 0.089762 Batch time: 23.7ms
+[2025-03-10 14:45:06] Epoch: 58 Batch: [200/313] Loss: 1.3916 Acc: 62.58% LR: 0.089592 Batch time: 23.8ms
+[2025-03-10 14:45:10] Epoch: 58 Batch: [300/313] Loss: 1.4050 Acc: 61.88% LR: 0.089421 Batch time: 23.9ms
+[2025-03-10 14:45:12] 
+======================================== Epoch 58/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4081 Train Acc: 61.7963%
+Val Loss: 0.8473 Val Acc: 85.9800%
+Best Val Acc: 86.9500%
+Learning Rate: 0.089399
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.62 hours
+==========================================================================================
+
+[2025-03-10 14:45:17] Epoch: 59 Batch: [100/313] Loss: 1.4128 Acc: 61.60% LR: 0.089227 Batch time: 23.5ms
+[2025-03-10 14:45:21] Epoch: 59 Batch: [200/313] Loss: 1.4178 Acc: 61.18% LR: 0.089053 Batch time: 23.5ms
+[2025-03-10 14:45:26] Epoch: 59 Batch: [300/313] Loss: 1.4267 Acc: 60.76% LR: 0.088878 Batch time: 23.6ms
+[2025-03-10 14:45:27] 
+======================================== Epoch 59/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4220 Train Acc: 60.9421%
+Val Loss: 0.8780 Val Acc: 84.5400%
+Best Val Acc: 86.9500%
+Learning Rate: 0.088856
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.62 hours
+==========================================================================================
+
+[2025-03-10 14:45:32] Epoch: 60 Batch: [100/313] Loss: 1.4060 Acc: 61.37% LR: 0.088680 Batch time: 23.5ms
+[2025-03-10 14:45:37] Epoch: 60 Batch: [200/313] Loss: 1.4163 Acc: 61.13% LR: 0.088502 Batch time: 23.6ms
+[2025-03-10 14:45:42] Epoch: 60 Batch: [300/313] Loss: 1.4135 Acc: 61.33% LR: 0.088324 Batch time: 23.5ms
+[2025-03-10 14:45:43] 
+======================================== Epoch 60/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4149 Train Acc: 61.2576%
+Val Loss: 0.9022 Val Acc: 83.4400%
+Best Val Acc: 86.9500%
+Learning Rate: 0.088300
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.61 hours
+==========================================================================================
+
+[2025-03-10 14:45:43] Saved checkpoint at epoch 60 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_60.pth
+[2025-03-10 14:45:48] Epoch: 61 Batch: [100/313] Loss: 1.4297 Acc: 60.43% LR: 0.088121 Batch time: 23.5ms
+[2025-03-10 14:45:53] Epoch: 61 Batch: [200/313] Loss: 1.4032 Acc: 61.74% LR: 0.087940 Batch time: 23.0ms
+[2025-03-10 14:45:58] Epoch: 61 Batch: [300/313] Loss: 1.4133 Acc: 61.45% LR: 0.087757 Batch time: 23.6ms
+[2025-03-10 14:45:59] 
+======================================== Epoch 61/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4094 Train Acc: 61.6131%
+Val Loss: 0.8186 Val Acc: 87.4900%
+Best Val Acc: 86.9500%
+Learning Rate: 0.087734
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.61 hours
+==========================================================================================
+
+[2025-03-10 14:45:59] New best validation accuracy: 87.4900%
+[2025-03-10 14:45:59] Saved checkpoint at epoch 61 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_61.pth
+[2025-03-10 14:45:59] New best model! Accuracy: 87.4900%
+[2025-03-10 14:45:59] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:46:04] Epoch: 62 Batch: [100/313] Loss: 1.4075 Acc: 61.67% LR: 0.087550 Batch time: 23.1ms
+[2025-03-10 14:46:09] Epoch: 62 Batch: [200/313] Loss: 1.3956 Acc: 62.10% LR: 0.087366 Batch time: 23.8ms
+[2025-03-10 14:46:14] Epoch: 62 Batch: [300/313] Loss: 1.4067 Acc: 61.65% LR: 0.087180 Batch time: 23.9ms
+[2025-03-10 14:46:15] 
+======================================== Epoch 62/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4012 Train Acc: 61.9455%
+Val Loss: 0.8840 Val Acc: 83.9300%
+Best Val Acc: 87.4900%
+Learning Rate: 0.087155
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.60 hours
+==========================================================================================
+
+[2025-03-10 14:46:20] Epoch: 63 Batch: [100/313] Loss: 1.3957 Acc: 62.00% LR: 0.086968 Batch time: 23.5ms
+[2025-03-10 14:46:25] Epoch: 63 Batch: [200/313] Loss: 1.4102 Acc: 61.51% LR: 0.086780 Batch time: 23.5ms
+[2025-03-10 14:46:29] Epoch: 63 Batch: [300/313] Loss: 1.4022 Acc: 61.80% LR: 0.086591 Batch time: 23.7ms
+[2025-03-10 14:46:31] 
+======================================== Epoch 63/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4044 Train Acc: 61.6675%
+Val Loss: 0.8589 Val Acc: 86.1700%
+Best Val Acc: 87.4900%
+Learning Rate: 0.086566
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.60 hours
+==========================================================================================
+
+[2025-03-10 14:46:36] Epoch: 64 Batch: [100/313] Loss: 1.4442 Acc: 59.87% LR: 0.086375 Batch time: 23.6ms
+[2025-03-10 14:46:40] Epoch: 64 Batch: [200/313] Loss: 1.4363 Acc: 60.24% LR: 0.086183 Batch time: 23.6ms
+[2025-03-10 14:46:45] Epoch: 64 Batch: [300/313] Loss: 1.4090 Acc: 61.51% LR: 0.085990 Batch time: 23.2ms
+[2025-03-10 14:46:46] 
+======================================== Epoch 64/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4127 Train Acc: 61.3598%
+Val Loss: 0.8560 Val Acc: 86.7400%
+Best Val Acc: 87.4900%
+Learning Rate: 0.085965
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.60 hours
+==========================================================================================
+
+[2025-03-10 14:46:51] Epoch: 65 Batch: [100/313] Loss: 1.3926 Acc: 62.61% LR: 0.085771 Batch time: 23.5ms
+[2025-03-10 14:46:56] Epoch: 65 Batch: [200/313] Loss: 1.3780 Acc: 62.95% LR: 0.085576 Batch time: 23.6ms
+[2025-03-10 14:47:01] Epoch: 65 Batch: [300/313] Loss: 1.3839 Acc: 62.67% LR: 0.085379 Batch time: 23.5ms
+[2025-03-10 14:47:02] 
+======================================== Epoch 65/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3950 Train Acc: 62.1338%
+Val Loss: 0.9130 Val Acc: 85.6000%
+Best Val Acc: 87.4900%
+Learning Rate: 0.085353
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.59 hours
+==========================================================================================
+
+[2025-03-10 14:47:07] Epoch: 66 Batch: [100/313] Loss: 1.3687 Acc: 63.28% LR: 0.085156 Batch time: 23.1ms
+[2025-03-10 14:47:12] Epoch: 66 Batch: [200/313] Loss: 1.3919 Acc: 62.29% LR: 0.084957 Batch time: 23.6ms
+[2025-03-10 14:47:17] Epoch: 66 Batch: [300/313] Loss: 1.3930 Acc: 62.26% LR: 0.084757 Batch time: 23.5ms
+[2025-03-10 14:47:18] 
+======================================== Epoch 66/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3937 Train Acc: 62.2365%
+Val Loss: 0.8146 Val Acc: 87.6400%
+Best Val Acc: 87.4900%
+Learning Rate: 0.084731
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.59 hours
+==========================================================================================
+
+[2025-03-10 14:47:18] New best validation accuracy: 87.6400%
+[2025-03-10 14:47:18] Saved checkpoint at epoch 66 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_66.pth
+[2025-03-10 14:47:18] New best model! Accuracy: 87.6400%
+[2025-03-10 14:47:18] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:47:23] Epoch: 67 Batch: [100/313] Loss: 1.4093 Acc: 61.43% LR: 0.084530 Batch time: 23.2ms
+[2025-03-10 14:47:28] Epoch: 67 Batch: [200/313] Loss: 1.4085 Acc: 61.48% LR: 0.084328 Batch time: 23.6ms
+[2025-03-10 14:47:33] Epoch: 67 Batch: [300/313] Loss: 1.4180 Acc: 61.00% LR: 0.084124 Batch time: 23.5ms
+[2025-03-10 14:47:34] 
+======================================== Epoch 67/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4132 Train Acc: 61.1883%
+Val Loss: 0.8430 Val Acc: 86.2000%
+Best Val Acc: 87.6400%
+Learning Rate: 0.084098
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.58 hours
+==========================================================================================
+
+[2025-03-10 14:47:39] Epoch: 68 Batch: [100/313] Loss: 1.4333 Acc: 60.48% LR: 0.083893 Batch time: 23.5ms
+[2025-03-10 14:47:44] Epoch: 68 Batch: [200/313] Loss: 1.4376 Acc: 60.40% LR: 0.083688 Batch time: 23.0ms
+[2025-03-10 14:47:48] Epoch: 68 Batch: [300/313] Loss: 1.4183 Acc: 61.21% LR: 0.083481 Batch time: 23.1ms
+[2025-03-10 14:47:50] 
+======================================== Epoch 68/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4150 Train Acc: 61.4015%
+Val Loss: 0.8643 Val Acc: 85.0000%
+Best Val Acc: 87.6400%
+Learning Rate: 0.083455
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.58 hours
+==========================================================================================
+
+[2025-03-10 14:47:55] Epoch: 69 Batch: [100/313] Loss: 1.3585 Acc: 63.85% LR: 0.083247 Batch time: 23.6ms
+[2025-03-10 14:47:59] Epoch: 69 Batch: [200/313] Loss: 1.3751 Acc: 63.39% LR: 0.083038 Batch time: 23.6ms
+[2025-03-10 14:48:04] Epoch: 69 Batch: [300/313] Loss: 1.3957 Acc: 62.22% LR: 0.082828 Batch time: 23.5ms
+[2025-03-10 14:48:05] 
+======================================== Epoch 69/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3987 Train Acc: 62.0968%
+Val Loss: 0.8145 Val Acc: 87.7400%
+Best Val Acc: 87.6400%
+Learning Rate: 0.082801
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.57 hours
+==========================================================================================
+
+[2025-03-10 14:48:05] New best validation accuracy: 87.7400%
+[2025-03-10 14:48:05] Saved checkpoint at epoch 69 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_69.pth
+[2025-03-10 14:48:06] New best model! Accuracy: 87.7400%
+[2025-03-10 14:48:06] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:48:11] Epoch: 70 Batch: [100/313] Loss: 1.4602 Acc: 59.11% LR: 0.082590 Batch time: 23.6ms
+[2025-03-10 14:48:15] Epoch: 70 Batch: [200/313] Loss: 1.4335 Acc: 60.45% LR: 0.082378 Batch time: 23.6ms
+[2025-03-10 14:48:20] Epoch: 70 Batch: [300/313] Loss: 1.4275 Acc: 60.74% LR: 0.082165 Batch time: 23.8ms
+[2025-03-10 14:48:21] 
+======================================== Epoch 70/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4245 Train Acc: 60.9277%
+Val Loss: 0.8454 Val Acc: 86.2900%
+Best Val Acc: 87.7400%
+Learning Rate: 0.082137
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.57 hours
+==========================================================================================
+
+[2025-03-10 14:48:22] Saved checkpoint at epoch 70 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_70.pth
+[2025-03-10 14:48:27] Epoch: 71 Batch: [100/313] Loss: 1.3997 Acc: 62.23% LR: 0.081923 Batch time: 23.1ms
+[2025-03-10 14:48:31] Epoch: 71 Batch: [200/313] Loss: 1.4081 Acc: 61.72% LR: 0.081708 Batch time: 23.6ms
+[2025-03-10 14:48:36] Epoch: 71 Batch: [300/313] Loss: 1.3977 Acc: 62.06% LR: 0.081492 Batch time: 23.0ms
+[2025-03-10 14:48:37] 
+======================================== Epoch 71/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3963 Train Acc: 62.1375%
+Val Loss: 0.8224 Val Acc: 86.7100%
+Best Val Acc: 87.7400%
+Learning Rate: 0.081464
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.56 hours
+==========================================================================================
+
+[2025-03-10 14:48:42] Epoch: 72 Batch: [100/313] Loss: 1.3880 Acc: 62.66% LR: 0.081247 Batch time: 23.6ms
+[2025-03-10 14:48:47] Epoch: 72 Batch: [200/313] Loss: 1.3820 Acc: 62.83% LR: 0.081029 Batch time: 23.1ms
+[2025-03-10 14:48:52] Epoch: 72 Batch: [300/313] Loss: 1.3657 Acc: 63.33% LR: 0.080810 Batch time: 23.8ms
+[2025-03-10 14:48:53] 
+======================================== Epoch 72/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3662 Train Acc: 63.3581%
+Val Loss: 0.8739 Val Acc: 85.5800%
+Best Val Acc: 87.7400%
+Learning Rate: 0.080781
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.56 hours
+==========================================================================================
+
+[2025-03-10 14:48:58] Epoch: 73 Batch: [100/313] Loss: 1.4000 Acc: 61.72% LR: 0.080561 Batch time: 23.1ms
+[2025-03-10 14:49:03] Epoch: 73 Batch: [200/313] Loss: 1.3962 Acc: 61.88% LR: 0.080340 Batch time: 23.6ms
+[2025-03-10 14:49:07] Epoch: 73 Batch: [300/313] Loss: 1.4104 Acc: 61.29% LR: 0.080118 Batch time: 23.6ms
+[2025-03-10 14:49:09] 
+======================================== Epoch 73/200 ========================================
+Time: 0m 15s
+Train Loss: 1.4041 Train Acc: 61.6024%
+Val Loss: 0.8290 Val Acc: 87.0200%
+Best Val Acc: 87.7400%
+Learning Rate: 0.080089
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.55 hours
+==========================================================================================
+
+[2025-03-10 14:49:14] Epoch: 74 Batch: [100/313] Loss: 1.3448 Acc: 64.57% LR: 0.079865 Batch time: 23.1ms
+[2025-03-10 14:49:18] Epoch: 74 Batch: [200/313] Loss: 1.3521 Acc: 64.15% LR: 0.079641 Batch time: 23.5ms
+[2025-03-10 14:49:23] Epoch: 74 Batch: [300/313] Loss: 1.3629 Acc: 63.62% LR: 0.079416 Batch time: 23.6ms
+[2025-03-10 14:49:24] 
+======================================== Epoch 74/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3631 Train Acc: 63.6318%
+Val Loss: 0.8086 Val Acc: 88.1200%
+Best Val Acc: 87.7400%
+Learning Rate: 0.079387
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.55 hours
+==========================================================================================
+
+[2025-03-10 14:49:24] New best validation accuracy: 88.1200%
+[2025-03-10 14:49:25] Saved checkpoint at epoch 74 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_74.pth
+[2025-03-10 14:49:25] New best model! Accuracy: 88.1200%
+[2025-03-10 14:49:25] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:49:30] Epoch: 75 Batch: [100/313] Loss: 1.3783 Acc: 62.53% LR: 0.079161 Batch time: 23.6ms
+[2025-03-10 14:49:34] Epoch: 75 Batch: [200/313] Loss: 1.3755 Acc: 62.75% LR: 0.078934 Batch time: 23.6ms
+[2025-03-10 14:49:39] Epoch: 75 Batch: [300/313] Loss: 1.3813 Acc: 62.66% LR: 0.078706 Batch time: 23.5ms
+[2025-03-10 14:49:40] 
+======================================== Epoch 75/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3866 Train Acc: 62.3111%
+Val Loss: 0.8155 Val Acc: 88.4800%
+Best Val Acc: 88.1200%
+Learning Rate: 0.078677
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.55 hours
+==========================================================================================
+
+[2025-03-10 14:49:40] New best validation accuracy: 88.4800%
+[2025-03-10 14:49:41] Saved checkpoint at epoch 75 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_75.pth
+[2025-03-10 14:49:41] New best model! Accuracy: 88.4800%
+[2025-03-10 14:49:41] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:49:46] Epoch: 76 Batch: [100/313] Loss: 1.4001 Acc: 62.16% LR: 0.078448 Batch time: 23.6ms
+[2025-03-10 14:49:51] Epoch: 76 Batch: [200/313] Loss: 1.3580 Acc: 64.07% LR: 0.078218 Batch time: 23.1ms
+[2025-03-10 14:49:55] Epoch: 76 Batch: [300/313] Loss: 1.3626 Acc: 63.73% LR: 0.077987 Batch time: 23.6ms
+[2025-03-10 14:49:57] 
+======================================== Epoch 76/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3679 Train Acc: 63.5072%
+Val Loss: 0.8487 Val Acc: 86.7700%
+Best Val Acc: 88.4800%
+Learning Rate: 0.077957
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.54 hours
+==========================================================================================
+
+[2025-03-10 14:50:01] Epoch: 77 Batch: [100/313] Loss: 1.4023 Acc: 61.79% LR: 0.077726 Batch time: 23.0ms
+[2025-03-10 14:50:06] Epoch: 77 Batch: [200/313] Loss: 1.3596 Acc: 63.73% LR: 0.077493 Batch time: 23.6ms
+[2025-03-10 14:50:11] Epoch: 77 Batch: [300/313] Loss: 1.3786 Acc: 62.93% LR: 0.077260 Batch time: 23.5ms
+[2025-03-10 14:50:12] 
+======================================== Epoch 77/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3839 Train Acc: 62.7053%
+Val Loss: 0.8184 Val Acc: 88.5300%
+Best Val Acc: 88.4800%
+Learning Rate: 0.077230
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.54 hours
+==========================================================================================
+
+[2025-03-10 14:50:12] New best validation accuracy: 88.5300%
+[2025-03-10 14:50:12] Saved checkpoint at epoch 77 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_77.pth
+[2025-03-10 14:50:13] New best model! Accuracy: 88.5300%
+[2025-03-10 14:50:13] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:50:17] Epoch: 78 Batch: [100/313] Loss: 1.3341 Acc: 64.90% LR: 0.076995 Batch time: 23.1ms
+[2025-03-10 14:50:22] Epoch: 78 Batch: [200/313] Loss: 1.3950 Acc: 62.17% LR: 0.076760 Batch time: 23.5ms
+[2025-03-10 14:50:27] Epoch: 78 Batch: [300/313] Loss: 1.3974 Acc: 62.04% LR: 0.076524 Batch time: 23.5ms
+[2025-03-10 14:50:28] 
+======================================== Epoch 78/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3985 Train Acc: 62.0207%
+Val Loss: 0.8455 Val Acc: 86.9800%
+Best Val Acc: 88.5300%
+Learning Rate: 0.076494
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.53 hours
+==========================================================================================
+
+[2025-03-10 14:50:33] Epoch: 79 Batch: [100/313] Loss: 1.3779 Acc: 62.61% LR: 0.076257 Batch time: 23.6ms
+[2025-03-10 14:50:38] Epoch: 79 Batch: [200/313] Loss: 1.3877 Acc: 62.26% LR: 0.076019 Batch time: 23.0ms
+[2025-03-10 14:50:43] Epoch: 79 Batch: [300/313] Loss: 1.3784 Acc: 62.59% LR: 0.075781 Batch time: 23.0ms
+[2025-03-10 14:50:44] 
+======================================== Epoch 79/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3742 Train Acc: 62.7952%
+Val Loss: 0.8173 Val Acc: 87.3000%
+Best Val Acc: 88.5300%
+Learning Rate: 0.075750
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.53 hours
+==========================================================================================
+
+[2025-03-10 14:50:49] Epoch: 80 Batch: [100/313] Loss: 1.3770 Acc: 62.59% LR: 0.075510 Batch time: 23.5ms
+[2025-03-10 14:50:54] Epoch: 80 Batch: [200/313] Loss: 1.3952 Acc: 61.83% LR: 0.075270 Batch time: 23.0ms
+[2025-03-10 14:50:58] Epoch: 80 Batch: [300/313] Loss: 1.3828 Acc: 62.55% LR: 0.075029 Batch time: 23.6ms
+[2025-03-10 14:51:00] 
+======================================== Epoch 80/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3850 Train Acc: 62.4938%
+Val Loss: 0.8023 Val Acc: 88.4600%
+Best Val Acc: 88.5300%
+Learning Rate: 0.074998
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.52 hours
+==========================================================================================
+
+[2025-03-10 14:51:00] Saved checkpoint at epoch 80 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_80.pth
+[2025-03-10 14:51:05] Epoch: 81 Batch: [100/313] Loss: 1.2890 Acc: 66.46% LR: 0.074756 Batch time: 23.1ms
+[2025-03-10 14:51:09] Epoch: 81 Batch: [200/313] Loss: 1.3360 Acc: 64.75% LR: 0.074513 Batch time: 23.6ms
+[2025-03-10 14:51:14] Epoch: 81 Batch: [300/313] Loss: 1.3598 Acc: 63.72% LR: 0.074270 Batch time: 23.1ms
+[2025-03-10 14:51:15] 
+======================================== Epoch 81/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3614 Train Acc: 63.7068%
+Val Loss: 0.8144 Val Acc: 88.0800%
+Best Val Acc: 88.5300%
+Learning Rate: 0.074238
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.52 hours
+==========================================================================================
+
+[2025-03-10 14:51:20] Epoch: 82 Batch: [100/313] Loss: 1.3484 Acc: 64.27% LR: 0.073994 Batch time: 23.5ms
+[2025-03-10 14:51:25] Epoch: 82 Batch: [200/313] Loss: 1.3695 Acc: 63.66% LR: 0.073749 Batch time: 23.6ms
+[2025-03-10 14:51:30] Epoch: 82 Batch: [300/313] Loss: 1.3596 Acc: 64.03% LR: 0.073503 Batch time: 23.5ms
+[2025-03-10 14:51:31] 
+======================================== Epoch 82/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3680 Train Acc: 63.6237%
+Val Loss: 0.8502 Val Acc: 87.4400%
+Best Val Acc: 88.5300%
+Learning Rate: 0.073471
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.52 hours
+==========================================================================================
+
+[2025-03-10 14:51:36] Epoch: 83 Batch: [100/313] Loss: 1.3406 Acc: 64.83% LR: 0.073225 Batch time: 23.5ms
+[2025-03-10 14:51:41] Epoch: 83 Batch: [200/313] Loss: 1.3869 Acc: 62.58% LR: 0.072977 Batch time: 23.5ms
+[2025-03-10 14:51:46] Epoch: 83 Batch: [300/313] Loss: 1.3814 Acc: 62.74% LR: 0.072729 Batch time: 23.5ms
+[2025-03-10 14:51:47] 
+======================================== Epoch 83/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3782 Train Acc: 62.8917%
+Val Loss: 0.8408 Val Acc: 86.9500%
+Best Val Acc: 88.5300%
+Learning Rate: 0.072697
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.51 hours
+==========================================================================================
+
+[2025-03-10 14:51:52] Epoch: 84 Batch: [100/313] Loss: 1.3542 Acc: 63.88% LR: 0.072448 Batch time: 23.0ms
+[2025-03-10 14:51:57] Epoch: 84 Batch: [200/313] Loss: 1.3484 Acc: 64.25% LR: 0.072199 Batch time: 23.5ms
+[2025-03-10 14:52:01] Epoch: 84 Batch: [300/313] Loss: 1.3676 Acc: 63.27% LR: 0.071949 Batch time: 23.1ms
+[2025-03-10 14:52:03] 
+======================================== Epoch 84/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3657 Train Acc: 63.3298%
+Val Loss: 0.7904 Val Acc: 88.3600%
+Best Val Acc: 88.5300%
+Learning Rate: 0.071916
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.50 hours
+==========================================================================================
+
+[2025-03-10 14:52:08] Epoch: 85 Batch: [100/313] Loss: 1.2973 Acc: 66.35% LR: 0.071665 Batch time: 23.5ms
+[2025-03-10 14:52:12] Epoch: 85 Batch: [200/313] Loss: 1.3075 Acc: 65.97% LR: 0.071414 Batch time: 23.7ms
+[2025-03-10 14:52:17] Epoch: 85 Batch: [300/313] Loss: 1.3495 Acc: 64.15% LR: 0.071161 Batch time: 23.5ms
+[2025-03-10 14:52:18] 
+======================================== Epoch 85/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3462 Train Acc: 64.3129%
+Val Loss: 0.7831 Val Acc: 88.2900%
+Best Val Acc: 88.5300%
+Learning Rate: 0.071129
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.50 hours
+==========================================================================================
+
+[2025-03-10 14:52:23] Epoch: 86 Batch: [100/313] Loss: 1.3350 Acc: 65.04% LR: 0.070875 Batch time: 23.5ms
+[2025-03-10 14:52:28] Epoch: 86 Batch: [200/313] Loss: 1.3503 Acc: 64.29% LR: 0.070622 Batch time: 23.5ms
+[2025-03-10 14:52:33] Epoch: 86 Batch: [300/313] Loss: 1.3566 Acc: 63.92% LR: 0.070368 Batch time: 23.0ms
+[2025-03-10 14:52:34] 
+======================================== Epoch 86/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3586 Train Acc: 63.8632%
+Val Loss: 0.8013 Val Acc: 89.1300%
+Best Val Acc: 88.5300%
+Learning Rate: 0.070334
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.50 hours
+==========================================================================================
+
+[2025-03-10 14:52:34] New best validation accuracy: 89.1300%
+[2025-03-10 14:52:34] Saved checkpoint at epoch 86 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_86.pth
+[2025-03-10 14:52:34] New best model! Accuracy: 89.1300%
+[2025-03-10 14:52:34] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:52:39] Epoch: 87 Batch: [100/313] Loss: 1.3520 Acc: 63.96% LR: 0.070079 Batch time: 23.1ms
+[2025-03-10 14:52:44] Epoch: 87 Batch: [200/313] Loss: 1.3771 Acc: 62.76% LR: 0.069824 Batch time: 23.5ms
+[2025-03-10 14:52:49] Epoch: 87 Batch: [300/313] Loss: 1.3666 Acc: 63.36% LR: 0.069567 Batch time: 23.7ms
+[2025-03-10 14:52:50] 
+======================================== Epoch 87/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3764 Train Acc: 62.9289%
+Val Loss: 0.8664 Val Acc: 87.8200%
+Best Val Acc: 89.1300%
+Learning Rate: 0.069534
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.49 hours
+==========================================================================================
+
+[2025-03-10 14:52:55] Epoch: 88 Batch: [100/313] Loss: 1.4430 Acc: 59.73% LR: 0.069277 Batch time: 23.6ms
+[2025-03-10 14:53:00] Epoch: 88 Batch: [200/313] Loss: 1.4155 Acc: 61.11% LR: 0.069020 Batch time: 23.6ms
+[2025-03-10 14:53:05] Epoch: 88 Batch: [300/313] Loss: 1.3915 Acc: 62.20% LR: 0.068761 Batch time: 23.5ms
+[2025-03-10 14:53:06] 
+======================================== Epoch 88/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3976 Train Acc: 61.9799%
+Val Loss: 0.8233 Val Acc: 88.5900%
+Best Val Acc: 89.1300%
+Learning Rate: 0.068728
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.49 hours
+==========================================================================================
+
+[2025-03-10 14:53:11] Epoch: 89 Batch: [100/313] Loss: 1.3591 Acc: 64.33% LR: 0.068469 Batch time: 23.6ms
+[2025-03-10 14:53:16] Epoch: 89 Batch: [200/313] Loss: 1.3830 Acc: 62.77% LR: 0.068210 Batch time: 23.6ms
+[2025-03-10 14:53:20] Epoch: 89 Batch: [300/313] Loss: 1.3565 Acc: 64.04% LR: 0.067950 Batch time: 23.1ms
+[2025-03-10 14:53:22] 
+======================================== Epoch 89/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3643 Train Acc: 63.6991%
+Val Loss: 0.8668 Val Acc: 87.0000%
+Best Val Acc: 89.1300%
+Learning Rate: 0.067916
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.49 hours
+==========================================================================================
+
+[2025-03-10 14:53:26] Epoch: 90 Batch: [100/313] Loss: 1.3487 Acc: 64.30% LR: 0.067655 Batch time: 23.6ms
+[2025-03-10 14:53:31] Epoch: 90 Batch: [200/313] Loss: 1.3844 Acc: 62.61% LR: 0.067394 Batch time: 23.1ms
+[2025-03-10 14:53:36] Epoch: 90 Batch: [300/313] Loss: 1.3625 Acc: 63.54% LR: 0.067133 Batch time: 23.6ms
+[2025-03-10 14:53:37] 
+======================================== Epoch 90/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3640 Train Acc: 63.4190%
+Val Loss: 0.7899 Val Acc: 89.0300%
+Best Val Acc: 89.1300%
+Learning Rate: 0.067099
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.48 hours
+==========================================================================================
+
+[2025-03-10 14:53:37] Saved checkpoint at epoch 90 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_90.pth
+[2025-03-10 14:53:42] Epoch: 91 Batch: [100/313] Loss: 1.4057 Acc: 61.41% LR: 0.066836 Batch time: 23.5ms
+[2025-03-10 14:53:47] Epoch: 91 Batch: [200/313] Loss: 1.3913 Acc: 62.18% LR: 0.066573 Batch time: 23.6ms
+[2025-03-10 14:53:52] Epoch: 91 Batch: [300/313] Loss: 1.3694 Acc: 63.24% LR: 0.066310 Batch time: 23.1ms
+[2025-03-10 14:53:53] 
+======================================== Epoch 91/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3651 Train Acc: 63.3983%
+Val Loss: 0.8222 Val Acc: 86.4300%
+Best Val Acc: 89.1300%
+Learning Rate: 0.066276
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.48 hours
+==========================================================================================
+
+[2025-03-10 14:53:58] Epoch: 92 Batch: [100/313] Loss: 1.4548 Acc: 59.13% LR: 0.066012 Batch time: 23.5ms
+[2025-03-10 14:54:03] Epoch: 92 Batch: [200/313] Loss: 1.3896 Acc: 62.13% LR: 0.065748 Batch time: 23.1ms
+[2025-03-10 14:54:08] Epoch: 92 Batch: [300/313] Loss: 1.3732 Acc: 62.89% LR: 0.065483 Batch time: 23.5ms
+[2025-03-10 14:54:09] 
+======================================== Epoch 92/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3681 Train Acc: 63.1224%
+Val Loss: 0.8413 Val Acc: 86.2800%
+Best Val Acc: 89.1300%
+Learning Rate: 0.065448
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.47 hours
+==========================================================================================
+
+[2025-03-10 14:54:14] Epoch: 93 Batch: [100/313] Loss: 1.3090 Acc: 65.52% LR: 0.065183 Batch time: 23.6ms
+[2025-03-10 14:54:18] Epoch: 93 Batch: [200/313] Loss: 1.3504 Acc: 63.94% LR: 0.064917 Batch time: 23.6ms
+[2025-03-10 14:54:23] Epoch: 93 Batch: [300/313] Loss: 1.3455 Acc: 64.10% LR: 0.064651 Batch time: 23.6ms
+[2025-03-10 14:54:24] 
+======================================== Epoch 93/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3454 Train Acc: 64.0713%
+Val Loss: 0.7900 Val Acc: 88.3000%
+Best Val Acc: 89.1300%
+Learning Rate: 0.064616
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.47 hours
+==========================================================================================
+
+[2025-03-10 14:54:29] Epoch: 94 Batch: [100/313] Loss: 1.3444 Acc: 64.28% LR: 0.064349 Batch time: 23.6ms
+[2025-03-10 14:54:34] Epoch: 94 Batch: [200/313] Loss: 1.3519 Acc: 63.88% LR: 0.064082 Batch time: 23.6ms
+[2025-03-10 14:54:39] Epoch: 94 Batch: [300/313] Loss: 1.3546 Acc: 63.76% LR: 0.063814 Batch time: 23.6ms
+[2025-03-10 14:54:40] 
+======================================== Epoch 94/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3578 Train Acc: 63.6054%
+Val Loss: 0.8223 Val Acc: 87.7400%
+Best Val Acc: 89.1300%
+Learning Rate: 0.063779
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.46 hours
+==========================================================================================
+
+[2025-03-10 14:54:45] Epoch: 95 Batch: [100/313] Loss: 1.3766 Acc: 62.83% LR: 0.063511 Batch time: 23.0ms
+[2025-03-10 14:54:50] Epoch: 95 Batch: [200/313] Loss: 1.3488 Acc: 64.32% LR: 0.063242 Batch time: 23.6ms
+[2025-03-10 14:54:55] Epoch: 95 Batch: [300/313] Loss: 1.3663 Acc: 63.30% LR: 0.062973 Batch time: 23.6ms
+[2025-03-10 14:54:56] 
+======================================== Epoch 95/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3626 Train Acc: 63.4234%
+Val Loss: 0.7950 Val Acc: 88.4400%
+Best Val Acc: 89.1300%
+Learning Rate: 0.062938
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.46 hours
+==========================================================================================
+
+[2025-03-10 14:55:01] Epoch: 96 Batch: [100/313] Loss: 1.3152 Acc: 65.69% LR: 0.062669 Batch time: 23.6ms
+[2025-03-10 14:55:06] Epoch: 96 Batch: [200/313] Loss: 1.3404 Acc: 64.33% LR: 0.062399 Batch time: 23.1ms
+[2025-03-10 14:55:10] Epoch: 96 Batch: [300/313] Loss: 1.3280 Acc: 65.03% LR: 0.062129 Batch time: 23.5ms
+[2025-03-10 14:55:12] 
+======================================== Epoch 96/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3291 Train Acc: 64.9814%
+Val Loss: 0.7806 Val Acc: 89.9100%
+Best Val Acc: 89.1300%
+Learning Rate: 0.062094
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.45 hours
+==========================================================================================
+
+[2025-03-10 14:55:12] New best validation accuracy: 89.9100%
+[2025-03-10 14:55:12] Saved checkpoint at epoch 96 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_96.pth
+[2025-03-10 14:55:12] New best model! Accuracy: 89.9100%
+[2025-03-10 14:55:12] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:55:17] Epoch: 97 Batch: [100/313] Loss: 1.3238 Acc: 65.30% LR: 0.061823 Batch time: 23.5ms
+[2025-03-10 14:55:22] Epoch: 97 Batch: [200/313] Loss: 1.3509 Acc: 64.00% LR: 0.061552 Batch time: 23.6ms
+[2025-03-10 14:55:26] Epoch: 97 Batch: [300/313] Loss: 1.3632 Acc: 63.43% LR: 0.061280 Batch time: 23.6ms
+[2025-03-10 14:55:28] 
+======================================== Epoch 97/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3596 Train Acc: 63.6579%
+Val Loss: 0.7753 Val Acc: 89.0200%
+Best Val Acc: 89.9100%
+Learning Rate: 0.061245
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.45 hours
+==========================================================================================
+
+[2025-03-10 14:55:33] Epoch: 98 Batch: [100/313] Loss: 1.3090 Acc: 65.90% LR: 0.060973 Batch time: 23.0ms
+[2025-03-10 14:55:37] Epoch: 98 Batch: [200/313] Loss: 1.3319 Acc: 64.89% LR: 0.060701 Batch time: 23.6ms
+[2025-03-10 14:55:42] Epoch: 98 Batch: [300/313] Loss: 1.3372 Acc: 64.86% LR: 0.060428 Batch time: 23.6ms
+[2025-03-10 14:55:43] 
+======================================== Epoch 98/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3346 Train Acc: 64.9659%
+Val Loss: 0.7885 Val Acc: 89.3000%
+Best Val Acc: 89.9100%
+Learning Rate: 0.060393
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.45 hours
+==========================================================================================
+
+[2025-03-10 14:55:48] Epoch: 99 Batch: [100/313] Loss: 1.3579 Acc: 64.11% LR: 0.060120 Batch time: 23.5ms
+[2025-03-10 14:55:53] Epoch: 99 Batch: [200/313] Loss: 1.3459 Acc: 64.51% LR: 0.059847 Batch time: 23.5ms
+[2025-03-10 14:55:58] Epoch: 99 Batch: [300/313] Loss: 1.3369 Acc: 64.87% LR: 0.059573 Batch time: 23.0ms
+[2025-03-10 14:55:59] 
+======================================== Epoch 99/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3336 Train Acc: 64.9862%
+Val Loss: 0.7748 Val Acc: 89.0200%
+Best Val Acc: 89.9100%
+Learning Rate: 0.059538
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.44 hours
+==========================================================================================
+
+[2025-03-10 14:56:04] Epoch: 100 Batch: [100/313] Loss: 1.2980 Acc: 66.11% LR: 0.059264 Batch time: 23.5ms
+[2025-03-10 14:56:09] Epoch: 100 Batch: [200/313] Loss: 1.3073 Acc: 65.78% LR: 0.058990 Batch time: 23.1ms
+[2025-03-10 14:56:14] Epoch: 100 Batch: [300/313] Loss: 1.3178 Acc: 65.41% LR: 0.058716 Batch time: 23.6ms
+[2025-03-10 14:56:15] 
+======================================== Epoch 100/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3184 Train Acc: 65.3576%
+Val Loss: 0.7903 Val Acc: 88.7900%
+Best Val Acc: 89.9100%
+Learning Rate: 0.058680
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.44 hours
+==========================================================================================
+
+[2025-03-10 14:56:15] Saved checkpoint at epoch 100 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_100.pth
+[2025-03-10 14:56:20] Epoch: 101 Batch: [100/313] Loss: 1.3737 Acc: 62.79% LR: 0.058405 Batch time: 23.1ms
+[2025-03-10 14:56:25] Epoch: 101 Batch: [200/313] Loss: 1.3396 Acc: 64.37% LR: 0.058130 Batch time: 22.9ms
+[2025-03-10 14:56:29] Epoch: 101 Batch: [300/313] Loss: 1.3109 Acc: 65.70% LR: 0.057855 Batch time: 23.5ms
+[2025-03-10 14:56:31] 
+======================================== Epoch 101/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3062 Train Acc: 65.9398%
+Val Loss: 0.7834 Val Acc: 88.7800%
+Best Val Acc: 89.9100%
+Learning Rate: 0.057819
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.43 hours
+==========================================================================================
+
+[2025-03-10 14:56:36] Epoch: 102 Batch: [100/313] Loss: 1.3408 Acc: 64.01% LR: 0.057544 Batch time: 23.6ms
+[2025-03-10 14:56:40] Epoch: 102 Batch: [200/313] Loss: 1.3135 Acc: 65.58% LR: 0.057268 Batch time: 23.0ms
+[2025-03-10 14:56:45] Epoch: 102 Batch: [300/313] Loss: 1.3186 Acc: 65.32% LR: 0.056992 Batch time: 23.6ms
+[2025-03-10 14:56:46] 
+======================================== Epoch 102/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3190 Train Acc: 65.2662%
+Val Loss: 0.7951 Val Acc: 88.5000%
+Best Val Acc: 89.9100%
+Learning Rate: 0.056956
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.43 hours
+==========================================================================================
+
+[2025-03-10 14:56:51] Epoch: 103 Batch: [100/313] Loss: 1.3235 Acc: 65.05% LR: 0.056680 Batch time: 23.6ms
+[2025-03-10 14:56:56] Epoch: 103 Batch: [200/313] Loss: 1.3341 Acc: 64.57% LR: 0.056403 Batch time: 23.3ms
+[2025-03-10 14:57:01] Epoch: 103 Batch: [300/313] Loss: 1.3468 Acc: 64.12% LR: 0.056127 Batch time: 23.0ms
+[2025-03-10 14:57:02] 
+======================================== Epoch 103/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3461 Train Acc: 64.1128%
+Val Loss: 0.7726 Val Acc: 90.2600%
+Best Val Acc: 89.9100%
+Learning Rate: 0.056091
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.42 hours
+==========================================================================================
+
+[2025-03-10 14:57:02] New best validation accuracy: 90.2600%
+[2025-03-10 14:57:02] Saved checkpoint at epoch 103 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_103.pth
+[2025-03-10 14:57:02] New best model! Accuracy: 90.2600%
+[2025-03-10 14:57:02] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 14:57:08] Epoch: 104 Batch: [100/313] Loss: 1.2793 Acc: 66.51% LR: 0.055814 Batch time: 23.0ms
+[2025-03-10 14:57:12] Epoch: 104 Batch: [200/313] Loss: 1.2979 Acc: 65.85% LR: 0.055537 Batch time: 23.6ms
+[2025-03-10 14:57:17] Epoch: 104 Batch: [300/313] Loss: 1.3279 Acc: 64.73% LR: 0.055260 Batch time: 23.5ms
+[2025-03-10 14:57:18] 
+======================================== Epoch 104/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3314 Train Acc: 64.5801%
+Val Loss: 0.7996 Val Acc: 89.1900%
+Best Val Acc: 90.2600%
+Learning Rate: 0.055224
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.42 hours
+==========================================================================================
+
+[2025-03-10 14:57:23] Epoch: 105 Batch: [100/313] Loss: 1.3011 Acc: 66.48% LR: 0.054946 Batch time: 23.5ms
+[2025-03-10 14:57:28] Epoch: 105 Batch: [200/313] Loss: 1.3301 Acc: 64.93% LR: 0.054669 Batch time: 23.1ms
+[2025-03-10 14:57:33] Epoch: 105 Batch: [300/313] Loss: 1.3302 Acc: 64.88% LR: 0.054391 Batch time: 23.0ms
+[2025-03-10 14:57:34] 
+======================================== Epoch 105/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3240 Train Acc: 65.1677%
+Val Loss: 0.7835 Val Acc: 88.3600%
+Best Val Acc: 90.2600%
+Learning Rate: 0.054355
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.41 hours
+==========================================================================================
+
+[2025-03-10 14:57:39] Epoch: 106 Batch: [100/313] Loss: 1.3302 Acc: 64.72% LR: 0.054077 Batch time: 23.1ms
+[2025-03-10 14:57:44] Epoch: 106 Batch: [200/313] Loss: 1.3307 Acc: 64.93% LR: 0.053799 Batch time: 23.2ms
+[2025-03-10 14:57:48] Epoch: 106 Batch: [300/313] Loss: 1.3295 Acc: 65.06% LR: 0.053521 Batch time: 23.6ms
+[2025-03-10 14:57:50] 
+======================================== Epoch 106/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3308 Train Acc: 64.9949%
+Val Loss: 0.7745 Val Acc: 89.8900%
+Best Val Acc: 90.2600%
+Learning Rate: 0.053485
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.41 hours
+==========================================================================================
+
+[2025-03-10 14:57:55] Epoch: 107 Batch: [100/313] Loss: 1.3702 Acc: 63.25% LR: 0.053207 Batch time: 23.6ms
+[2025-03-10 14:57:59] Epoch: 107 Batch: [200/313] Loss: 1.3337 Acc: 64.87% LR: 0.052929 Batch time: 23.6ms
+[2025-03-10 14:58:04] Epoch: 107 Batch: [300/313] Loss: 1.3240 Acc: 65.38% LR: 0.052650 Batch time: 23.5ms
+[2025-03-10 14:58:05] 
+======================================== Epoch 107/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3233 Train Acc: 65.4075%
+Val Loss: 0.7963 Val Acc: 88.5100%
+Best Val Acc: 90.2600%
+Learning Rate: 0.052614
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.41 hours
+==========================================================================================
+
+[2025-03-10 14:58:10] Epoch: 108 Batch: [100/313] Loss: 1.3479 Acc: 64.46% LR: 0.052336 Batch time: 23.6ms
+[2025-03-10 14:58:15] Epoch: 108 Batch: [200/313] Loss: 1.3300 Acc: 65.15% LR: 0.052057 Batch time: 23.0ms
+[2025-03-10 14:58:20] Epoch: 108 Batch: [300/313] Loss: 1.3522 Acc: 64.21% LR: 0.051779 Batch time: 23.6ms
+[2025-03-10 14:58:21] 
+======================================== Epoch 108/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3518 Train Acc: 64.1942%
+Val Loss: 0.7961 Val Acc: 88.7700%
+Best Val Acc: 90.2600%
+Learning Rate: 0.051742
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.40 hours
+==========================================================================================
+
+[2025-03-10 14:58:26] Epoch: 109 Batch: [100/313] Loss: 1.3533 Acc: 64.09% LR: 0.051464 Batch time: 23.0ms
+[2025-03-10 14:58:31] Epoch: 109 Batch: [200/313] Loss: 1.3205 Acc: 65.58% LR: 0.051185 Batch time: 23.6ms
+[2025-03-10 14:58:36] Epoch: 109 Batch: [300/313] Loss: 1.3351 Acc: 64.80% LR: 0.050906 Batch time: 23.1ms
+[2025-03-10 14:58:37] 
+======================================== Epoch 109/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3302 Train Acc: 64.9783%
+Val Loss: 0.7740 Val Acc: 88.9300%
+Best Val Acc: 90.2600%
+Learning Rate: 0.050870
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.40 hours
+==========================================================================================
+
+[2025-03-10 14:58:42] Epoch: 110 Batch: [100/313] Loss: 1.3020 Acc: 66.11% LR: 0.050591 Batch time: 23.5ms
+[2025-03-10 14:58:47] Epoch: 110 Batch: [200/313] Loss: 1.3454 Acc: 64.23% LR: 0.050312 Batch time: 23.5ms
+[2025-03-10 14:58:51] Epoch: 110 Batch: [300/313] Loss: 1.3447 Acc: 64.22% LR: 0.050034 Batch time: 23.1ms
+[2025-03-10 14:58:53] 
+======================================== Epoch 110/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3419 Train Acc: 64.4016%
+Val Loss: 0.7774 Val Acc: 89.1800%
+Best Val Acc: 90.2600%
+Learning Rate: 0.049997
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.39 hours
+==========================================================================================
+
+[2025-03-10 14:58:53] Saved checkpoint at epoch 110 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_110.pth
+[2025-03-10 14:58:58] Epoch: 111 Batch: [100/313] Loss: 1.3180 Acc: 65.09% LR: 0.049719 Batch time: 23.1ms
+[2025-03-10 14:59:02] Epoch: 111 Batch: [200/313] Loss: 1.3689 Acc: 63.34% LR: 0.049440 Batch time: 23.0ms
+[2025-03-10 14:59:07] Epoch: 111 Batch: [300/313] Loss: 1.3642 Acc: 63.58% LR: 0.049161 Batch time: 23.6ms
+[2025-03-10 14:59:08] 
+======================================== Epoch 111/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3683 Train Acc: 63.4506%
+Val Loss: 0.8111 Val Acc: 89.3300%
+Best Val Acc: 90.2600%
+Learning Rate: 0.049125
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.39 hours
+==========================================================================================
+
+[2025-03-10 14:59:13] Epoch: 112 Batch: [100/313] Loss: 1.3478 Acc: 64.07% LR: 0.048846 Batch time: 23.7ms
+[2025-03-10 14:59:18] Epoch: 112 Batch: [200/313] Loss: 1.2894 Acc: 66.83% LR: 0.048567 Batch time: 23.1ms
+[2025-03-10 14:59:23] Epoch: 112 Batch: [300/313] Loss: 1.3091 Acc: 65.91% LR: 0.048289 Batch time: 23.6ms
+[2025-03-10 14:59:24] 
+======================================== Epoch 112/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3102 Train Acc: 65.8705%
+Val Loss: 0.7669 Val Acc: 89.6200%
+Best Val Acc: 90.2600%
+Learning Rate: 0.048252
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.39 hours
+==========================================================================================
+
+[2025-03-10 14:59:29] Epoch: 113 Batch: [100/313] Loss: 1.2953 Acc: 66.83% LR: 0.047974 Batch time: 23.3ms
+[2025-03-10 14:59:34] Epoch: 113 Batch: [200/313] Loss: 1.2968 Acc: 66.49% LR: 0.047695 Batch time: 23.8ms
+[2025-03-10 14:59:39] Epoch: 113 Batch: [300/313] Loss: 1.3140 Acc: 65.79% LR: 0.047417 Batch time: 23.1ms
+[2025-03-10 14:59:40] 
+======================================== Epoch 113/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3156 Train Acc: 65.7227%
+Val Loss: 0.7740 Val Acc: 89.6000%
+Best Val Acc: 90.2600%
+Learning Rate: 0.047381
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.38 hours
+==========================================================================================
+
+[2025-03-10 14:59:45] Epoch: 114 Batch: [100/313] Loss: 1.2439 Acc: 68.92% LR: 0.047102 Batch time: 23.6ms
+[2025-03-10 14:59:50] Epoch: 114 Batch: [200/313] Loss: 1.2822 Acc: 67.28% LR: 0.046824 Batch time: 23.5ms
+[2025-03-10 14:59:54] Epoch: 114 Batch: [300/313] Loss: 1.3035 Acc: 66.27% LR: 0.046546 Batch time: 23.1ms
+[2025-03-10 14:59:56] 
+======================================== Epoch 114/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3013 Train Acc: 66.3474%
+Val Loss: 0.7557 Val Acc: 90.6900%
+Best Val Acc: 90.2600%
+Learning Rate: 0.046510
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.38 hours
+==========================================================================================
+
+[2025-03-10 14:59:56] New best validation accuracy: 90.6900%
+[2025-03-10 14:59:56] Saved checkpoint at epoch 114 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_114.pth
+[2025-03-10 14:59:56] New best model! Accuracy: 90.6900%
+[2025-03-10 14:59:56] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:00:01] Epoch: 115 Batch: [100/313] Loss: 1.3204 Acc: 65.28% LR: 0.046232 Batch time: 23.6ms
+[2025-03-10 15:00:06] Epoch: 115 Batch: [200/313] Loss: 1.3141 Acc: 65.88% LR: 0.045954 Batch time: 23.0ms
+[2025-03-10 15:00:11] Epoch: 115 Batch: [300/313] Loss: 1.3066 Acc: 66.07% LR: 0.045676 Batch time: 23.6ms
+[2025-03-10 15:00:12] 
+======================================== Epoch 115/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3047 Train Acc: 66.1609%
+Val Loss: 0.7583 Val Acc: 90.0900%
+Best Val Acc: 90.6900%
+Learning Rate: 0.045640
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.37 hours
+==========================================================================================
+
+[2025-03-10 15:00:17] Epoch: 116 Batch: [100/313] Loss: 1.3154 Acc: 65.48% LR: 0.045362 Batch time: 23.6ms
+[2025-03-10 15:00:22] Epoch: 116 Batch: [200/313] Loss: 1.3249 Acc: 64.90% LR: 0.045084 Batch time: 23.7ms
+[2025-03-10 15:00:26] Epoch: 116 Batch: [300/313] Loss: 1.3136 Acc: 65.59% LR: 0.044807 Batch time: 23.5ms
+[2025-03-10 15:00:28] 
+======================================== Epoch 116/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3147 Train Acc: 65.5294%
+Val Loss: 0.7556 Val Acc: 90.6300%
+Best Val Acc: 90.6900%
+Learning Rate: 0.044771
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.37 hours
+==========================================================================================
+
+[2025-03-10 15:00:33] Epoch: 117 Batch: [100/313] Loss: 1.3025 Acc: 66.33% LR: 0.044494 Batch time: 23.6ms
+[2025-03-10 15:00:37] Epoch: 117 Batch: [200/313] Loss: 1.3022 Acc: 66.36% LR: 0.044217 Batch time: 23.6ms
+[2025-03-10 15:00:42] Epoch: 117 Batch: [300/313] Loss: 1.2894 Acc: 66.73% LR: 0.043940 Batch time: 23.1ms
+[2025-03-10 15:00:43] 
+======================================== Epoch 117/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2953 Train Acc: 66.4465%
+Val Loss: 0.7870 Val Acc: 89.6200%
+Best Val Acc: 90.6900%
+Learning Rate: 0.043904
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.36 hours
+==========================================================================================
+
+[2025-03-10 15:00:48] Epoch: 118 Batch: [100/313] Loss: 1.2885 Acc: 66.85% LR: 0.043627 Batch time: 23.6ms
+[2025-03-10 15:00:53] Epoch: 118 Batch: [200/313] Loss: 1.2928 Acc: 66.79% LR: 0.043351 Batch time: 23.6ms
+[2025-03-10 15:00:58] Epoch: 118 Batch: [300/313] Loss: 1.3090 Acc: 66.07% LR: 0.043075 Batch time: 23.7ms
+[2025-03-10 15:00:59] 
+======================================== Epoch 118/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3104 Train Acc: 66.0566%
+Val Loss: 0.7993 Val Acc: 88.4100%
+Best Val Acc: 90.6900%
+Learning Rate: 0.043039
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.36 hours
+==========================================================================================
+
+[2025-03-10 15:01:04] Epoch: 119 Batch: [100/313] Loss: 1.3442 Acc: 64.19% LR: 0.042763 Batch time: 23.5ms
+[2025-03-10 15:01:09] Epoch: 119 Batch: [200/313] Loss: 1.3256 Acc: 65.17% LR: 0.042487 Batch time: 23.6ms
+[2025-03-10 15:01:14] Epoch: 119 Batch: [300/313] Loss: 1.3239 Acc: 65.14% LR: 0.042212 Batch time: 23.1ms
+[2025-03-10 15:01:15] 
+======================================== Epoch 119/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3156 Train Acc: 65.5773%
+Val Loss: 0.7505 Val Acc: 90.0900%
+Best Val Acc: 90.6900%
+Learning Rate: 0.042176
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.35 hours
+==========================================================================================
+
+[2025-03-10 15:01:20] Epoch: 120 Batch: [100/313] Loss: 1.3493 Acc: 64.06% LR: 0.041901 Batch time: 23.6ms
+[2025-03-10 15:01:25] Epoch: 120 Batch: [200/313] Loss: 1.3157 Acc: 65.58% LR: 0.041626 Batch time: 23.6ms
+[2025-03-10 15:01:29] Epoch: 120 Batch: [300/313] Loss: 1.3092 Acc: 65.88% LR: 0.041351 Batch time: 23.1ms
+[2025-03-10 15:01:31] 
+======================================== Epoch 120/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3127 Train Acc: 65.7694%
+Val Loss: 0.7759 Val Acc: 89.7200%
+Best Val Acc: 90.6900%
+Learning Rate: 0.041315
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.35 hours
+==========================================================================================
+
+[2025-03-10 15:01:31] Saved checkpoint at epoch 120 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_120.pth
+[2025-03-10 15:01:36] Epoch: 121 Batch: [100/313] Loss: 1.3450 Acc: 64.11% LR: 0.041041 Batch time: 23.6ms
+[2025-03-10 15:01:41] Epoch: 121 Batch: [200/313] Loss: 1.3435 Acc: 64.27% LR: 0.040766 Batch time: 23.0ms
+[2025-03-10 15:01:45] Epoch: 121 Batch: [300/313] Loss: 1.3297 Acc: 64.99% LR: 0.040493 Batch time: 23.0ms
+[2025-03-10 15:01:47] 
+======================================== Epoch 121/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3355 Train Acc: 64.7341%
+Val Loss: 0.7998 Val Acc: 89.7500%
+Best Val Acc: 90.6900%
+Learning Rate: 0.040457
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.35 hours
+==========================================================================================
+
+[2025-03-10 15:01:52] Epoch: 122 Batch: [100/313] Loss: 1.3076 Acc: 65.55% LR: 0.040184 Batch time: 23.5ms
+[2025-03-10 15:01:56] Epoch: 122 Batch: [200/313] Loss: 1.2987 Acc: 66.05% LR: 0.039910 Batch time: 23.5ms
+[2025-03-10 15:02:01] Epoch: 122 Batch: [300/313] Loss: 1.3039 Acc: 65.99% LR: 0.039637 Batch time: 23.6ms
+[2025-03-10 15:02:02] 
+======================================== Epoch 122/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3041 Train Acc: 66.0327%
+Val Loss: 0.7490 Val Acc: 91.1100%
+Best Val Acc: 90.6900%
+Learning Rate: 0.039602
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.34 hours
+==========================================================================================
+
+[2025-03-10 15:02:02] New best validation accuracy: 91.1100%
+[2025-03-10 15:02:02] Saved checkpoint at epoch 122 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_122.pth
+[2025-03-10 15:02:03] New best model! Accuracy: 91.1100%
+[2025-03-10 15:02:03] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:02:07] Epoch: 123 Batch: [100/313] Loss: 1.3322 Acc: 65.11% LR: 0.039329 Batch time: 23.1ms
+[2025-03-10 15:02:12] Epoch: 123 Batch: [200/313] Loss: 1.3137 Acc: 65.95% LR: 0.039057 Batch time: 23.5ms
+[2025-03-10 15:02:17] Epoch: 123 Batch: [300/313] Loss: 1.3098 Acc: 66.04% LR: 0.038785 Batch time: 23.5ms
+[2025-03-10 15:02:18] 
+======================================== Epoch 123/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3091 Train Acc: 66.0295%
+Val Loss: 0.7639 Val Acc: 89.9300%
+Best Val Acc: 91.1100%
+Learning Rate: 0.038750
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.34 hours
+==========================================================================================
+
+[2025-03-10 15:02:23] Epoch: 124 Batch: [100/313] Loss: 1.3328 Acc: 64.18% LR: 0.038478 Batch time: 23.6ms
+[2025-03-10 15:02:28] Epoch: 124 Batch: [200/313] Loss: 1.3050 Acc: 65.65% LR: 0.038207 Batch time: 23.1ms
+[2025-03-10 15:02:33] Epoch: 124 Batch: [300/313] Loss: 1.3288 Acc: 64.80% LR: 0.037937 Batch time: 23.0ms
+[2025-03-10 15:02:34] 
+======================================== Epoch 124/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3309 Train Acc: 64.6856%
+Val Loss: 0.7632 Val Acc: 90.5200%
+Best Val Acc: 91.1100%
+Learning Rate: 0.037901
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.33 hours
+==========================================================================================
+
+[2025-03-10 15:02:39] Epoch: 125 Batch: [100/313] Loss: 1.3349 Acc: 64.81% LR: 0.037631 Batch time: 23.7ms
+[2025-03-10 15:02:44] Epoch: 125 Batch: [200/313] Loss: 1.3127 Acc: 65.80% LR: 0.037361 Batch time: 23.5ms
+[2025-03-10 15:02:48] Epoch: 125 Batch: [300/313] Loss: 1.3139 Acc: 65.77% LR: 0.037092 Batch time: 23.6ms
+[2025-03-10 15:02:50] 
+======================================== Epoch 125/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3144 Train Acc: 65.7985%
+Val Loss: 0.8076 Val Acc: 88.0200%
+Best Val Acc: 91.1100%
+Learning Rate: 0.037057
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.33 hours
+==========================================================================================
+
+[2025-03-10 15:02:55] Epoch: 126 Batch: [100/313] Loss: 1.3382 Acc: 64.79% LR: 0.036788 Batch time: 23.5ms
+[2025-03-10 15:02:59] Epoch: 126 Batch: [200/313] Loss: 1.3372 Acc: 64.59% LR: 0.036519 Batch time: 23.5ms
+[2025-03-10 15:03:04] Epoch: 126 Batch: [300/313] Loss: 1.3103 Acc: 65.68% LR: 0.036251 Batch time: 23.0ms
+[2025-03-10 15:03:05] 
+======================================== Epoch 126/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3052 Train Acc: 65.8567%
+Val Loss: 0.7678 Val Acc: 89.6600%
+Best Val Acc: 91.1100%
+Learning Rate: 0.036216
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.32 hours
+==========================================================================================
+
+[2025-03-10 15:03:10] Epoch: 127 Batch: [100/313] Loss: 1.2556 Acc: 68.15% LR: 0.035948 Batch time: 23.6ms
+[2025-03-10 15:03:15] Epoch: 127 Batch: [200/313] Loss: 1.2905 Acc: 66.46% LR: 0.035681 Batch time: 23.0ms
+[2025-03-10 15:03:20] Epoch: 127 Batch: [300/313] Loss: 1.3002 Acc: 66.10% LR: 0.035414 Batch time: 23.1ms
+[2025-03-10 15:03:21] 
+======================================== Epoch 127/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2983 Train Acc: 66.1376%
+Val Loss: 0.7421 Val Acc: 90.6300%
+Best Val Acc: 91.1100%
+Learning Rate: 0.035379
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.32 hours
+==========================================================================================
+
+[2025-03-10 15:03:26] Epoch: 128 Batch: [100/313] Loss: 1.2974 Acc: 66.67% LR: 0.035113 Batch time: 23.6ms
+[2025-03-10 15:03:31] Epoch: 128 Batch: [200/313] Loss: 1.3090 Acc: 65.76% LR: 0.034847 Batch time: 23.2ms
+[2025-03-10 15:03:36] Epoch: 128 Batch: [300/313] Loss: 1.2811 Acc: 67.10% LR: 0.034581 Batch time: 23.6ms
+[2025-03-10 15:03:37] 
+======================================== Epoch 128/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2777 Train Acc: 67.2545%
+Val Loss: 0.7210 Val Acc: 91.6300%
+Best Val Acc: 91.1100%
+Learning Rate: 0.034547
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.31 hours
+==========================================================================================
+
+[2025-03-10 15:03:37] New best validation accuracy: 91.6300%
+[2025-03-10 15:03:37] Saved checkpoint at epoch 128 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_128.pth
+[2025-03-10 15:03:37] New best model! Accuracy: 91.6300%
+[2025-03-10 15:03:37] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:03:42] Epoch: 129 Batch: [100/313] Loss: 1.2765 Acc: 67.57% LR: 0.034282 Batch time: 23.5ms
+[2025-03-10 15:03:47] Epoch: 129 Batch: [200/313] Loss: 1.2965 Acc: 66.61% LR: 0.034017 Batch time: 23.7ms
+[2025-03-10 15:03:52] Epoch: 129 Batch: [300/313] Loss: 1.2790 Acc: 67.23% LR: 0.033753 Batch time: 23.7ms
+[2025-03-10 15:03:53] 
+======================================== Epoch 129/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2745 Train Acc: 67.4035%
+Val Loss: 0.7343 Val Acc: 90.8400%
+Best Val Acc: 91.6300%
+Learning Rate: 0.033719
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.31 hours
+==========================================================================================
+
+[2025-03-10 15:03:58] Epoch: 130 Batch: [100/313] Loss: 1.2864 Acc: 66.39% LR: 0.033456 Batch time: 23.5ms
+[2025-03-10 15:04:03] Epoch: 130 Batch: [200/313] Loss: 1.2856 Acc: 66.46% LR: 0.033193 Batch time: 23.1ms
+[2025-03-10 15:04:07] Epoch: 130 Batch: [300/313] Loss: 1.2631 Acc: 67.54% LR: 0.032931 Batch time: 23.6ms
+[2025-03-10 15:04:09] 
+======================================== Epoch 130/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2666 Train Acc: 67.4277%
+Val Loss: 0.7869 Val Acc: 90.0200%
+Best Val Acc: 91.6300%
+Learning Rate: 0.032897
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.31 hours
+==========================================================================================
+
+[2025-03-10 15:04:09] Saved checkpoint at epoch 130 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_130.pth
+[2025-03-10 15:04:14] Epoch: 131 Batch: [100/313] Loss: 1.3154 Acc: 65.61% LR: 0.032635 Batch time: 23.7ms
+[2025-03-10 15:04:19] Epoch: 131 Batch: [200/313] Loss: 1.2515 Acc: 68.32% LR: 0.032374 Batch time: 23.0ms
+[2025-03-10 15:04:23] Epoch: 131 Batch: [300/313] Loss: 1.2732 Acc: 67.57% LR: 0.032113 Batch time: 23.0ms
+[2025-03-10 15:04:25] 
+======================================== Epoch 131/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2686 Train Acc: 67.7816%
+Val Loss: 0.7468 Val Acc: 91.1000%
+Best Val Acc: 91.6300%
+Learning Rate: 0.032079
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.30 hours
+==========================================================================================
+
+[2025-03-10 15:04:30] Epoch: 132 Batch: [100/313] Loss: 1.3243 Acc: 65.02% LR: 0.031819 Batch time: 23.5ms
+[2025-03-10 15:04:34] Epoch: 132 Batch: [200/313] Loss: 1.2867 Acc: 66.68% LR: 0.031560 Batch time: 23.1ms
+[2025-03-10 15:04:39] Epoch: 132 Batch: [300/313] Loss: 1.2827 Acc: 66.90% LR: 0.031301 Batch time: 23.1ms
+[2025-03-10 15:04:40] 
+======================================== Epoch 132/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2760 Train Acc: 67.1881%
+Val Loss: 0.7292 Val Acc: 91.0200%
+Best Val Acc: 91.6300%
+Learning Rate: 0.031267
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.30 hours
+==========================================================================================
+
+[2025-03-10 15:04:45] Epoch: 133 Batch: [100/313] Loss: 1.2726 Acc: 67.15% LR: 0.031009 Batch time: 23.6ms
+[2025-03-10 15:04:50] Epoch: 133 Batch: [200/313] Loss: 1.2269 Acc: 69.12% LR: 0.030752 Batch time: 23.1ms
+[2025-03-10 15:04:55] Epoch: 133 Batch: [300/313] Loss: 1.2452 Acc: 68.50% LR: 0.030495 Batch time: 23.6ms
+[2025-03-10 15:04:56] 
+======================================== Epoch 133/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2401 Train Acc: 68.6963%
+Val Loss: 0.7616 Val Acc: 89.9000%
+Best Val Acc: 91.6300%
+Learning Rate: 0.030461
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.29 hours
+==========================================================================================
+
+[2025-03-10 15:05:01] Epoch: 134 Batch: [100/313] Loss: 1.3022 Acc: 66.29% LR: 0.030205 Batch time: 23.6ms
+[2025-03-10 15:05:06] Epoch: 134 Batch: [200/313] Loss: 1.3251 Acc: 65.27% LR: 0.029949 Batch time: 23.6ms
+[2025-03-10 15:05:11] Epoch: 134 Batch: [300/313] Loss: 1.3005 Acc: 66.30% LR: 0.029694 Batch time: 23.7ms
+[2025-03-10 15:05:12] 
+======================================== Epoch 134/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2999 Train Acc: 66.3758%
+Val Loss: 0.7464 Val Acc: 90.8300%
+Best Val Acc: 91.6300%
+Learning Rate: 0.029661
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.29 hours
+==========================================================================================
+
+[2025-03-10 15:05:17] Epoch: 135 Batch: [100/313] Loss: 1.2776 Acc: 67.53% LR: 0.029407 Batch time: 23.7ms
+[2025-03-10 15:05:22] Epoch: 135 Batch: [200/313] Loss: 1.2974 Acc: 66.44% LR: 0.029153 Batch time: 23.0ms
+[2025-03-10 15:05:26] Epoch: 135 Batch: [300/313] Loss: 1.2772 Acc: 67.40% LR: 0.028900 Batch time: 23.6ms
+[2025-03-10 15:05:28] 
+======================================== Epoch 135/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2781 Train Acc: 67.3776%
+Val Loss: 0.7549 Val Acc: 91.4700%
+Best Val Acc: 91.6300%
+Learning Rate: 0.028867
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.28 hours
+==========================================================================================
+
+[2025-03-10 15:05:33] Epoch: 136 Batch: [100/313] Loss: 1.3050 Acc: 66.26% LR: 0.028614 Batch time: 23.3ms
+[2025-03-10 15:05:38] Epoch: 136 Batch: [200/313] Loss: 1.2956 Acc: 66.66% LR: 0.028363 Batch time: 23.6ms
+[2025-03-10 15:05:42] Epoch: 136 Batch: [300/313] Loss: 1.2748 Acc: 67.53% LR: 0.028112 Batch time: 23.6ms
+[2025-03-10 15:05:44] 
+======================================== Epoch 136/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2807 Train Acc: 67.3326%
+Val Loss: 0.7478 Val Acc: 91.4700%
+Best Val Acc: 91.6300%
+Learning Rate: 0.028079
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.28 hours
+==========================================================================================
+
+[2025-03-10 15:05:49] Epoch: 137 Batch: [100/313] Loss: 1.2432 Acc: 68.61% LR: 0.027829 Batch time: 23.2ms
+[2025-03-10 15:05:53] Epoch: 137 Batch: [200/313] Loss: 1.2671 Acc: 67.87% LR: 0.027579 Batch time: 23.7ms
+[2025-03-10 15:05:58] Epoch: 137 Batch: [300/313] Loss: 1.2799 Acc: 67.28% LR: 0.027331 Batch time: 23.6ms
+[2025-03-10 15:05:59] 
+======================================== Epoch 137/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2719 Train Acc: 67.5453%
+Val Loss: 0.7262 Val Acc: 91.8200%
+Best Val Acc: 91.6300%
+Learning Rate: 0.027298
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.28 hours
+==========================================================================================
+
+[2025-03-10 15:05:59] New best validation accuracy: 91.8200%
+[2025-03-10 15:05:59] Saved checkpoint at epoch 137 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_137.pth
+[2025-03-10 15:06:00] New best model! Accuracy: 91.8200%
+[2025-03-10 15:06:00] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:06:05] Epoch: 138 Batch: [100/313] Loss: 1.2678 Acc: 67.80% LR: 0.027050 Batch time: 23.6ms
+[2025-03-10 15:06:09] Epoch: 138 Batch: [200/313] Loss: 1.2719 Acc: 67.72% LR: 0.026803 Batch time: 23.0ms
+[2025-03-10 15:06:14] Epoch: 138 Batch: [300/313] Loss: 1.2623 Acc: 68.09% LR: 0.026556 Batch time: 23.6ms
+[2025-03-10 15:06:15] 
+======================================== Epoch 138/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2620 Train Acc: 68.1558%
+Val Loss: 0.7371 Val Acc: 91.6300%
+Best Val Acc: 91.8200%
+Learning Rate: 0.026524
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.27 hours
+==========================================================================================
+
+[2025-03-10 15:06:20] Epoch: 139 Batch: [100/313] Loss: 1.2598 Acc: 68.53% LR: 0.026278 Batch time: 23.6ms
+[2025-03-10 15:06:25] Epoch: 139 Batch: [200/313] Loss: 1.2904 Acc: 66.72% LR: 0.026033 Batch time: 23.7ms
+[2025-03-10 15:06:30] Epoch: 139 Batch: [300/313] Loss: 1.2787 Acc: 67.12% LR: 0.025789 Batch time: 23.8ms
+[2025-03-10 15:06:31] 
+======================================== Epoch 139/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2813 Train Acc: 67.0529%
+Val Loss: 0.7367 Val Acc: 91.4800%
+Best Val Acc: 91.8200%
+Learning Rate: 0.025757
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.27 hours
+==========================================================================================
+
+[2025-03-10 15:06:36] Epoch: 140 Batch: [100/313] Loss: 1.2589 Acc: 68.21% LR: 0.025514 Batch time: 23.1ms
+[2025-03-10 15:06:41] Epoch: 140 Batch: [200/313] Loss: 1.2621 Acc: 67.92% LR: 0.025271 Batch time: 23.6ms
+[2025-03-10 15:06:46] Epoch: 140 Batch: [300/313] Loss: 1.2568 Acc: 68.36% LR: 0.025029 Batch time: 23.7ms
+[2025-03-10 15:06:47] 
+======================================== Epoch 140/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2566 Train Acc: 68.3949%
+Val Loss: 0.7374 Val Acc: 91.5900%
+Best Val Acc: 91.8200%
+Learning Rate: 0.024998
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.26 hours
+==========================================================================================
+
+[2025-03-10 15:06:47] Saved checkpoint at epoch 140 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_140.pth
+[2025-03-10 15:06:52] Epoch: 141 Batch: [100/313] Loss: 1.3315 Acc: 64.66% LR: 0.024757 Batch time: 23.2ms
+[2025-03-10 15:06:57] Epoch: 141 Batch: [200/313] Loss: 1.3161 Acc: 65.47% LR: 0.024517 Batch time: 23.7ms
+[2025-03-10 15:07:02] Epoch: 141 Batch: [300/313] Loss: 1.3013 Acc: 66.28% LR: 0.024277 Batch time: 23.3ms
+[2025-03-10 15:07:03] 
+======================================== Epoch 141/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2994 Train Acc: 66.3398%
+Val Loss: 0.7331 Val Acc: 91.2400%
+Best Val Acc: 91.8200%
+Learning Rate: 0.024246
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.26 hours
+==========================================================================================
+
+[2025-03-10 15:07:08] Epoch: 142 Batch: [100/313] Loss: 1.2955 Acc: 66.89% LR: 0.024007 Batch time: 23.7ms
+[2025-03-10 15:07:13] Epoch: 142 Batch: [200/313] Loss: 1.2945 Acc: 66.69% LR: 0.023770 Batch time: 23.7ms
+[2025-03-10 15:07:17] Epoch: 142 Batch: [300/313] Loss: 1.3118 Acc: 65.75% LR: 0.023533 Batch time: 23.6ms
+[2025-03-10 15:07:19] 
+======================================== Epoch 142/200 ========================================
+Time: 0m 15s
+Train Loss: 1.3090 Train Acc: 65.8041%
+Val Loss: 0.7276 Val Acc: 91.1700%
+Best Val Acc: 91.8200%
+Learning Rate: 0.023502
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.25 hours
+==========================================================================================
+
+[2025-03-10 15:07:24] Epoch: 143 Batch: [100/313] Loss: 1.2626 Acc: 67.87% LR: 0.023266 Batch time: 23.6ms
+[2025-03-10 15:07:28] Epoch: 143 Batch: [200/313] Loss: 1.2694 Acc: 67.92% LR: 0.023031 Batch time: 23.5ms
+[2025-03-10 15:07:33] Epoch: 143 Batch: [300/313] Loss: 1.2657 Acc: 68.00% LR: 0.022796 Batch time: 23.5ms
+[2025-03-10 15:07:34] 
+======================================== Epoch 143/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2688 Train Acc: 67.7808%
+Val Loss: 0.7299 Val Acc: 92.2300%
+Best Val Acc: 91.8200%
+Learning Rate: 0.022766
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.25 hours
+==========================================================================================
+
+[2025-03-10 15:07:34] New best validation accuracy: 92.2300%
+[2025-03-10 15:07:35] Saved checkpoint at epoch 143 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_143.pth
+[2025-03-10 15:07:35] New best model! Accuracy: 92.2300%
+[2025-03-10 15:07:35] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:07:40] Epoch: 144 Batch: [100/313] Loss: 1.1995 Acc: 71.11% LR: 0.022533 Batch time: 23.6ms
+[2025-03-10 15:07:45] Epoch: 144 Batch: [200/313] Loss: 1.2229 Acc: 70.06% LR: 0.022300 Batch time: 23.5ms
+[2025-03-10 15:07:49] Epoch: 144 Batch: [300/313] Loss: 1.2640 Acc: 68.07% LR: 0.022068 Batch time: 23.1ms
+[2025-03-10 15:07:51] 
+======================================== Epoch 144/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2695 Train Acc: 67.8680%
+Val Loss: 0.7515 Val Acc: 91.1000%
+Best Val Acc: 92.2300%
+Learning Rate: 0.022038
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.25 hours
+==========================================================================================
+
+[2025-03-10 15:07:56] Epoch: 145 Batch: [100/313] Loss: 1.2578 Acc: 68.41% LR: 0.021808 Batch time: 23.6ms
+[2025-03-10 15:08:00] Epoch: 145 Batch: [200/313] Loss: 1.2274 Acc: 69.69% LR: 0.021578 Batch time: 23.6ms
+[2025-03-10 15:08:05] Epoch: 145 Batch: [300/313] Loss: 1.2156 Acc: 70.15% LR: 0.021349 Batch time: 23.1ms
+[2025-03-10 15:08:06] 
+======================================== Epoch 145/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2142 Train Acc: 70.1608%
+Val Loss: 0.7131 Val Acc: 92.4400%
+Best Val Acc: 92.2300%
+Learning Rate: 0.021319
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.24 hours
+==========================================================================================
+
+[2025-03-10 15:08:06] New best validation accuracy: 92.4400%
+[2025-03-10 15:08:06] Saved checkpoint at epoch 145 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_145.pth
+[2025-03-10 15:08:07] New best model! Accuracy: 92.4400%
+[2025-03-10 15:08:07] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:08:12] Epoch: 146 Batch: [100/313] Loss: 1.2811 Acc: 66.30% LR: 0.021091 Batch time: 23.6ms
+[2025-03-10 15:08:16] Epoch: 146 Batch: [200/313] Loss: 1.2727 Acc: 67.11% LR: 0.020864 Batch time: 23.7ms
+[2025-03-10 15:08:21] Epoch: 146 Batch: [300/313] Loss: 1.2639 Acc: 67.64% LR: 0.020638 Batch time: 23.2ms
+[2025-03-10 15:08:22] 
+======================================== Epoch 146/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2669 Train Acc: 67.5930%
+Val Loss: 0.7275 Val Acc: 92.1000%
+Best Val Acc: 92.4400%
+Learning Rate: 0.020609
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.24 hours
+==========================================================================================
+
+[2025-03-10 15:08:27] Epoch: 147 Batch: [100/313] Loss: 1.1972 Acc: 70.47% LR: 0.020384 Batch time: 23.0ms
+[2025-03-10 15:08:32] Epoch: 147 Batch: [200/313] Loss: 1.2371 Acc: 68.99% LR: 0.020160 Batch time: 23.6ms
+[2025-03-10 15:08:37] Epoch: 147 Batch: [300/313] Loss: 1.2415 Acc: 68.75% LR: 0.019936 Batch time: 23.6ms
+[2025-03-10 15:08:38] 
+======================================== Epoch 147/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2413 Train Acc: 68.7616%
+Val Loss: 0.7166 Val Acc: 92.3500%
+Best Val Acc: 92.4400%
+Learning Rate: 0.019907
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.23 hours
+==========================================================================================
+
+[2025-03-10 15:08:43] Epoch: 148 Batch: [100/313] Loss: 1.2482 Acc: 69.12% LR: 0.019685 Batch time: 23.6ms
+[2025-03-10 15:08:48] Epoch: 148 Batch: [200/313] Loss: 1.2457 Acc: 68.78% LR: 0.019464 Batch time: 23.7ms
+[2025-03-10 15:08:53] Epoch: 148 Batch: [300/313] Loss: 1.2453 Acc: 68.65% LR: 0.019244 Batch time: 23.2ms
+[2025-03-10 15:08:54] 
+======================================== Epoch 148/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2430 Train Acc: 68.7662%
+Val Loss: 0.7435 Val Acc: 91.2100%
+Best Val Acc: 92.4400%
+Learning Rate: 0.019215
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.23 hours
+==========================================================================================
+
+[2025-03-10 15:08:59] Epoch: 149 Batch: [100/313] Loss: 1.2699 Acc: 67.76% LR: 0.018996 Batch time: 23.1ms
+[2025-03-10 15:09:04] Epoch: 149 Batch: [200/313] Loss: 1.2577 Acc: 68.26% LR: 0.018778 Batch time: 23.5ms
+[2025-03-10 15:09:08] Epoch: 149 Batch: [300/313] Loss: 1.2625 Acc: 68.09% LR: 0.018560 Batch time: 23.1ms
+[2025-03-10 15:09:10] 
+======================================== Epoch 149/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2724 Train Acc: 67.6614%
+Val Loss: 0.7534 Val Acc: 91.6800%
+Best Val Acc: 92.4400%
+Learning Rate: 0.018532
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.22 hours
+==========================================================================================
+
+[2025-03-10 15:09:15] Epoch: 150 Batch: [100/313] Loss: 1.2500 Acc: 68.16% LR: 0.018316 Batch time: 23.6ms
+[2025-03-10 15:09:19] Epoch: 150 Batch: [200/313] Loss: 1.2565 Acc: 67.62% LR: 0.018101 Batch time: 23.7ms
+[2025-03-10 15:09:24] Epoch: 150 Batch: [300/313] Loss: 1.2716 Acc: 66.87% LR: 0.017887 Batch time: 23.1ms
+[2025-03-10 15:09:25] 
+======================================== Epoch 150/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2658 Train Acc: 67.1808%
+Val Loss: 0.7089 Val Acc: 91.9300%
+Best Val Acc: 92.4400%
+Learning Rate: 0.017859
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.22 hours
+==========================================================================================
+
+[2025-03-10 15:09:26] Saved checkpoint at epoch 150 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_150.pth
+[2025-03-10 15:09:31] Epoch: 151 Batch: [100/313] Loss: 1.1949 Acc: 70.82% LR: 0.017646 Batch time: 23.1ms
+[2025-03-10 15:09:35] Epoch: 151 Batch: [200/313] Loss: 1.2246 Acc: 69.22% LR: 0.017434 Batch time: 23.6ms
+[2025-03-10 15:09:40] Epoch: 151 Batch: [300/313] Loss: 1.2460 Acc: 68.25% LR: 0.017223 Batch time: 23.0ms
+[2025-03-10 15:09:41] 
+======================================== Epoch 151/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2497 Train Acc: 68.1294%
+Val Loss: 0.7477 Val Acc: 91.1800%
+Best Val Acc: 92.4400%
+Learning Rate: 0.017195
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.22 hours
+==========================================================================================
+
+[2025-03-10 15:09:46] Epoch: 152 Batch: [100/313] Loss: 1.2196 Acc: 69.39% LR: 0.016985 Batch time: 23.6ms
+[2025-03-10 15:09:51] Epoch: 152 Batch: [200/313] Loss: 1.2686 Acc: 67.15% LR: 0.016777 Batch time: 23.7ms
+[2025-03-10 15:09:56] Epoch: 152 Batch: [300/313] Loss: 1.2432 Acc: 68.26% LR: 0.016569 Batch time: 23.6ms
+[2025-03-10 15:09:57] 
+======================================== Epoch 152/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2435 Train Acc: 68.3341%
+Val Loss: 0.7126 Val Acc: 92.3800%
+Best Val Acc: 92.4400%
+Learning Rate: 0.016542
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.21 hours
+==========================================================================================
+
+[2025-03-10 15:10:02] Epoch: 153 Batch: [100/313] Loss: 1.1821 Acc: 71.40% LR: 0.016335 Batch time: 23.1ms
+[2025-03-10 15:10:07] Epoch: 153 Batch: [200/313] Loss: 1.2277 Acc: 69.55% LR: 0.016129 Batch time: 23.6ms
+[2025-03-10 15:10:12] Epoch: 153 Batch: [300/313] Loss: 1.2380 Acc: 69.18% LR: 0.015925 Batch time: 23.7ms
+[2025-03-10 15:10:13] 
+======================================== Epoch 153/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2318 Train Acc: 69.4280%
+Val Loss: 0.7072 Val Acc: 92.6100%
+Best Val Acc: 92.4400%
+Learning Rate: 0.015898
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.20 hours
+==========================================================================================
+
+[2025-03-10 15:10:13] New best validation accuracy: 92.6100%
+[2025-03-10 15:10:13] Saved checkpoint at epoch 153 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_153.pth
+[2025-03-10 15:10:13] New best model! Accuracy: 92.6100%
+[2025-03-10 15:10:13] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:10:18] Epoch: 154 Batch: [100/313] Loss: 1.2793 Acc: 67.38% LR: 0.015695 Batch time: 23.6ms
+[2025-03-10 15:10:23] Epoch: 154 Batch: [200/313] Loss: 1.2896 Acc: 66.65% LR: 0.015493 Batch time: 23.6ms
+[2025-03-10 15:10:28] Epoch: 154 Batch: [300/313] Loss: 1.2779 Acc: 67.07% LR: 0.015291 Batch time: 23.6ms
+[2025-03-10 15:10:29] 
+======================================== Epoch 154/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2766 Train Acc: 67.1714%
+Val Loss: 0.7172 Val Acc: 92.5700%
+Best Val Acc: 92.6100%
+Learning Rate: 0.015265
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.20 hours
+==========================================================================================
+
+[2025-03-10 15:10:34] Epoch: 155 Batch: [100/313] Loss: 1.1479 Acc: 72.87% LR: 0.015065 Batch time: 23.0ms
+[2025-03-10 15:10:38] Epoch: 155 Batch: [200/313] Loss: 1.1942 Acc: 71.01% LR: 0.014866 Batch time: 23.6ms
+[2025-03-10 15:10:43] Epoch: 155 Batch: [300/313] Loss: 1.2001 Acc: 70.59% LR: 0.014669 Batch time: 23.5ms
+[2025-03-10 15:10:44] 
+======================================== Epoch 155/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2002 Train Acc: 70.5708%
+Val Loss: 0.6949 Val Acc: 92.2400%
+Best Val Acc: 92.6100%
+Learning Rate: 0.014643
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.20 hours
+==========================================================================================
+
+[2025-03-10 15:10:49] Epoch: 156 Batch: [100/313] Loss: 1.2673 Acc: 67.53% LR: 0.014446 Batch time: 23.6ms
+[2025-03-10 15:10:54] Epoch: 156 Batch: [200/313] Loss: 1.2695 Acc: 67.44% LR: 0.014251 Batch time: 23.2ms
+[2025-03-10 15:10:59] Epoch: 156 Batch: [300/313] Loss: 1.2560 Acc: 68.17% LR: 0.014057 Batch time: 23.2ms
+[2025-03-10 15:11:00] 
+======================================== Epoch 156/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2537 Train Acc: 68.2019%
+Val Loss: 0.7072 Val Acc: 92.7400%
+Best Val Acc: 92.6100%
+Learning Rate: 0.014031
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.19 hours
+==========================================================================================
+
+[2025-03-10 15:11:00] New best validation accuracy: 92.7400%
+[2025-03-10 15:11:00] Saved checkpoint at epoch 156 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_156.pth
+[2025-03-10 15:11:01] New best model! Accuracy: 92.7400%
+[2025-03-10 15:11:01] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:11:05] Epoch: 157 Batch: [100/313] Loss: 1.2140 Acc: 69.69% LR: 0.013838 Batch time: 23.5ms
+[2025-03-10 15:11:10] Epoch: 157 Batch: [200/313] Loss: 1.2490 Acc: 68.13% LR: 0.013646 Batch time: 23.0ms
+[2025-03-10 15:11:15] Epoch: 157 Batch: [300/313] Loss: 1.2455 Acc: 68.38% LR: 0.013455 Batch time: 23.1ms
+[2025-03-10 15:11:16] 
+======================================== Epoch 157/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2466 Train Acc: 68.2737%
+Val Loss: 0.7166 Val Acc: 92.1400%
+Best Val Acc: 92.7400%
+Learning Rate: 0.013431
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.19 hours
+==========================================================================================
+
+[2025-03-10 15:11:21] Epoch: 158 Batch: [100/313] Loss: 1.1740 Acc: 72.89% LR: 0.013241 Batch time: 23.5ms
+[2025-03-10 15:11:26] Epoch: 158 Batch: [200/313] Loss: 1.2096 Acc: 70.76% LR: 0.013053 Batch time: 23.6ms
+[2025-03-10 15:11:31] Epoch: 158 Batch: [300/313] Loss: 1.1999 Acc: 71.21% LR: 0.012866 Batch time: 23.5ms
+[2025-03-10 15:11:32] 
+======================================== Epoch 158/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2102 Train Acc: 70.7474%
+Val Loss: 0.7315 Val Acc: 92.8300%
+Best Val Acc: 92.7400%
+Learning Rate: 0.012841
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.18 hours
+==========================================================================================
+
+[2025-03-10 15:11:32] New best validation accuracy: 92.8300%
+[2025-03-10 15:11:32] Saved checkpoint at epoch 158 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_158.pth
+[2025-03-10 15:11:32] New best model! Accuracy: 92.8300%
+[2025-03-10 15:11:32] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:11:37] Epoch: 159 Batch: [100/313] Loss: 1.1811 Acc: 71.31% LR: 0.012655 Batch time: 23.5ms
+[2025-03-10 15:11:42] Epoch: 159 Batch: [200/313] Loss: 1.1887 Acc: 70.87% LR: 0.012470 Batch time: 23.1ms
+[2025-03-10 15:11:47] Epoch: 159 Batch: [300/313] Loss: 1.2138 Acc: 69.72% LR: 0.012287 Batch time: 23.7ms
+[2025-03-10 15:11:48] 
+======================================== Epoch 159/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2188 Train Acc: 69.5974%
+Val Loss: 0.7140 Val Acc: 92.7800%
+Best Val Acc: 92.8300%
+Learning Rate: 0.012263
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.18 hours
+==========================================================================================
+
+[2025-03-10 15:11:53] Epoch: 160 Batch: [100/313] Loss: 1.2115 Acc: 69.78% LR: 0.012081 Batch time: 23.6ms
+[2025-03-10 15:11:58] Epoch: 160 Batch: [200/313] Loss: 1.2326 Acc: 69.16% LR: 0.011900 Batch time: 23.7ms
+[2025-03-10 15:12:03] Epoch: 160 Batch: [300/313] Loss: 1.2590 Acc: 67.75% LR: 0.011720 Batch time: 23.7ms
+[2025-03-10 15:12:04] 
+======================================== Epoch 160/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2603 Train Acc: 67.5644%
+Val Loss: 0.7147 Val Acc: 93.1400%
+Best Val Acc: 92.8300%
+Learning Rate: 0.011696
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.18 hours
+==========================================================================================
+
+[2025-03-10 15:12:04] New best validation accuracy: 93.1400%
+[2025-03-10 15:12:04] Saved checkpoint at epoch 160 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_160.pth
+[2025-03-10 15:12:04] New best model! Accuracy: 93.1400%
+[2025-03-10 15:12:04] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:12:09] Epoch: 161 Batch: [100/313] Loss: 1.1852 Acc: 71.86% LR: 0.011518 Batch time: 23.6ms
+[2025-03-10 15:12:14] Epoch: 161 Batch: [200/313] Loss: 1.1875 Acc: 71.26% LR: 0.011340 Batch time: 23.7ms
+[2025-03-10 15:12:19] Epoch: 161 Batch: [300/313] Loss: 1.1711 Acc: 72.05% LR: 0.011164 Batch time: 23.1ms
+[2025-03-10 15:12:20] 
+======================================== Epoch 161/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1634 Train Acc: 72.3682%
+Val Loss: 0.6736 Val Acc: 93.2600%
+Best Val Acc: 93.1400%
+Learning Rate: 0.011141
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.17 hours
+==========================================================================================
+
+[2025-03-10 15:12:20] New best validation accuracy: 93.2600%
+[2025-03-10 15:12:20] Saved checkpoint at epoch 161 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_161.pth
+[2025-03-10 15:12:20] New best model! Accuracy: 93.2600%
+[2025-03-10 15:12:20] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:12:25] Epoch: 162 Batch: [100/313] Loss: 1.2076 Acc: 70.84% LR: 0.010966 Batch time: 23.0ms
+[2025-03-10 15:12:30] Epoch: 162 Batch: [200/313] Loss: 1.2298 Acc: 69.62% LR: 0.010793 Batch time: 23.6ms
+[2025-03-10 15:12:35] Epoch: 162 Batch: [300/313] Loss: 1.2273 Acc: 69.45% LR: 0.010620 Batch time: 23.0ms
+[2025-03-10 15:12:36] 
+======================================== Epoch 162/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2290 Train Acc: 69.3466%
+Val Loss: 0.7168 Val Acc: 93.2000%
+Best Val Acc: 93.2600%
+Learning Rate: 0.010598
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.17 hours
+==========================================================================================
+
+[2025-03-10 15:12:41] Epoch: 163 Batch: [100/313] Loss: 1.2100 Acc: 69.97% LR: 0.010427 Batch time: 23.1ms
+[2025-03-10 15:12:46] Epoch: 163 Batch: [200/313] Loss: 1.2024 Acc: 70.42% LR: 0.010257 Batch time: 23.1ms
+[2025-03-10 15:12:50] Epoch: 163 Batch: [300/313] Loss: 1.2129 Acc: 69.90% LR: 0.010089 Batch time: 23.1ms
+[2025-03-10 15:12:52] 
+======================================== Epoch 163/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2120 Train Acc: 69.9528%
+Val Loss: 0.6918 Val Acc: 93.3900%
+Best Val Acc: 93.2600%
+Learning Rate: 0.010067
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.16 hours
+==========================================================================================
+
+[2025-03-10 15:12:52] New best validation accuracy: 93.3900%
+[2025-03-10 15:12:52] Saved checkpoint at epoch 163 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_163.pth
+[2025-03-10 15:12:52] New best model! Accuracy: 93.3900%
+[2025-03-10 15:12:52] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:12:57] Epoch: 164 Batch: [100/313] Loss: 1.2400 Acc: 68.10% LR: 0.009900 Batch time: 23.6ms
+[2025-03-10 15:13:02] Epoch: 164 Batch: [200/313] Loss: 1.1976 Acc: 70.10% LR: 0.009734 Batch time: 23.1ms
+[2025-03-10 15:13:06] Epoch: 164 Batch: [300/313] Loss: 1.2172 Acc: 69.49% LR: 0.009569 Batch time: 23.5ms
+[2025-03-10 15:13:08] 
+======================================== Epoch 164/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2225 Train Acc: 69.2555%
+Val Loss: 0.7095 Val Acc: 93.4300%
+Best Val Acc: 93.3900%
+Learning Rate: 0.009548
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.16 hours
+==========================================================================================
+
+[2025-03-10 15:13:08] New best validation accuracy: 93.4300%
+[2025-03-10 15:13:08] Saved checkpoint at epoch 164 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_164.pth
+[2025-03-10 15:13:08] New best model! Accuracy: 93.4300%
+[2025-03-10 15:13:08] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:13:13] Epoch: 165 Batch: [100/313] Loss: 1.1952 Acc: 70.96% LR: 0.009385 Batch time: 23.6ms
+[2025-03-10 15:13:18] Epoch: 165 Batch: [200/313] Loss: 1.2235 Acc: 69.40% LR: 0.009223 Batch time: 23.2ms
+[2025-03-10 15:13:23] Epoch: 165 Batch: [300/313] Loss: 1.2174 Acc: 69.75% LR: 0.009062 Batch time: 23.6ms
+[2025-03-10 15:13:24] 
+======================================== Epoch 165/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2099 Train Acc: 70.0586%
+Val Loss: 0.6779 Val Acc: 93.2900%
+Best Val Acc: 93.4300%
+Learning Rate: 0.009041
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.15 hours
+==========================================================================================
+
+[2025-03-10 15:13:29] Epoch: 166 Batch: [100/313] Loss: 1.2704 Acc: 67.30% LR: 0.008882 Batch time: 23.5ms
+[2025-03-10 15:13:34] Epoch: 166 Batch: [200/313] Loss: 1.2440 Acc: 68.41% LR: 0.008724 Batch time: 23.1ms
+[2025-03-10 15:13:38] Epoch: 166 Batch: [300/313] Loss: 1.2404 Acc: 68.68% LR: 0.008567 Batch time: 23.7ms
+[2025-03-10 15:13:40] 
+======================================== Epoch 166/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2404 Train Acc: 68.7624%
+Val Loss: 0.6937 Val Acc: 93.4300%
+Best Val Acc: 93.4300%
+Learning Rate: 0.008547
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.15 hours
+==========================================================================================
+
+[2025-03-10 15:13:45] Epoch: 167 Batch: [100/313] Loss: 1.1849 Acc: 71.23% LR: 0.008392 Batch time: 23.0ms
+[2025-03-10 15:13:49] Epoch: 167 Batch: [200/313] Loss: 1.1992 Acc: 70.57% LR: 0.008238 Batch time: 23.6ms
+[2025-03-10 15:13:54] Epoch: 167 Batch: [300/313] Loss: 1.2076 Acc: 70.22% LR: 0.008085 Batch time: 23.6ms
+[2025-03-10 15:13:55] 
+======================================== Epoch 167/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2080 Train Acc: 70.2400%
+Val Loss: 0.7040 Val Acc: 93.1900%
+Best Val Acc: 93.4300%
+Learning Rate: 0.008065
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.14 hours
+==========================================================================================
+
+[2025-03-10 15:14:00] Epoch: 168 Batch: [100/313] Loss: 1.2339 Acc: 68.79% LR: 0.007914 Batch time: 23.6ms
+[2025-03-10 15:14:05] Epoch: 168 Batch: [200/313] Loss: 1.2496 Acc: 68.08% LR: 0.007764 Batch time: 23.7ms
+[2025-03-10 15:14:10] Epoch: 168 Batch: [300/313] Loss: 1.2419 Acc: 68.43% LR: 0.007616 Batch time: 23.6ms
+[2025-03-10 15:14:11] 
+======================================== Epoch 168/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2352 Train Acc: 68.7289%
+Val Loss: 0.6756 Val Acc: 93.6000%
+Best Val Acc: 93.4300%
+Learning Rate: 0.007596
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.14 hours
+==========================================================================================
+
+[2025-03-10 15:14:11] New best validation accuracy: 93.6000%
+[2025-03-10 15:14:11] Saved checkpoint at epoch 168 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_168.pth
+[2025-03-10 15:14:11] New best model! Accuracy: 93.6000%
+[2025-03-10 15:14:11] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:14:16] Epoch: 169 Batch: [100/313] Loss: 1.1868 Acc: 70.78% LR: 0.007449 Batch time: 23.1ms
+[2025-03-10 15:14:21] Epoch: 169 Batch: [200/313] Loss: 1.1838 Acc: 70.82% LR: 0.007304 Batch time: 23.6ms
+[2025-03-10 15:14:26] Epoch: 169 Batch: [300/313] Loss: 1.2041 Acc: 70.14% LR: 0.007159 Batch time: 23.6ms
+[2025-03-10 15:14:27] 
+======================================== Epoch 169/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2015 Train Acc: 70.1972%
+Val Loss: 0.7005 Val Acc: 93.2900%
+Best Val Acc: 93.6000%
+Learning Rate: 0.007141
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.14 hours
+==========================================================================================
+
+[2025-03-10 15:14:32] Epoch: 170 Batch: [100/313] Loss: 1.2145 Acc: 69.90% LR: 0.006998 Batch time: 23.5ms
+[2025-03-10 15:14:37] Epoch: 170 Batch: [200/313] Loss: 1.2078 Acc: 70.16% LR: 0.006856 Batch time: 23.5ms
+[2025-03-10 15:14:42] Epoch: 170 Batch: [300/313] Loss: 1.2035 Acc: 70.24% LR: 0.006716 Batch time: 23.2ms
+[2025-03-10 15:14:43] 
+======================================== Epoch 170/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2097 Train Acc: 69.9847%
+Val Loss: 0.7053 Val Acc: 93.7600%
+Best Val Acc: 93.6000%
+Learning Rate: 0.006698
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.13 hours
+==========================================================================================
+
+[2025-03-10 15:14:43] New best validation accuracy: 93.7600%
+[2025-03-10 15:14:43] Saved checkpoint at epoch 170 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_170.pth
+[2025-03-10 15:14:43] New best model! Accuracy: 93.7600%
+[2025-03-10 15:14:43] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:14:48] Epoch: 171 Batch: [100/313] Loss: 1.2003 Acc: 70.55% LR: 0.006559 Batch time: 23.1ms
+[2025-03-10 15:14:53] Epoch: 171 Batch: [200/313] Loss: 1.2123 Acc: 70.22% LR: 0.006422 Batch time: 23.5ms
+[2025-03-10 15:14:58] Epoch: 171 Batch: [300/313] Loss: 1.2355 Acc: 69.11% LR: 0.006286 Batch time: 23.6ms
+[2025-03-10 15:14:59] 
+======================================== Epoch 171/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2393 Train Acc: 69.0280%
+Val Loss: 0.6975 Val Acc: 93.2500%
+Best Val Acc: 93.7600%
+Learning Rate: 0.006268
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.13 hours
+==========================================================================================
+
+[2025-03-10 15:15:04] Epoch: 172 Batch: [100/313] Loss: 1.1758 Acc: 71.21% LR: 0.006134 Batch time: 23.1ms
+[2025-03-10 15:15:09] Epoch: 172 Batch: [200/313] Loss: 1.2380 Acc: 68.43% LR: 0.006000 Batch time: 23.5ms
+[2025-03-10 15:15:13] Epoch: 172 Batch: [300/313] Loss: 1.2493 Acc: 68.09% LR: 0.005869 Batch time: 23.5ms
+[2025-03-10 15:15:15] 
+======================================== Epoch 172/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2479 Train Acc: 68.1434%
+Val Loss: 0.7039 Val Acc: 93.4600%
+Best Val Acc: 93.7600%
+Learning Rate: 0.005852
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.12 hours
+==========================================================================================
+
+[2025-03-10 15:15:20] Epoch: 173 Batch: [100/313] Loss: 1.1753 Acc: 71.73% LR: 0.005721 Batch time: 23.0ms
+[2025-03-10 15:15:24] Epoch: 173 Batch: [200/313] Loss: 1.1777 Acc: 71.49% LR: 0.005593 Batch time: 23.6ms
+[2025-03-10 15:15:29] Epoch: 173 Batch: [300/313] Loss: 1.2183 Acc: 69.62% LR: 0.005465 Batch time: 23.6ms
+[2025-03-10 15:15:30] 
+======================================== Epoch 173/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2131 Train Acc: 69.9017%
+Val Loss: 0.6829 Val Acc: 94.0200%
+Best Val Acc: 93.7600%
+Learning Rate: 0.005449
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.12 hours
+==========================================================================================
+
+[2025-03-10 15:15:30] New best validation accuracy: 94.0200%
+[2025-03-10 15:15:31] Saved checkpoint at epoch 173 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_173.pth
+[2025-03-10 15:15:31] New best model! Accuracy: 94.0200%
+[2025-03-10 15:15:31] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:15:36] Epoch: 174 Batch: [100/313] Loss: 1.1385 Acc: 73.47% LR: 0.005323 Batch time: 23.5ms
+[2025-03-10 15:15:41] Epoch: 174 Batch: [200/313] Loss: 1.1473 Acc: 72.97% LR: 0.005198 Batch time: 23.0ms
+[2025-03-10 15:15:45] Epoch: 174 Batch: [300/313] Loss: 1.1378 Acc: 73.27% LR: 0.005075 Batch time: 23.1ms
+[2025-03-10 15:15:47] 
+======================================== Epoch 174/200 ========================================
+Time: 0m 16s
+Train Loss: 1.1473 Train Acc: 72.8461%
+Val Loss: 0.6814 Val Acc: 93.8200%
+Best Val Acc: 94.0200%
+Learning Rate: 0.005059
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.12 hours
+==========================================================================================
+
+[2025-03-10 15:15:52] Epoch: 175 Batch: [100/313] Loss: 1.2291 Acc: 69.59% LR: 0.004938 Batch time: 23.5ms
+[2025-03-10 15:15:57] Epoch: 175 Batch: [200/313] Loss: 1.1979 Acc: 70.82% LR: 0.004818 Batch time: 23.1ms
+[2025-03-10 15:16:02] Epoch: 175 Batch: [300/313] Loss: 1.1744 Acc: 71.81% LR: 0.004699 Batch time: 23.5ms
+[2025-03-10 15:16:03] 
+======================================== Epoch 175/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1726 Train Acc: 71.8528%
+Val Loss: 0.6729 Val Acc: 93.9600%
+Best Val Acc: 94.0200%
+Learning Rate: 0.004684
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.9 ms
+ETA: 0.11 hours
+==========================================================================================
+
+[2025-03-10 15:16:08] Epoch: 176 Batch: [100/313] Loss: 1.1902 Acc: 70.93% LR: 0.004567 Batch time: 23.5ms
+[2025-03-10 15:16:13] Epoch: 176 Batch: [200/313] Loss: 1.2072 Acc: 70.30% LR: 0.004451 Batch time: 23.5ms
+[2025-03-10 15:16:17] Epoch: 176 Batch: [300/313] Loss: 1.1955 Acc: 70.59% LR: 0.004337 Batch time: 23.5ms
+[2025-03-10 15:16:19] 
+======================================== Epoch 176/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1969 Train Acc: 70.5073%
+Val Loss: 0.7005 Val Acc: 93.9800%
+Best Val Acc: 94.0200%
+Learning Rate: 0.004322
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.10 hours
+==========================================================================================
+
+[2025-03-10 15:16:24] Epoch: 177 Batch: [100/313] Loss: 1.1784 Acc: 71.95% LR: 0.004209 Batch time: 23.1ms
+[2025-03-10 15:16:28] Epoch: 177 Batch: [200/313] Loss: 1.2019 Acc: 70.67% LR: 0.004098 Batch time: 23.6ms
+[2025-03-10 15:16:33] Epoch: 177 Batch: [300/313] Loss: 1.2254 Acc: 69.48% LR: 0.003988 Batch time: 23.6ms
+[2025-03-10 15:16:34] 
+======================================== Epoch 177/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2243 Train Acc: 69.5155%
+Val Loss: 0.6825 Val Acc: 94.2000%
+Best Val Acc: 94.0200%
+Learning Rate: 0.003974
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.10 hours
+==========================================================================================
+
+[2025-03-10 15:16:34] New best validation accuracy: 94.2000%
+[2025-03-10 15:16:34] Saved checkpoint at epoch 177 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_177.pth
+[2025-03-10 15:16:35] New best model! Accuracy: 94.2000%
+[2025-03-10 15:16:35] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:16:40] Epoch: 178 Batch: [100/313] Loss: 1.1709 Acc: 71.79% LR: 0.003866 Batch time: 23.0ms
+[2025-03-10 15:16:44] Epoch: 178 Batch: [200/313] Loss: 1.1625 Acc: 72.35% LR: 0.003759 Batch time: 23.6ms
+[2025-03-10 15:16:49] Epoch: 178 Batch: [300/313] Loss: 1.1816 Acc: 71.35% LR: 0.003654 Batch time: 23.1ms
+[2025-03-10 15:16:50] 
+======================================== Epoch 178/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1764 Train Acc: 71.6254%
+Val Loss: 0.6684 Val Acc: 94.1500%
+Best Val Acc: 94.2000%
+Learning Rate: 0.003640
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.10 hours
+==========================================================================================
+
+[2025-03-10 15:16:55] Epoch: 179 Batch: [100/313] Loss: 1.1625 Acc: 72.04% LR: 0.003536 Batch time: 23.5ms
+[2025-03-10 15:17:00] Epoch: 179 Batch: [200/313] Loss: 1.1821 Acc: 71.47% LR: 0.003434 Batch time: 23.6ms
+[2025-03-10 15:17:05] Epoch: 179 Batch: [300/313] Loss: 1.2156 Acc: 69.87% LR: 0.003333 Batch time: 23.5ms
+[2025-03-10 15:17:06] 
+======================================== Epoch 179/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2170 Train Acc: 69.7198%
+Val Loss: 0.6939 Val Acc: 93.8900%
+Best Val Acc: 94.2000%
+Learning Rate: 0.003320
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.09 hours
+==========================================================================================
+
+[2025-03-10 15:17:11] Epoch: 180 Batch: [100/313] Loss: 1.1050 Acc: 75.06% LR: 0.003221 Batch time: 23.0ms
+[2025-03-10 15:17:16] Epoch: 180 Batch: [200/313] Loss: 1.1605 Acc: 72.26% LR: 0.003123 Batch time: 23.5ms
+[2025-03-10 15:17:21] Epoch: 180 Batch: [300/313] Loss: 1.1525 Acc: 72.57% LR: 0.003027 Batch time: 23.1ms
+[2025-03-10 15:17:22] 
+======================================== Epoch 180/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1621 Train Acc: 72.2413%
+Val Loss: 0.6889 Val Acc: 94.0600%
+Best Val Acc: 94.2000%
+Learning Rate: 0.003015
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.09 hours
+==========================================================================================
+
+[2025-03-10 15:17:22] Saved checkpoint at epoch 180 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_180.pth
+[2025-03-10 15:17:27] Epoch: 181 Batch: [100/313] Loss: 1.1665 Acc: 72.09% LR: 0.002920 Batch time: 23.0ms
+[2025-03-10 15:17:32] Epoch: 181 Batch: [200/313] Loss: 1.1714 Acc: 71.97% LR: 0.002827 Batch time: 23.6ms
+[2025-03-10 15:17:36] Epoch: 181 Batch: [300/313] Loss: 1.1767 Acc: 71.68% LR: 0.002735 Batch time: 23.3ms
+[2025-03-10 15:17:38] 
+======================================== Epoch 181/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1768 Train Acc: 71.6289%
+Val Loss: 0.6759 Val Acc: 94.0100%
+Best Val Acc: 94.2000%
+Learning Rate: 0.002724
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.08 hours
+==========================================================================================
+
+[2025-03-10 15:17:43] Epoch: 182 Batch: [100/313] Loss: 1.2605 Acc: 66.53% LR: 0.002634 Batch time: 23.1ms
+[2025-03-10 15:17:47] Epoch: 182 Batch: [200/313] Loss: 1.1871 Acc: 70.49% LR: 0.002545 Batch time: 23.6ms
+[2025-03-10 15:17:52] Epoch: 182 Batch: [300/313] Loss: 1.2005 Acc: 70.20% LR: 0.002458 Batch time: 23.6ms
+[2025-03-10 15:17:53] 
+======================================== Epoch 182/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2020 Train Acc: 70.0769%
+Val Loss: 0.6803 Val Acc: 94.1100%
+Best Val Acc: 94.2000%
+Learning Rate: 0.002447
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.08 hours
+==========================================================================================
+
+[2025-03-10 15:17:58] Epoch: 183 Batch: [100/313] Loss: 1.2496 Acc: 67.68% LR: 0.002361 Batch time: 23.1ms
+[2025-03-10 15:18:03] Epoch: 183 Batch: [200/313] Loss: 1.2105 Acc: 69.97% LR: 0.002277 Batch time: 23.7ms
+[2025-03-10 15:18:08] Epoch: 183 Batch: [300/313] Loss: 1.2024 Acc: 70.12% LR: 0.002195 Batch time: 23.7ms
+[2025-03-10 15:18:09] 
+======================================== Epoch 183/200 ========================================
+Time: 0m 15s
+Train Loss: 1.2044 Train Acc: 70.0861%
+Val Loss: 0.6968 Val Acc: 94.1900%
+Best Val Acc: 94.2000%
+Learning Rate: 0.002184
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.07 hours
+==========================================================================================
+
+[2025-03-10 15:18:14] Epoch: 184 Batch: [100/313] Loss: 1.1325 Acc: 73.32% LR: 0.002104 Batch time: 23.0ms
+[2025-03-10 15:18:19] Epoch: 184 Batch: [200/313] Loss: 1.1709 Acc: 71.68% LR: 0.002024 Batch time: 23.6ms
+[2025-03-10 15:18:24] Epoch: 184 Batch: [300/313] Loss: 1.1825 Acc: 71.13% LR: 0.001947 Batch time: 23.6ms
+[2025-03-10 15:18:25] 
+======================================== Epoch 184/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1830 Train Acc: 71.0638%
+Val Loss: 0.6819 Val Acc: 94.2300%
+Best Val Acc: 94.2000%
+Learning Rate: 0.001937
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.07 hours
+==========================================================================================
+
+[2025-03-10 15:18:25] New best validation accuracy: 94.2300%
+[2025-03-10 15:18:25] Saved checkpoint at epoch 184 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_184.pth
+[2025-03-10 15:18:25] New best model! Accuracy: 94.2300%
+[2025-03-10 15:18:25] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:18:30] Epoch: 185 Batch: [100/313] Loss: 1.2199 Acc: 69.25% LR: 0.001860 Batch time: 23.1ms
+[2025-03-10 15:18:35] Epoch: 185 Batch: [200/313] Loss: 1.1684 Acc: 71.86% LR: 0.001786 Batch time: 23.5ms
+[2025-03-10 15:18:40] Epoch: 185 Batch: [300/313] Loss: 1.1915 Acc: 70.77% LR: 0.001713 Batch time: 23.5ms
+[2025-03-10 15:18:41] 
+======================================== Epoch 185/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1949 Train Acc: 70.5928%
+Val Loss: 0.6905 Val Acc: 94.1200%
+Best Val Acc: 94.2300%
+Learning Rate: 0.001703
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.07 hours
+==========================================================================================
+
+[2025-03-10 15:18:46] Epoch: 186 Batch: [100/313] Loss: 1.1882 Acc: 71.10% LR: 0.001632 Batch time: 23.1ms
+[2025-03-10 15:18:51] Epoch: 186 Batch: [200/313] Loss: 1.2106 Acc: 70.06% LR: 0.001562 Batch time: 23.6ms
+[2025-03-10 15:18:55] Epoch: 186 Batch: [300/313] Loss: 1.1827 Acc: 71.31% LR: 0.001494 Batch time: 23.5ms
+[2025-03-10 15:18:57] 
+======================================== Epoch 186/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1847 Train Acc: 71.2443%
+Val Loss: 0.6797 Val Acc: 94.2200%
+Best Val Acc: 94.2300%
+Learning Rate: 0.001485
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.06 hours
+==========================================================================================
+
+[2025-03-10 15:19:02] Epoch: 187 Batch: [100/313] Loss: 1.1535 Acc: 72.28% LR: 0.001418 Batch time: 23.1ms
+[2025-03-10 15:19:07] Epoch: 187 Batch: [200/313] Loss: 1.1667 Acc: 72.00% LR: 0.001353 Batch time: 23.2ms
+[2025-03-10 15:19:11] Epoch: 187 Batch: [300/313] Loss: 1.1556 Acc: 72.48% LR: 0.001289 Batch time: 23.6ms
+[2025-03-10 15:19:12] 
+======================================== Epoch 187/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1567 Train Acc: 72.4561%
+Val Loss: 0.6802 Val Acc: 94.2900%
+Best Val Acc: 94.2300%
+Learning Rate: 0.001281
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.06 hours
+==========================================================================================
+
+[2025-03-10 15:19:12] New best validation accuracy: 94.2900%
+[2025-03-10 15:19:13] Saved checkpoint at epoch 187 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_187.pth
+[2025-03-10 15:19:13] New best model! Accuracy: 94.2900%
+[2025-03-10 15:19:13] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:19:18] Epoch: 188 Batch: [100/313] Loss: 1.1792 Acc: 71.30% LR: 0.001219 Batch time: 23.6ms
+[2025-03-10 15:19:23] Epoch: 188 Batch: [200/313] Loss: 1.1482 Acc: 72.85% LR: 0.001159 Batch time: 23.1ms
+[2025-03-10 15:19:27] Epoch: 188 Batch: [300/313] Loss: 1.1466 Acc: 72.82% LR: 0.001100 Batch time: 23.6ms
+[2025-03-10 15:19:29] 
+======================================== Epoch 188/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1458 Train Acc: 72.9227%
+Val Loss: 0.6621 Val Acc: 94.5300%
+Best Val Acc: 94.2900%
+Learning Rate: 0.001092
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.05 hours
+==========================================================================================
+
+[2025-03-10 15:19:29] New best validation accuracy: 94.5300%
+[2025-03-10 15:19:29] Saved checkpoint at epoch 188 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_188.pth
+[2025-03-10 15:19:29] New best model! Accuracy: 94.5300%
+[2025-03-10 15:19:29] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:19:34] Epoch: 189 Batch: [100/313] Loss: 1.2044 Acc: 70.53% LR: 0.001035 Batch time: 23.1ms
+[2025-03-10 15:19:39] Epoch: 189 Batch: [200/313] Loss: 1.1943 Acc: 70.61% LR: 0.000980 Batch time: 23.1ms
+[2025-03-10 15:19:43] Epoch: 189 Batch: [300/313] Loss: 1.1756 Acc: 71.51% LR: 0.000925 Batch time: 23.7ms
+[2025-03-10 15:19:45] 
+======================================== Epoch 189/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1759 Train Acc: 71.5029%
+Val Loss: 0.6693 Val Acc: 94.3500%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000919
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.05 hours
+==========================================================================================
+
+[2025-03-10 15:19:50] Epoch: 190 Batch: [100/313] Loss: 1.1777 Acc: 71.38% LR: 0.000866 Batch time: 23.6ms
+[2025-03-10 15:19:54] Epoch: 190 Batch: [200/313] Loss: 1.1636 Acc: 71.95% LR: 0.000815 Batch time: 23.6ms
+[2025-03-10 15:19:59] Epoch: 190 Batch: [300/313] Loss: 1.1601 Acc: 71.90% LR: 0.000766 Batch time: 23.0ms
+[2025-03-10 15:20:00] 
+======================================== Epoch 190/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1567 Train Acc: 72.0930%
+Val Loss: 0.6571 Val Acc: 94.5100%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000760
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.04 hours
+==========================================================================================
+
+[2025-03-10 15:20:01] Saved checkpoint at epoch 190 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_190.pth
+[2025-03-10 15:20:06] Epoch: 191 Batch: [100/313] Loss: 1.1268 Acc: 73.64% LR: 0.000712 Batch time: 23.6ms
+[2025-03-10 15:20:10] Epoch: 191 Batch: [200/313] Loss: 1.1133 Acc: 74.14% LR: 0.000666 Batch time: 23.5ms
+[2025-03-10 15:20:15] Epoch: 191 Batch: [300/313] Loss: 1.1330 Acc: 73.28% LR: 0.000621 Batch time: 23.6ms
+[2025-03-10 15:20:16] 
+======================================== Epoch 191/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1377 Train Acc: 73.1157%
+Val Loss: 0.6811 Val Acc: 94.3600%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000616
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.04 hours
+==========================================================================================
+
+[2025-03-10 15:20:21] Epoch: 192 Batch: [100/313] Loss: 1.1396 Acc: 73.16% LR: 0.000573 Batch time: 23.0ms
+[2025-03-10 15:20:26] Epoch: 192 Batch: [200/313] Loss: 1.1353 Acc: 73.44% LR: 0.000531 Batch time: 23.6ms
+[2025-03-10 15:20:31] Epoch: 192 Batch: [300/313] Loss: 1.1594 Acc: 72.23% LR: 0.000492 Batch time: 23.7ms
+[2025-03-10 15:20:32] 
+======================================== Epoch 192/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1610 Train Acc: 72.0795%
+Val Loss: 0.6742 Val Acc: 94.4000%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000487
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.04 hours
+==========================================================================================
+
+[2025-03-10 15:20:37] Epoch: 193 Batch: [100/313] Loss: 1.1633 Acc: 72.00% LR: 0.000449 Batch time: 23.6ms
+[2025-03-10 15:20:42] Epoch: 193 Batch: [200/313] Loss: 1.1800 Acc: 71.12% LR: 0.000412 Batch time: 23.1ms
+[2025-03-10 15:20:47] Epoch: 193 Batch: [300/313] Loss: 1.1812 Acc: 71.15% LR: 0.000377 Batch time: 23.1ms
+[2025-03-10 15:20:48] 
+======================================== Epoch 193/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1816 Train Acc: 71.2023%
+Val Loss: 0.6759 Val Acc: 94.5200%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000373
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.03 hours
+==========================================================================================
+
+[2025-03-10 15:20:53] Epoch: 194 Batch: [100/313] Loss: 1.1425 Acc: 72.84% LR: 0.000340 Batch time: 23.0ms
+[2025-03-10 15:20:58] Epoch: 194 Batch: [200/313] Loss: 1.1551 Acc: 72.25% LR: 0.000308 Batch time: 23.6ms
+[2025-03-10 15:21:02] Epoch: 194 Batch: [300/313] Loss: 1.1604 Acc: 72.06% LR: 0.000278 Batch time: 23.7ms
+[2025-03-10 15:21:04] 
+======================================== Epoch 194/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1695 Train Acc: 71.7238%
+Val Loss: 0.7000 Val Acc: 94.4400%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000274
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.03 hours
+==========================================================================================
+
+[2025-03-10 15:21:09] Epoch: 195 Batch: [100/313] Loss: 1.1611 Acc: 71.87% LR: 0.000246 Batch time: 23.1ms
+[2025-03-10 15:21:13] Epoch: 195 Batch: [200/313] Loss: 1.1845 Acc: 70.99% LR: 0.000219 Batch time: 23.7ms
+[2025-03-10 15:21:18] Epoch: 195 Batch: [300/313] Loss: 1.1763 Acc: 71.47% LR: 0.000194 Batch time: 23.2ms
+[2025-03-10 15:21:19] 
+======================================== Epoch 195/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1681 Train Acc: 71.9155%
+Val Loss: 0.6457 Val Acc: 94.5600%
+Best Val Acc: 94.5300%
+Learning Rate: 0.000190
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.02 hours
+==========================================================================================
+
+[2025-03-10 15:21:19] New best validation accuracy: 94.5600%
+[2025-03-10 15:21:19] Saved checkpoint at epoch 195 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_195.pth
+[2025-03-10 15:21:20] New best model! Accuracy: 94.5600%
+[2025-03-10 15:21:20] Saved to:
+  outputs/training_runs/2025_03_10_14_29/best.pth
+  outputs/best_models/cifar10_resnet_randaug_20250310_1429_best.pth
+[2025-03-10 15:21:25] Epoch: 196 Batch: [100/313] Loss: 1.2163 Acc: 69.36% LR: 0.000167 Batch time: 23.1ms
+[2025-03-10 15:21:29] Epoch: 196 Batch: [200/313] Loss: 1.1939 Acc: 70.35% LR: 0.000145 Batch time: 23.0ms
+[2025-03-10 15:21:34] Epoch: 196 Batch: [300/313] Loss: 1.1904 Acc: 70.65% LR: 0.000125 Batch time: 23.7ms
+[2025-03-10 15:21:35] 
+======================================== Epoch 196/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1975 Train Acc: 70.4339%
+Val Loss: 0.6830 Val Acc: 94.4300%
+Best Val Acc: 94.5600%
+Learning Rate: 0.000122
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.02 hours
+==========================================================================================
+
+[2025-03-10 15:21:40] Epoch: 197 Batch: [100/313] Loss: 1.1702 Acc: 71.30% LR: 0.000103 Batch time: 23.7ms
+[2025-03-10 15:21:45] Epoch: 197 Batch: [200/313] Loss: 1.1409 Acc: 72.76% LR: 0.000086 Batch time: 23.6ms
+[2025-03-10 15:21:50] Epoch: 197 Batch: [300/313] Loss: 1.1378 Acc: 73.15% LR: 0.000071 Batch time: 23.5ms
+[2025-03-10 15:21:51] 
+======================================== Epoch 197/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1407 Train Acc: 73.0064%
+Val Loss: 0.6637 Val Acc: 94.4800%
+Best Val Acc: 94.5600%
+Learning Rate: 0.000069
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.01 hours
+==========================================================================================
+
+[2025-03-10 15:21:56] Epoch: 198 Batch: [100/313] Loss: 1.1377 Acc: 73.23% LR: 0.000055 Batch time: 23.6ms
+[2025-03-10 15:22:01] Epoch: 198 Batch: [200/313] Loss: 1.1608 Acc: 72.42% LR: 0.000043 Batch time: 23.1ms
+[2025-03-10 15:22:06] Epoch: 198 Batch: [300/313] Loss: 1.1467 Acc: 72.85% LR: 0.000032 Batch time: 23.0ms
+[2025-03-10 15:22:07] 
+======================================== Epoch 198/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1466 Train Acc: 72.8203%
+Val Loss: 0.6582 Val Acc: 94.5000%
+Best Val Acc: 94.5600%
+Learning Rate: 0.000031
+GPU Memory: 413.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.01 hours
+==========================================================================================
+
+[2025-03-10 15:22:12] Epoch: 199 Batch: [100/313] Loss: 1.2394 Acc: 68.63% LR: 0.000022 Batch time: 23.5ms
+[2025-03-10 15:22:17] Epoch: 199 Batch: [200/313] Loss: 1.1733 Acc: 71.77% LR: 0.000014 Batch time: 23.7ms
+[2025-03-10 15:22:22] Epoch: 199 Batch: [300/313] Loss: 1.1743 Acc: 71.65% LR: 0.000009 Batch time: 23.6ms
+[2025-03-10 15:22:23] 
+======================================== Epoch 199/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1743 Train Acc: 71.6986%
+Val Loss: 0.6644 Val Acc: 94.5200%
+Best Val Acc: 94.5600%
+Learning Rate: 0.000008
+GPU Memory: 413.94 MB
+Avg Batch Time: 23.6 ms
+ETA: 0.00 hours
+==========================================================================================
+
+[2025-03-10 15:22:28] Epoch: 200 Batch: [100/313] Loss: 1.1500 Acc: 72.42% LR: 0.000004 Batch time: 23.5ms
+[2025-03-10 15:22:33] Epoch: 200 Batch: [200/313] Loss: 1.1756 Acc: 71.33% LR: 0.000001 Batch time: 23.6ms
+[2025-03-10 15:22:37] Epoch: 200 Batch: [300/313] Loss: 1.1536 Acc: 72.45% LR: 0.000000 Batch time: 23.6ms
+[2025-03-10 15:22:39] 
+======================================== Epoch 200/200 ========================================
+Time: 0m 15s
+Train Loss: 1.1492 Train Acc: 72.7044%
+Val Loss: 0.6624 Val Acc: 94.5500%
+Best Val Acc: 94.5600%
+Learning Rate: 0.000000
+GPU Memory: 412.69 MB
+Avg Batch Time: 23.5 ms
+ETA: 0.00 hours
+==========================================================================================
+
+[2025-03-10 15:22:39] Saved checkpoint at epoch 200 to outputs/training_runs/2025_03_10_14_29/checkpoints/epoch_200.pth
+[2025-03-10 15:22:42] Generated training graphs:
+[2025-03-10 15:22:42]   - Loss plot: outputs/training_runs/2025_03_10_14_29/logs/figures/loss_plot.png
+[2025-03-10 15:22:42]   - Validation plot: outputs/training_runs/2025_03_10_14_29/logs/figures/validation_plot.png
+[2025-03-10 15:22:42]   - Learning rate plot: outputs/training_runs/2025_03_10_14_29/logs/figures/learning_rate_plot.png
+[2025-03-10 15:22:42]   - Combined plot: outputs/training_runs/2025_03_10_14_29/logs/figures/combined_plot.png
+[2025-03-10 15:22:42] Training completed in 0h 52m 53s. Best validation accuracy: 94.5600%
