@@ -9,3 +9,8 @@ data/
 outputs/*
 # But don't ignore best_models directory
 !outputs/best_models/
+# Don't ignore the specific training run folder
+!outputs/training_runs/
+!outputs/training_runs/2025_03_10_14_29/
+# But ignore checkpoints inside it
+outputs/training_runs/2025_03_10_14_29/checkpoints/

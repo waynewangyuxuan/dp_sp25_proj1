@@ -388,3 +388,39 @@ Key configurable parameters:
 - tqdm
 - scikit-learn
 - matplotlib
+
+## Training Runs
+
+This repository includes a specific training run that demonstrates the performance of our ResNet model with RandAugment data augmentation.
+
+### Training Run: 2025_03_10_14_29
+
+This training run achieved a validation accuracy of 94.56% on the CIFAR-10 dataset using the ResNet model with RandAugment data augmentation.
+
+#### Key Files
+
+- **Best Model Checkpoint**: [best.pth](outputs/training_runs/2025_03_10_14_29/best.pth) - The best model checkpoint from this training run, achieving 94.56% validation accuracy.
+
+#### Logs and Metrics
+
+The training run includes detailed logs and metrics that provide insights into the training process:
+
+- **Training Log**: [training.log](outputs/training_runs/2025_03_10_14_29/logs/training.log) - Detailed log of the training process, including per-epoch metrics, learning rates, and validation results. This file contains a complete record of the training process, including timestamps, loss values, accuracy metrics, and learning rate adjustments.
+
+- **Metrics CSV**: [metrics.csv](outputs/training_runs/2025_03_10_14_29/logs/metrics.csv) - CSV file containing per-epoch metrics including training loss, validation loss, validation accuracy, learning rate, and training time. This file is useful for analyzing the training dynamics and can be easily imported into data analysis tools.
+
+- **Configuration**: [config.json](outputs/training_runs/2025_03_10_14_29/logs/config.json) - JSON file containing the configuration parameters used for this training run, including model architecture, learning rate schedule, and data augmentation settings.
+
+#### Visualizations
+
+The training run includes several visualizations that help understand the training dynamics:
+
+- **Combined Plot**: [combined_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/combined_plot.png) - A comprehensive visualization showing training loss, validation loss, validation accuracy, and learning rate in a single plot.
+
+- **Loss Plot**: [loss_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/loss_plot.png) - Plot showing the training and validation loss over epochs.
+
+- **Validation Plot**: [validation_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/validation_plot.png) - Plot showing the validation loss and accuracy over epochs.
+
+- **Learning Rate Plot**: [learning_rate_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/learning_rate_plot.png) - Plot showing the learning rate schedule over epochs.
+
+These visualizations provide valuable insights into the training process and help understand how the model converged to its final performance.
