@@ -2,6 +2,33 @@
 
 This project implements a ResNet model for CIFAR-10 image classification. The implementation includes a custom training pipeline with learning rate scheduling, model checkpointing, and comprehensive evaluation metrics.
 
+## Table of Contents
+
+- [Project Structure](#project-structure)
+- [Model Architectures](#model-architectures)
+  - [Enhanced ResNet with SE Blocks](#1-enhanced-resnet-with-se-blocks)
+  - [Enhanced ResNet with RandAugment](#2-enhanced-resnet-with-randaugment)
+  - [Hybrid ResNet with SE and Stochastic Depth](#3-hybrid-resnet-with-se-and-stochastic-depth)
+- [Training Process](#training-process)
+- [Usage](#usage)
+  - [Environment Setup](#environment-setup)
+  - [Training](#training)
+  - [Evaluation](#evaluation)
+  - [Alternative Configurations](#alternative-configurations)
+- [Experimental Results](#experimental-results)
+- [Reproducing Our Results](#reproducing-our-results)
+  - [Model Checkpoint](#model-checkpoint)
+  - [Training the Model](#training-the-model)
+  - [Evaluation](#evaluation-1)
+- [Output Organization](#output-organization)
+  - [Training Outputs](#training-outputs)
+  - [Best Models](#best-models)
+  - [Final Models](#final-models)
+  - [Evaluation Results](#evaluation-results)
+- [Logging and Analysis](#logging-and-analysis)
+  - [Training Graphs](#training-graphs)
+  - [Analyzing Existing Training Runs](#analyzing-existing-training-runs)
+
 ## Project Structure
 
 ```
@@ -193,150 +220,6 @@ The training scripts will:
 
 ### Evaluation
 
-#### Basic Evaluation
-
-To evaluate a trained model and generate predictions:
-```bash
-python src/scripts/evaluation/evaluate.py
-```
-
-The evaluation script will:
-- Load the best model checkpoint
-- Generate predictions for the test set
-- Create an evaluation folder with:
-  - `predictions.csv`: Test set predictions
-  - `model.pth`: Copy of the model used
-- Display sample predictions and statistics
-
-#### Advanced Evaluation with Test-Time Augmentation
-
-To evaluate a model with Test-Time Augmentation (TTA):
-```bash
-python src/scripts/evaluation/evaluate_advanced.py --tta
-```
-
-Additional options:
-```bash
-# Specify a custom model path
-python src/scripts/evaluation/evaluate_advanced.py --model-path /path/to/model.pth --tta
-
-# Adjust the number of TTA transforms
-python src/scripts/evaluation/evaluate_advanced.py --tta --tta-transforms 16
-
-# Use data augmentation during evaluation (not recommended)
-python src/scripts/evaluation/evaluate_advanced.py --use-augment
-```
-
-#### Quick Model Information
-
-To quickly check a model's validation accuracy and other information:
-```bash
-python src/scripts/utils/get_model_accuracy.py --model-path /path/to/model.pth
-```
-
-### Utility Scripts
-
-#### Generate Training Graphs
-
-To generate training graphs from metrics CSV files:
-```bash
-python src/scripts/utils/generate_training_graphs.py
-```
-
-By default, this will generate graphs for the most recent training run. Options:
-```bash
-# Generate graphs for a specific metrics file
-python src/scripts/utils/generate_training_graphs.py --metrics-file /path/to/metrics.csv
-
-# Generate graphs for all training runs
-python src/scripts/utils/generate_training_graphs.py --all-runs
-
-# Specify output directory for graphs
-python src/scripts/utils/generate_training_graphs.py --output-dir /path/to/output
-
-# Customize graph appearance
-python src/scripts/utils/generate_training_graphs.py --dpi 600 --figsize 12,8 --style seaborn
-```
-
-The script generates four types of graphs:
-1. **Loss Plot**: Training and validation loss over epochs
-2. **Validation Plot**: Validation loss and accuracy over epochs
-3. **Learning Rate Plot**: Learning rate schedule over epochs
-4. **Combined Plot**: All metrics in a single figure
-
-#### Clean Up Training Runs
-
-To clean up old training runs and save disk space:
-```bash
-python src/scripts/utils/cleanup_training_runs.py --output-dir outputs
-```
-
-#### Rename Training Runs
-
-To rename training run directories based on their contents:
-```bash
-python src/scripts/utils/rename_training_runs.py --output-dir outputs
-```
-
-#### Organize Log Files
-
-To organize log files into a structured directory hierarchy:
-```bash
-python src/scripts/utils/organize_logs.py --logs-dir logs --output-dir organized_logs
-```
-
-## Experimental Results
-
-We conducted several experiments to improve the model's performance using Test-Time Augmentation (TTA):
-
-| Model Configuration | Test Accuracy | Notes |
-|---------------------|---------------|-------|
-| ResNet with RandAugment (no TTA) | 82.62% | Baseline performance |
-| ResNet with RandAugment + TTA (8 transforms) | 82.96% | Improved performance with TTA |
-| ResNet with RandAugment + TTA (16 transforms) | 83.28% | **Best performance** with more TTA transforms |
-
-### Key Findings:
-
-1. **Test-Time Augmentation (TTA)** consistently improves model performance, with gains of up to 0.66% over the baseline.
-2. **Increasing the number of TTA transforms** from 8 to 16 further improves accuracy by 0.32%.
-3. Our best model achieves **83.28% accuracy** on the CIFAR-10 test set using 16 TTA transforms.
-
-## Reproducing Our Results
-
-### Model Checkpoint
-
-We have included our best model checkpoint in the repository at:
-```
-/scratch/yw5954/dp_sp25_proj1/outputs/training_runs/2025_03_10_14_29/best.pth
-```
-
-This checkpoint achieved 94.56% validation accuracy and 83.28% test accuracy with TTA=16.
-
-### Training the Model
-
-If you want to train the model from scratch, run:
-
-```bash
-cd /scratch/yw5954/dp_sp25_proj1
-source activate.sh
-python src/scripts/training/train_resnet_randaugment.py
-```
-
-For distributed training on a cluster using SLURM:
-
-```bash
-cd /scratch/yw5954/dp_sp25_proj1
-sbatch src/run_training.sbatch
-```
-
-The training script will:
-- Train a ResNet model with RandAugment data augmentation
-- Save checkpoints during training
-- Save the best model based on validation accuracy
-- Generate training graphs automatically
-
-### Evaluation
-
 To reproduce our best result (83.28% accuracy), follow these steps:
 
 1. **Setup the environment**:
@@ -358,6 +241,8 @@ This will:
 - Display the accuracy and other evaluation metrics
 
 ### Alternative Configurations
+
+The `evaluate_advanced.py` script can handle all evaluation scenarios by simply adjusting the command-line arguments. There's no need for a separate evaluation script.
 
 To reproduce our other results:
 
