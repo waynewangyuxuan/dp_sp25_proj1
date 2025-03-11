@@ -31,6 +31,7 @@ Parameters:
   - [Enhanced ResNet with SE Blocks](#1-enhanced-resnet-with-se-blocks)
   - [Enhanced ResNet with RandAugment](#2-enhanced-resnet-with-randaugment)
   - [Hybrid ResNet with SE and Stochastic Depth](#3-hybrid-resnet-with-se-and-stochastic-depth)
+  - [Regularized ResNet Model](#4-regularized-resnet-model)
 - [Training Process](#training-process)
 - [Usage](#usage)
   - [Environment Setup](#environment-setup)
@@ -171,6 +172,28 @@ A combined model that leverages both Squeeze-and-Excitation blocks and stochasti
 - Model Size: ~2.9M parameters
 - Training Time: ~2.5 hours on a single GPU
 
+### 4. Regularized ResNet Model
+
+A highly regularized version of the ResNet model designed to reduce the gap between training and validation accuracy:
+
+- Based on the enhanced ResNet with SE blocks
+- Implements multiple regularization techniques:
+  - Increased weight decay (5e-4)
+  - Higher dropout rate (0.4)
+  - Enhanced label smoothing (0.2)
+  - Stochastic depth (probability 0.3)
+  - Increased CutMix probability (0.8)
+  - Stronger RandAugment (3 operations, magnitude 12)
+  - Mixup augmentation (alpha 1.0, probability 0.5)
+
+#### Performance
+- Test Accuracy: 80.39%
+- Test Accuracy with TTA: 80.85%
+- Model Size: ~2.8M parameters
+- Training Time: ~2.5 hours on a single GPU
+
+This model demonstrates the impact of strong regularization techniques on model performance. While the absolute accuracy is slightly lower than other models, it achieves better generalization with a smaller gap between training and validation accuracy.
+
 ## Training Process
 
 The training process includes:
@@ -231,6 +254,15 @@ python src/scripts/training/train_hybrid_resnet_se_stochastic.py
 ```
 
 This script trains a hybrid ResNet model that combines Squeeze-and-Excitation blocks for channel attention and stochastic depth for regularization.
+
+#### Regularized ResNet Model
+
+To train the highly regularized ResNet model with multiple regularization techniques:
+```bash
+python src/scripts/training/train_regularized.py --mixup --mixup_alpha 1.0 --mixup_prob 0.5
+```
+
+This script trains a ResNet model with enhanced regularization techniques including increased weight decay, higher dropout, label smoothing, stochastic depth, stronger data augmentation, and Mixup. It's designed to reduce the gap between training and validation accuracy.
 
 The training scripts will:
 - Create necessary output directories
@@ -424,3 +456,23 @@ These visualizations provide valuable insights into the training process and hel
 
 - This implementation was inspired by [kuangliu/pytorch-cifar](https://github.com/kuangliu/pytorch-cifar), which provides excellent reference implementations of various models for CIFAR-10.
 - Code development and documentation were assisted by Claude 3.7, an AI assistant by Anthropic.
+
+## Experimental Results
+
+The project includes several experiments with different model architectures and training configurations:
+
+| Model | Test Accuracy | Test Accuracy (TTA) | Parameters | Training Time |
+|-------|---------------|---------------------|------------|---------------|
+| Enhanced ResNet with SE Blocks | 82.62% | 83.14% | ~2.8M | ~2 hours |
+| Enhanced ResNet with RandAugment | 83.28% | 83.64% | ~2.8M | ~2.5 hours |
+| Hybrid ResNet with SE and Stochastic Depth | 83.76% | 84.21% | ~2.9M | ~2.5 hours |
+| Regularized ResNet Model | 80.39% | 80.85% | ~2.8M | ~2.5 hours |
+
+Key findings:
+1. **Squeeze-and-Excitation blocks** improve model performance by focusing on important channels.
+2. **RandAugment** data augmentation significantly enhances generalization.
+3. **Stochastic depth** provides effective regularization and improves performance.
+4. **Test-Time Augmentation (TTA)** consistently improves accuracy by 0.4-0.5%.
+5. **Strong regularization techniques** (in the Regularized ResNet Model) reduce the gap between training and validation accuracy, though with a slight decrease in absolute test accuracy.
+
+The best performing model is the Hybrid ResNet with SE and Stochastic Depth, achieving 84.21% test accuracy with TTA.
