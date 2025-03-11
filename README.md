@@ -10,6 +10,20 @@ Below is a visualization of our model's predictions on random samples from the C
 
 The visualization shows the true class, predicted class, and confidence scores for the top predictions. A checkmark (✓) indicates correct predictions, while an X (✗) indicates incorrect ones.
 
+### Generating Visualizations
+
+You can generate your own prediction visualizations using the provided script:
+
+```bash
+python src/scripts/utils/visualize_predictions.py --model_path /path/to/model.pth --correct 8 --incorrect 4 --output_path /path/to/output.png
+```
+
+Parameters:
+- `--model_path`: Path to the trained model checkpoint
+- `--correct`: Number of correct predictions to show (default: 8)
+- `--incorrect`: Number of incorrect predictions to show (default: 4)
+- `--output_path`: Path to save the visualization (optional, will display instead of saving if not provided)
+
 ## Table of Contents
 
 - [Project Structure](#project-structure)
