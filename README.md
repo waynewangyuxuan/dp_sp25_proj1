@@ -2,6 +2,14 @@
 
 This project implements a ResNet model for CIFAR-10 image classification. The implementation includes a custom training pipeline with learning rate scheduling, model checkpointing, and comprehensive evaluation metrics.
 
+## Model Predictions Visualization
+
+Below is a visualization of our model's predictions on random samples from the CIFAR-10 validation set:
+
+![Model Predictions](images/prediction_visualization.png)
+
+The visualization shows the true class, predicted class, and confidence scores for the top predictions. A checkmark (✓) indicates correct predictions, while an X (✗) indicates incorrect ones.
+
 ## Table of Contents
 
 - [Project Structure](#project-structure)
@@ -28,6 +36,7 @@ This project implements a ResNet model for CIFAR-10 image classification. The im
 - [Logging and Analysis](#logging-and-analysis)
   - [Training Graphs](#training-graphs)
   - [Analyzing Existing Training Runs](#analyzing-existing-training-runs)
+- [Acknowledgments](#acknowledgments)
 
 ## Project Structure
 
@@ -371,12 +380,33 @@ The training run includes detailed logs and metrics that provide insights into t
 
 The training run includes several visualizations that help understand the training dynamics:
 
-- **Combined Plot**: [combined_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/combined_plot.png) - A comprehensive visualization showing training loss, validation loss, validation accuracy, and learning rate in a single plot.
+- **Combined Plot**:
 
-- **Loss Plot**: [loss_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/loss_plot.png) - Plot showing the training and validation loss over epochs.
+![Combined Plot](outputs/training_runs/2025_03_10_14_29/logs/figures/combined_plot.png)
 
-- **Validation Plot**: [validation_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/validation_plot.png) - Plot showing the validation loss and accuracy over epochs.
+A comprehensive visualization showing training loss, validation loss, validation accuracy, and learning rate in a single plot.
 
-- **Learning Rate Plot**: [learning_rate_plot.png](outputs/training_runs/2025_03_10_14_29/logs/figures/learning_rate_plot.png) - Plot showing the learning rate schedule over epochs.
+- **Loss Plot**:
+
+![Loss Plot](outputs/training_runs/2025_03_10_14_29/logs/figures/loss_plot.png)
+
+Plot showing the training and validation loss over epochs.
+
+- **Validation Plot**:
+
+![Validation Plot](outputs/training_runs/2025_03_10_14_29/logs/figures/validation_plot.png)
+
+Plot showing the validation loss and accuracy over epochs.
+
+- **Learning Rate Plot**:
+
+![Learning Rate Plot](outputs/training_runs/2025_03_10_14_29/logs/figures/learning_rate_plot.png)
+
+Plot showing the learning rate schedule over epochs.
 
 These visualizations provide valuable insights into the training process and help understand how the model converged to its final performance.
+
+## Acknowledgments
+
+- This implementation was inspired by [kuangliu/pytorch-cifar](https://github.com/kuangliu/pytorch-cifar), which provides excellent reference implementations of various models for CIFAR-10.
+- Code development and documentation were assisted by Claude 3.7, an AI assistant by Anthropic.
