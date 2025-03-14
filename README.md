@@ -120,7 +120,7 @@ dp_sp25_proj1/
 
 ### 1. Enhanced ResNet with SE Blocks
 
-The project implements a small ResNet model with Squeeze-and-Excitation blocks:
+A small ResNet model with Squeeze-and-Excitation blocks:
 
 - Input: 32x32 RGB images
 - Initial convolution: 3x3, 32 channels
@@ -154,7 +154,7 @@ An improved version of the enhanced ResNet with advanced data augmentation:
 - RandAugment applies a sequence of random transformations with configurable magnitude
 
 #### Performance
-- Test Accuracy: 83.64% (with Test-Time Augmentation)
+- Test Accuracy: 83.28% (with Test-Time Augmentation)
 - Model Size: ~2.8M parameters
 - Training Time: ~2.5 hours on a single GPU
 
@@ -168,8 +168,8 @@ A combined model that leverages both Squeeze-and-Excitation blocks and stochasti
 - Combines the benefits of both approaches
 
 #### Performance
-- Test Accuracy: 84.21%
-- Model Size: ~2.9M parameters
+- Test Accuracy: 81.96% (With Test-Time Augmentation)
+- Model Size: ~2.8M parameters
 - Training Time: ~2.5 hours on a single GPU
 
 ### 4. Regularized ResNet Model
@@ -188,7 +188,7 @@ A highly regularized version of the ResNet model designed to reduce the gap betw
 
 #### Performance
 - Test Accuracy: 80.39%
-- Test Accuracy with TTA: 80.85%
+- Test Accuracy with TTA: 80.84%
 - Model Size: ~2.8M parameters
 - Training Time: ~2.5 hours on a single GPU
 
@@ -463,16 +463,17 @@ The project includes several experiments with different model architectures and 
 
 | Model | Test Accuracy | Test Accuracy (TTA) | Parameters | Training Time |
 |-------|---------------|---------------------|------------|---------------|
-| Enhanced ResNet with SE Blocks | 82.62% | 83.14% | ~2.8M | ~2 hours |
-| Enhanced ResNet with RandAugment | 83.28% | 83.64% | ~2.8M | ~2.5 hours |
-| Hybrid ResNet with SE and Stochastic Depth | 83.76% | 84.21% | ~2.9M | ~2.5 hours |
-| Regularized ResNet Model | 80.39% | 80.85% | ~2.8M | ~2.5 hours |
+| ResNet 18 | 80.45% | N/A | ~700k | ~1 hours |
+| Enhanced ResNet with SE Blocks | 83.14% | 82.96% | ~2.8M | ~2 hours |
+| Enhanced ResNet with RandAugment | 82.62% | 83.28% | ~2.8M | ~2 hours |
+| ResNet with Stochastic Depth| 78.57 | 81.96% | ~2.8M | ~2 hours |
+| Regularized ResNet Model | 80.39% | 80.84% | ~2.8M | ~2 hours |
 
 Key findings:
 1. **Squeeze-and-Excitation blocks** improve model performance by focusing on important channels.
 2. **RandAugment** data augmentation significantly enhances generalization.
-3. **Stochastic depth** provides effective regularization and improves performance.
-4. **Test-Time Augmentation (TTA)** consistently improves accuracy by 0.4-0.5%.
+3. **Stochastic depth** Hurts model, somehow. However, it does receives the most boost from TTA.
+4. **Test-Time Augmentation (TTA)** consistently improves accuracy by 0.4-0.5% except for ResNet with SE Blocks.
 5. **Strong regularization techniques** (in the Regularized ResNet Model) reduce the gap between training and validation accuracy, though with a slight decrease in absolute test accuracy.
 
-The best performing model is the Hybrid ResNet with SE and Stochastic Depth, achieving 84.21% test accuracy with TTA.
+The best performing model is the Hybrid ResNet with RandAugment after TTA, achieving 83.28% test accuracy with TTA.
